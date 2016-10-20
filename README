@@ -1,0 +1,13 @@
+README
+
+This is my life.
+
+The code and overall design so far is based on Lim Chee Aun's `life`
+https://github.com/cheeaun/life chosen for its ease of use and simplicity.
+
+Start a webserver with something like: `python -m http.server 8000`
+
+	(timelife) stav@venix:~/.../TimeLion/timelion$ python -m http.server 8000
+	Serving HTTP on 0.0.0.0 port 8000 ...
+
+Boilerplate code from https://html5boilerplate.com/
