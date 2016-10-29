@@ -4,7 +4,7 @@ REPO_NAME    = timelion
 REPO_URI    := stav@cowboy:/srv/git/$(REPO_NAME).git
 REPO_REMOTE := $(shell git remote)
 SOURCE_DIR  := `ls | grep -v .git`
-RENDER_DIR  := cowboy:/srv/default/htdocs/life
+RENDER_DIR  := cowboy:/srv/default/htdocs/timelion/
 
 init:
 	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -32,5 +32,5 @@ deploy:
 	@echo ~Deploying
 	@make test
 	@make clean
-	scp -r  $(SOURCE_DIR)  $(RENDER_DIR)
+	rsync --dirs --recursive --update --progress  --verbose  $(SOURCE_DIR)  $(RENDER_DIR)
 	git push -u origin master

@@ -43,7 +43,7 @@ h1{
 	font-weight: 300;
 	white-space: nowrap;
 }
-#life{
+#timelion{
 	position: absolute;
 	top: 0;
 	right: 0;
@@ -55,14 +55,14 @@ h1{
 	cursor: -moz-grab;
 	cursor: grab;
 }
-#life-years{
+#timelion-years{
 	position: absolute;
 	top: 0;
 	bottom: 0;
 	white-space: nowrap;
 	pointer-events: none;
 }
-#life-years .year{
+#timelion-years .year{
 	display: inline-block;
 	box-sizing: border-box;
 	color: #fff;
@@ -72,10 +72,10 @@ h1{
 	height: 100%;
 	border-left: 1px dashed rgba(255,255,255,.2);
 }
-#life-years .year:first-child{
+#timelion-years .year:first-child{
 	border-left: 0;
 }
-#life-years .year span{
+#timelion-years .year span{
 	background: linear-gradient(to bottom, rgba(56,64,71,1) 30%,rgba(56,64,71,0) 100%);
 	display: block;
 	padding: 10px;
@@ -84,21 +84,21 @@ h1{
 	top: 0;
 	z-index: 3;
 }
-#life-years .year span i{
+#timelion-years .year span i{
 	opacity: .5;
 	font-style: normal;
 }
-#life-events{
+#timelion-events{
 	padding-top: 40px;
 	padding-bottom: 5em;
 	position: relative;
 }
-#life-events:after{
+#timelion-events:after{
 	content: '';
 	display: block;
 	clear: left;
 }
-#life .event{
+#timelion .event{
 	padding-right: 20px;
 	padding-bottom: 5px;
 	vertical-align: middle;
@@ -106,11 +106,11 @@ h1{
 	float: left;
 	clear: left;
 }
-#life .event b{
+#timelion .event b{
 	font-weight: normal;
 	color: rgba(255,255,255,.5);
 }
-#life .event .time{
+#timelion .event .time{
 	display: inline-block;
 	overflow: hidden;
 	height: 0;
@@ -121,6 +121,6 @@ h1{
 	position: relative;
 	left: -2px;
 }
-#life .event:hover .time{
+#timelion .event:hover .time{
 	opacity: .5;
 }
