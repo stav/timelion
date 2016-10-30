@@ -3,6 +3,15 @@
  */
 (function(){
     "use strict";
-    timelion.start();
-    // slider.init();
+
+    window.addEventListener("load", function(event) {
+        init();
+        console.log("LOAD: main");
+    }, {once: true});
+
+    function init () {
+        console.log('init');
+        timelion.start();
+        // slider.init();
+    }
 })();

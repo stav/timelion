@@ -2,7 +2,11 @@
  * Timelion - the heavy lifting
  */
 (function( root, factory ) {
-  root.timelion = factory()
+
+    window.addEventListener("load", function(event) {
+        root.timelion = factory();
+        console.log("LOAD: lib");
+    }, {once: true});
 }
 (this, function() {
     "use strict";
@@ -33,16 +37,18 @@
         },
 
         start: function(){
-            timelion.loadConfig(function(config){
-                timelion.config = timelion.utils.extend(timelion.config, config);
-                if (timelion.config.customStylesheetURL)
-                    timelion.injectStylesheet(timelion.config.customStylesheetURL);
+            var self = this;
 
-                timelion.fetch(function(response){
+            this.loadConfig(function(config){
+                self.config = self.utils.extend(self.config, config);
+                if (self.config.customStylesheetURL)
+                    self.injectStylesheet(self.config.customStylesheetURL);
+
+                self.fetch(function(response){
                     const
-                        data = timelion.parse(response),
-                        title = timelion.parseTitle(response);
-                    timelion.render(title, data);
+                        data = self.parse(response),
+                        title = self.parseTitle(response);
+                    self.render(title, data);
                 });
             });
         },
@@ -83,8 +89,11 @@
         },
 
         parse: function(response){
-            const list = response.match(/\-\s+[^\n\r]+/ig);
-            var data = [];
+            const
+                list = response.match(/\-\s+[^\n\r]+/ig);
+            var
+                self = this,
+                data = [];
 
             list.forEach(function(l){
                 const
@@ -92,7 +101,7 @@
                     time = matches[1],
                     text = matches[2];
                 data.push({
-                    time: timelion.parseTime(time),
+                    time: self.parseTime(time),
                     text: text
                 });
             });
@@ -106,7 +115,9 @@
         parseTime: function(time, point){
             if (!point) point = 'start';
 
-            var data = {};
+            var
+                self = this,
+                data = {};
 
             if (/^\~\d+$/.test(time)){ // ~YYYY
                 data = {
@@ -126,8 +137,8 @@
                 data[point + 'Year'] = parseInt(t[2], 10);
             } else if (/\d\-/.test(time)){ // TIME-TIME
                 var splitTime = time.split('-');
-                var startTime = timelion.parseTime(splitTime[0]);
-                var endTime = timelion.parseTime(splitTime[1], 'end');
+                var startTime = self.parseTime(splitTime[0]);
+                var endTime = self.parseTime(splitTime[1], 'end');
                 for (var k in startTime) { data[k] = startTime[k] }
                 for (var k in endTime) { data[k] = endTime[k] }
             } else if (time == '~'){ // NOW
@@ -144,7 +155,7 @@
         firstYear: null,
 
         renderEvent: function(d){
-            var yearLength = timelion.config.yearLength;
+            var yearLength = this.config.yearLength;
             var monthLength = yearLength/12;
             var dayLength = monthLength/30;
 
@@ -159,7 +170,7 @@
             var width = 0;
 
             // Calculate offset
-            var startTime = new Date(timelion.firstYear, 0, 1);
+            var startTime = new Date(this.firstYear, 0, 1);
             var endTime = new Date(startYear, startMonth ? startMonth-1 : 0, startDate || 1);
             var daysDiff = (endTime - startTime)/(24*60*60*1000);
             var offset = daysDiff*dayLength;
@@ -201,8 +212,8 @@
 
         renderYears: function(firstYear, lastYear){
             const
-                dayLength = timelion.config.yearLength/12/30,
-                hideAge = timelion.config.hideAge;
+                dayLength = this.config.yearLength/12/30,
+                hideAge = this.config.hideAge;
             var
                 html = '';
 
@@ -222,12 +233,13 @@
         render: function(title, data){
             // Get the first and last year for the year axis
             var
+                self = this,
                 firstYear = new Date().getFullYear(),
                 lastYear = firstYear,
                 html;
 
             document.title = title;
-            timelion.$title.innerHTML = title;
+            this.$title.innerHTML = title;
 
             data.forEach(function(d){
                 const
@@ -238,16 +250,16 @@
                 if (startYear && startYear < firstYear) firstYear = startYear;
                 if (endYear && endYear > lastYear) lastYear = endYear;
             });
-            timelion.firstYear = firstYear;
+            this.firstYear = firstYear;
 
             html = '<div id="timelion-events">';
             // 'comment_' class name is to hide it from Safari Reader
-            html += '<div id="timelion-years" class="comment_">' + timelion.renderYears(firstYear, lastYear) + '</div>';
+            html += '<div id="timelion-years" class="comment_">' + this.renderYears(firstYear, lastYear) + '</div>';
             data.forEach(function(d){
-                html += timelion.renderEvent(d);
+                html += self.renderEvent(d);
             });
             html += '</div>';
-            timelion.$el.innerHTML = html;
+            this.$el.innerHTML = html;
         }
     }
 }));
