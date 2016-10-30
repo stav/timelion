@@ -71,11 +71,21 @@ clean:
 	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	@echo ~Cleaning
 
+sync:
+	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	@echo ~Syncing
+	rsync --dirs --recursive --update --progress  --verbose  $(SOURCE_DIR)  $(RENDER_DIR)
+
+push:
+	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	@echo ~Pushing
+	git push -u linode master
+	git push -u github master
+
 deploy:
 	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 	@echo ~Deploying
 	@make test
 	@make clean
-	rsync --dirs --recursive --update --progress  --verbose  $(SOURCE_DIR)  $(RENDER_DIR)
-	git push -u linode master
-	git push -u github master
+	@make sync
+	@make push
