@@ -39,43 +39,12 @@
         start: function(){
             var self = this;
 
-            this.loadConfig(function(config){
-                self.config = self.utils.extend(self.config, config);
-                if (self.config.customStylesheetURL)
-                    self.injectStylesheet(self.config.customStylesheetURL);
-
-                self.fetch(function(response){
-                    const
-                        data = self.parse(response),
-                        title = self.parseTitle(response);
-                    self.render(title, data);
-                });
+            self.fetch(function(response){
+                const
+                    data = self.parse(response),
+                    title = self.parseTitle(response);
+                self.render(title, data);
             });
-        },
-
-        loadConfig: function(fn){
-            var xhr = new XMLHttpRequest();
-
-            xhr.open('GET', 'config.json', true);
-            xhr.onload = function(){
-                if (xhr.status == 200){
-                    fn(JSON.parse(xhr.responseText));
-                } else {
-                    fn({});
-                }
-            };
-            xhr.onerror = xhr.onabort = function(){
-                fn({});
-            };
-            xhr.send();
-        },
-
-        injectStylesheet: function(url){
-            var link = document.createElement('link');
-
-            link.rel = 'stylesheet';
-            link.href = url;
-            document.body.appendChild(link);
         },
 
         fetch: function(fn){
