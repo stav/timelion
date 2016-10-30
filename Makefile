@@ -3,8 +3,8 @@
 REPO_NAME    = timelion
 LN_REPO_URI := stav@cowboy:/srv/git/$(REPO_NAME).git
 GH_REPO_URI := git@github.com:stav/$(REPO_NAME).git
-SOURCE_DIR  := `ls | grep -v .git`
-RENDER_DIR  := cowboy:/srv/default/htdocs/timelion/
+SOURCE_DIR   = timelion
+RENDER_DIR   = cowboy:/srv/default/htdocs/
 
 init_linode: REMOTE = linode
 init_github: REMOTE = github
