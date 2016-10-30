@@ -1,22 +1,66 @@
 .PHONY: init test clean deploy
 
 REPO_NAME    = timelion
-REPO_URI    := stav@cowboy:/srv/git/$(REPO_NAME).git
-REPO_REMOTE := $(shell git remote)
+LN_REPO_URI := stav@cowboy:/srv/git/$(REPO_NAME).git
+GH_REPO_URI := git@github.com:stav/$(REPO_NAME).git
 SOURCE_DIR  := `ls | grep -v .git`
 RENDER_DIR  := cowboy:/srv/default/htdocs/timelion/
 
+init_linode: REMOTE = linode
+init_github: REMOTE = github
+
 init:
+	# Havn't quite figured out variables yet
+	@make init_linode
+	@make init_github
+
+init_linode:
 	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	@echo ~Initializing
-ifeq ($(strip $(REPO_REMOTE)),)
-	@echo Remote is empty
-else
-	-git remote rm origin
+	@echo ~Initializing Linode repository
+
+	$(eval HAS_REMOTE=$(shell git remote |grep $(REMOTE)))
+
+ifeq ($(strip $(HAS_REMOTE)),)
+	-git remote rm $(REMOTE)
 endif
-	git remote add origin $(REPO_URI)
-	git fetch
-	git branch --set-upstream-to=origin/master master
+
+	git remote add $(REMOTE) $(LN_REPO_URI)
+	git fetch $(REMOTE)
+	git remote show $(REMOTE)
+
+	$(eval EMPTY=$(git remote show $(REMOTE) |grep HEAD |grep unknown))
+
+ifeq ($(strip $(EMPTY)),"unknown")
+	@echo Remote is empty
+	git push -u $(REMOTE) master
+else
+	@echo Remote already setup
+	git branch --set-upstream-to=$(REMOTE)/master master
+endif
+
+init_github:
+	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+	@echo ~Initializing GitHub repository
+
+	$(eval HAS_REMOTE=$(shell git remote |grep $(REMOTE)))
+
+ifeq ($(strip $(HAS_REMOTE)),)
+	-git remote rm $(REMOTE)
+endif
+
+	git remote add $(REMOTE) $(GH_REPO_URI)
+	git fetch $(REMOTE)
+	git remote show $(REMOTE)
+
+	$(eval EMPTY=$(git remote show $(REMOTE) |grep HEAD |grep unknown))
+
+ifeq ($(strip $(EMPTY)),"unknown")
+	@echo Remote is empty
+	git push -u $(REMOTE) master
+else
+	@echo Remote already setup
+	git branch --set-upstream-to=$(REMOTE)/master master
+endif
 
 test:
 	@echo ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -33,4 +77,5 @@ deploy:
 	@make test
 	@make clean
 	rsync --dirs --recursive --update --progress  --verbose  $(SOURCE_DIR)  $(RENDER_DIR)
-	git push -u origin master
+	git push -u linode master
+	git push -u github master
