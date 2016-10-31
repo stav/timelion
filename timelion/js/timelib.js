@@ -12,12 +12,10 @@
     "use strict";
 
     return {
-        $title: document.getElementById('title'),
-
         $el: document.getElementById('timelion'),
 
         config: {
-            yearLength: 120, // 120px per year
+            yearLength: 30, // 120px per year
             hideAge: false, // Hide age from year axis
             customStylesheetURL: null // Custom stylesheet
         },
@@ -26,10 +24,9 @@
 
             function render(response){
                 const
-                    data = timelion.parse(response),
-                    title = timelion.parseTitle(response);
+                    data = timelion.parse(response);
 
-                timelion.render(title, data);
+                timelion.render(data);
             }
 
             var xhr = new XMLHttpRequest();
@@ -183,16 +180,13 @@
             return html;
         },
 
-        render: function(title, data){
+        render: function(data){
             // Get the first and last year for the year axis
             var
                 self = this,
                 firstYear = new Date().getFullYear(),
                 lastYear = firstYear,
                 html;
-
-            document.title = title;
-            this.$title.innerHTML = title;
 
             data.forEach(function(d){
                 const
