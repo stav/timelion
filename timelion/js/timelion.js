@@ -11,7 +11,8 @@
 
     function init () {
         console.log('init');
-        timelion.start();
+
+        timelion.fetch('timelion.md');
         // slider.init();
     }
 })();

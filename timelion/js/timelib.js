@@ -16,43 +16,27 @@
 
         $el: document.getElementById('timelion'),
 
-        utils: {
-            extend: function(object){
-                const args = Array.prototype.slice.call(arguments, 1);
-
-                for (var i=0, source; source=args[i]; i++){
-                    if (!source) continue;
-                    for (var property in source){
-                        object[property] = source[property];
-                    }
-                }
-                return object;
-            }
-        },
-
         config: {
             yearLength: 120, // 120px per year
             hideAge: false, // Hide age from year axis
             customStylesheetURL: null // Custom stylesheet
         },
 
-        start: function(){
-            var self = this;
+        fetch: function(filename){
 
-            self.fetch(function(response){
+            function render(response){
                 const
-                    data = self.parse(response),
-                    title = self.parseTitle(response);
-                self.render(title, data);
-            });
-        },
+                    data = timelion.parse(response),
+                    title = timelion.parseTitle(response);
 
-        fetch: function(fn){
+                timelion.render(title, data);
+            }
+
             var xhr = new XMLHttpRequest();
 
-            xhr.open('GET', 'timelion.md', true);
+            xhr.open('GET', filename, true);
             xhr.onload = function(){
-                if (xhr.status == 200) fn(xhr.responseText);
+                if (xhr.status == 200) render(xhr.responseText);
             };
             xhr.send();
         },
