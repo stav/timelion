@@ -22,7 +22,7 @@
             customStylesheetURL: null // Custom stylesheet
         },
 
-        fetch: function(filename){
+        load: function(filename){
 
             function render(response){
                 const

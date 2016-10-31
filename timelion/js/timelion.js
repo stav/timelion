@@ -12,7 +12,7 @@
     function init () {
         console.log('init');
 
-        timelion.fetch('timelion.md');
+        window.timelion.load('timelion.md');
         // slider.init();
     }
 })();

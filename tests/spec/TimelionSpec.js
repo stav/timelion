@@ -2,9 +2,12 @@ describe("timelion", function() {
 
   var timelion;
 
-  beforeEach(function() {
-    timelion = window;
-    timelion.fetch('../timelion/timelion.md');
+  beforeEach(function(done) {
+    setTimeout(function() {
+      timelion = window.timelion;
+      timelion.load('../timelion/timelion.md');
+      done();
+    }, 1);
   });
 
   it("should be a function", function() {
