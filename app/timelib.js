@@ -7,7 +7,11 @@
     "use strict"
 
     return {
+
+        loaded: false,
+
         load: function( filename ){
+            timelion.loaded = true;
             return {}
         }
     }
