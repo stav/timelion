@@ -201,18 +201,20 @@
                     var
                         event = document.createElement('div'),
                         time = document.createElement('div'),
-                        text = document.createElement('b'),
+                        data = document.createElement('b'),
+                        text = document.createTextNode( d.title ),
                         _;
 
-                    text.innerHTML = d.title;
+                    data.innerHTML = d.date;
 
                     time.addClassName('time');
                     time.style = 'width:' + d.width.toFixed(2) + 'px';
-                    time.appendChild( text )
 
                     event.addClassName('event');
                     event.style = 'margin-left:' + d.offset.toFixed(2) + 'px';
                     event.appendChild( time )
+                    event.appendChild( data )
+                    event.appendChild( text )
 
                     events.appendChild( event )
                 });
