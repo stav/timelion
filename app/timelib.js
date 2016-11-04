@@ -11,8 +11,8 @@
             _e = timelion.e,
             _data = timelion.data,
             _day_width = timelion.config.year_width/12/30,
-            _byears = _data.map(function(d){return _e.get_beg_triplet(d)[0]}),
-            _eyears = _data.map(function(d){return _e.get_end_triplet(d)[0]}),
+            _byears = _data.map(function(e){return _e.get_beg_triplet(e)[0]}),
+            _eyears = _data.map(function(e){return _e.get_end_triplet(e)[0]}),
             _years = _byears.concat(_eyears),
             _;
 
@@ -44,28 +44,28 @@
 
         var startYear  = timelion.e.get_beg_triplet(d)[0];
         var startMonth = timelion.e.get_beg_triplet(d)[1];
-        var startDate  = timelion.e.get_beg_triplet(d)[2];
+        var startDay   = timelion.e.get_beg_triplet(d)[2];
         var endYear    = timelion.e.get_end_triplet(d)[0];
         var endMonth   = timelion.e.get_end_triplet(d)[1];
-        var endDate    = timelion.e.get_end_triplet(d)[2];
+        var endDay    = timelion.e.get_end_triplet(d)[2];
         var width = 0;
 
         // Calculate offset
         var startTime = new Date(firstYear, 0, 1);
-        var endTime = new Date(startYear, startMonth ? startMonth-1 : 0, startDate || 1);
+        var endTime = new Date(startYear, startMonth ? startMonth-1 : 0, startDay || 1);
         var daysDiff = (endTime - startTime)/(24*60*60*1000);
         d.offset = daysDiff*dayLength;
 
         // Calculate width
         if (endYear){
             var _endMonth = endMonth ? endMonth-1 : 11;
-            var _endDate = endDate || new Date(endYear, _endMonth+1, 0).getDate();
-            startTime = new Date(startYear, startMonth ? startMonth-1 : 0, startDate || 1);
-            endTime = new Date(endYear, _endMonth, _endDate);
+            var _endDay = endDay || new Date(endYear, _endMonth+1, 0).getDate();
+            startTime = new Date(startYear, startMonth ? startMonth-1 : 0, startDay || 1);
+            endTime = new Date(endYear, _endMonth, _endDay);
             daysDiff = (endTime - startTime)/(24*60*60*1000);
             width = daysDiff*dayLength;
         } else {
-            if (startDate){
+            if (startDay){
                 width = dayLength;
             } else if (startMonth){
                 width = monthLength;
@@ -77,8 +77,8 @@
     }
 
     function _load_events (){
-        timelion.data.forEach(function(d){
-            _load_event( d )
+        timelion.data.forEach(function( e ){
+            _load_event( e )
         })
     }
 
@@ -95,11 +95,11 @@
         timelion.loaded = true
     }
 
-    function _get_date_triplet ( date, month_default, day_default ){
+    function _get_date_triplet ( date_tuple, month_default, day_default ){
         return [
-            date[0],
-            date.length > 1 ? date[1] : month_default,
-            date.length > 2 ? date[2] : day_default
+            date_tuple[0],
+            date_tuple.length > 1 ? date_tuple[1] : month_default,
+            date_tuple.length > 2 ? date_tuple[2] : day_default
         ]
     }
 
@@ -150,7 +150,7 @@
                     var data;
                     if (xhr.status == 200){
                         try{
-                            data = JSON.parse(xhr.responseText);
+                            data = JSON.parse( xhr.responseText );
                         }
                         catch (e){
                             reject('File is not JSON ('+xhr.responseText+')');
@@ -159,10 +159,10 @@
                             resolve(_load( data ))
                         }
                         else
-                            reject('File contains no "data" ('+xhr.status+')')
+                            reject('File contains no "data" ('+ xhr.status +')')
                     }
                     else
-                        reject('Could not load ('+filename+') status ('+xhr.status+')')
+                        reject('Could not load ('+ filename +') status ('+ xhr.status +')')
                 };
                 xhr.send();
             });
