@@ -62,13 +62,48 @@ describe("timelion", function() {
             expect(timelion.first_year).toBeGreaterThan(0);
             expect(timelion.last_year).toBeGreaterThan(0);
             expect(timelion.last_year).toBeGreaterThanOrEqual(timelion.first_year);
-            expect(typeof timelion.years[timelion.first_year]).toEqual('object');
+            expect(typeof timelion.years_list).toEqual('object');
+            expect(typeof timelion.years_hash).toEqual('object');
+            expect(typeof timelion.years_hash[timelion.first_year]).toEqual('object');
         });
+    });
+
+    describe("DOM", function() {
+
+        beforeAll(function(done) {
+            timelion.reset();
+            setTimeout(function(){ load( done ) }, 1)
+        });
+
+        it("should contain a valid empty canvas", function() {
+            expect(timelion.$canvas.nodeName).toEqual('SECTION');
+            expect(timelion.$canvas.children.length).toEqual(0);
+        });
+
+        describe("render", function() {
+
+            beforeAll(function(done) {
+                timelion.reset();
+                setTimeout(function() {
+                    timelion.load( timelion_data_filename )
+                    .then(function(response) { render( done ) });
+                }, 1);
+            });
+
+            it("should be rendered", function() {
+                expect(timelion.rendered).toBe(true);
+            });
+            it("should have some children", function() {
+                expect(timelion.$canvas.children.length).toBeGreaterThan(0);
+            });
+        });
+
     });
 
     describe("render", function() {
 
         it("should not be rendered", function() {
+            timelion.reset();
             expect(timelion.rendered).toBe(false);
         });
 

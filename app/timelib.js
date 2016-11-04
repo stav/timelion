@@ -12,7 +12,8 @@
             _years = timelion.data.map(function(d){return d.date[0]}),
             _;
 
-        timelion.years = {};
+        timelion.years_hash = {};
+        timelion.years_list = [];
         timelion.first_year = Math.min.apply(null, _years);
         timelion.last_year = Math.max.apply(null, _years);
 
@@ -22,11 +23,12 @@
             year++, age++
         ){
             var days = (year % 4 == 0) ? 366 : 365; // leap years
-            timelion.years[year] = {
+            timelion.years_list.push( year );
+            timelion.years_hash[year] = {
                 age: age,
                 days: days,
                 width: (days*_day_width)
-            }
+            };
         }
     }
 
@@ -67,19 +69,25 @@
                 width = yearLength;
             }
         }
-        d.width = width
+        d.width = width;
     }
 
     function load_events (){
         timelion.data.forEach(function(d){
             load_event( d )
-        });
+        })
+    }
+
+    function load_dom (){
+        timelion.$canvas = document.getElementById('timelion');
+        timelion.$canvas.innerHTML = '';
     }
 
     function load ( data ){
         timelion.data = data.data;
         load_years()
         load_events()
+        load_dom()
         timelion.loaded = true
     }
 
@@ -101,6 +109,7 @@
         },
 
         reset: function(){
+            timelion.$canvas = null;
             timelion.data = null;
             timelion.loaded = false;
             timelion.rendered = false;
@@ -140,6 +149,50 @@
                     reject('Timelion not loaded, run load first');
                     return
                 }
+                var
+                    events = document.createElement('div'),
+                    years = document.createElement('div'),
+                    _;
+
+                events.id = 'timelion-events';
+                years.id = 'timelion-years';
+                years.class = 'comment_';
+
+                timelion.years_list.forEach(function( y ){
+                    var
+                        year = document.createElement('div'),
+                        text = document.createElement('span'),
+                        _;
+
+                    year.addClassName('year');
+                    year.style = 'width:' + timelion.years_hash[y].width.toFixed(2) + 'px';
+                    text.innerHTML = y + (timelion.config.show_age ? (' <i>(' + timelion.years_hash[y].age + ')</i>') : '')
+                    year.innerHTML = text.outerHTML;
+                    years.appendChild( year );
+                })
+                events.appendChild( years )
+
+                timelion.data.forEach(function(d){
+                    var
+                        event = document.createElement('div'),
+                        time = document.createElement('div'),
+                        text = document.createElement('b'),
+                        _;
+
+                    text.innerHTML = d.title;
+
+                    time.addClassName('time');
+                    time.style = 'width:' + d.width.toFixed(2) + 'px';
+                    time.appendChild( text )
+
+                    event.addClassName('event');
+                    event.style = 'margin-left:' + d.offset.toFixed(2) + 'px';
+                    event.appendChild( time )
+
+                    events.appendChild( event )
+                });
+
+                timelion.$canvas.appendChild( events )
                 timelion.rendered = true;
                 resolve()
             });
