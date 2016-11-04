@@ -1,26 +1,27 @@
 // Avoid `console` errors in browsers that lack a console.
 (function() {
-    var method;
-    var noop = function () {};
-    var methods = [
-        'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
-        'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
-        'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
-        'timeline', 'timelineEnd', 'timeStamp', 'trace', 'warn'
-    ];
-    var length = methods.length;
-    var console = (window.console = window.console || {});
+    var
+        method,
+        methods = [
+            'assert', 'clear', 'count', 'debug', 'dir', 'dirxml', 'error',
+            'exception', 'group', 'groupCollapsed', 'groupEnd', 'info', 'log',
+            'markTimeline', 'profile', 'profileEnd', 'table', 'time', 'timeEnd',
+            'timeline', 'timelineEnd', 'timeStamp', 'trace', 'warn'
+        ],
+        noop = function () {},
+        length = methods.length,
+        console = (window.console = window.console || {}),
+        _;
 
     while (length--) {
         method = methods[length];
-
-        // Only stub undefined methods.
-        if (!console[method]) {
+        if (!console[method]) {  // Only stub undefined methods.
             console[method] = noop;
         }
     }
 }());
 
+// Element class manupulation
 // http://stackoverflow.com/questions/14104881/add-remove-class-to-a-dom-element-using-only-javascript-and-best-of-these-2-way#answer-14105170
 (function() {
     Element.prototype.hasClassName = function(name) {
@@ -37,4 +38,20 @@
             this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
         }
     };
+}());
+
+// http://www.ecma-international.org/ecma-262/5.1/#sec-8.6.2
+(function() {
+      Object.prototype.isObject = function() {
+        return Object.prototype.toString.call(this) === '[object Object]'
+      }
+      Object.prototype.isArray = function() {
+        return Object.prototype.toString.call(this) === '[object Array]'
+      }
+      Object.prototype.isNumber = function() {
+        return (
+            Object.prototype.toString.call(this) === '[object Number]'
+            &&  !isNaN(this)
+        )
+      }
 }());

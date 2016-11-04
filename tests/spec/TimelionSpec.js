@@ -41,18 +41,27 @@ describe("timelion", function() {
             expect(timelion.loaded).toBe(true);
         });
         it("should contain at least one record", function() {
-            expect(typeof timelion.data).toEqual('object');
+            expect(timelion.data.isArray()).toBe(true);
             expect(timelion.data.length).toBeGreaterThan(0);
-            timelion.data.forEach(function(event){});
         });
         it("should contain valid events", function() {
-            timelion.data.forEach(function(event){
-                expect(event.date.length).toEqual(3);
-                expect(typeof event.date[0]).toEqual('number');
-                expect(typeof event.date[1]).toEqual('number');
-                expect(typeof event.date[2]).toEqual('number');
-                expect(typeof event.offset).toEqual('number');
-                expect(typeof event.width).toEqual('number');
+            timelion.data.forEach(function( event ){
+                var
+                    btrip = timelion.e.get_beg_triplet( event ),
+                    etrip = timelion.e.get_end_triplet( event ),
+                    _;
+                expect(btrip.length).toEqual(3);
+                expect(etrip.length).toEqual(3);
+
+                expect(btrip[0].isNumber()).toBe(true);
+                expect(btrip[1].isNumber()).toBe(true);
+                expect(btrip[2].isNumber()).toBe(true);
+                expect(etrip[0].isNumber()).toBe(true);
+                expect(etrip[1].isNumber()).toBe(true);
+                expect(etrip[2].isNumber()).toBe(true);
+
+                expect(event.offset.isNumber()).toBe(true);
+                expect(event.width.isNumber()).toBe(true);
                 expect(typeof event.title).toEqual('string');
             });
         });
