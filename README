@@ -2,12 +2,30 @@ README
 
 This is my timeline, timelion.
 
-The UI so far is based on Lim Chee Aun's `life`
-https://github.com/cheeaun/life chosen for its simplicity.
+Credits:
 
-Start a webserver with something like: `python -m http.server 8000`
+	The UI so far is based on Lim Chee Aun's `life`
+	https://github.com/cheeaun/life chosen for its simplicity.
 
-	timelion/timelion$ python -m http.server 8000
+	Boilerplate code with MIT license from https://html5boilerplate.com/
+
+	Promise polyfill with MIT license from https://github.com/stefanpenner/es6-promise
+
+	Modernizr with MIT & BSD licenses from https://modernizr.com/
+
+	normalize.css with MIT license from github.com/necolas/normalize.css
+
+	Tests courtesy of Jasmine with MIT license from http://jasmine.github.io/
+
+Start a web-server with something like:
+
+	timelion$ python -m http.server 8000
 	Serving HTTP on 0.0.0.0 port 8000 ...
 
-Boilerplate code from https://html5boilerplate.com/
+Run tests:
+
+	http://localhost:8000/tests/SpecRunner.html
+
+Run app:
+
+	http://localhost:8000/app/index.html

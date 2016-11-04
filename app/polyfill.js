@@ -21,9 +21,8 @@
     }
 }());
 
+// http://stackoverflow.com/questions/14104881/add-remove-class-to-a-dom-element-using-only-javascript-and-best-of-these-2-way#answer-14105170
 (function() {
-    // http://stackoverflow.com/questions/14104881/add-remove-class-to-a-dom-element-using-only-javascript-and-best-of-these-2-way#answer-14105170
-
     Element.prototype.hasClassName = function(name) {
         return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
     };
