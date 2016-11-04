@@ -6,10 +6,14 @@
 })(this, function(){
     "use strict"
 
-    function load_years (){
+    function _load_years (){
         var
+            _e = timelion.e,
+            _data = timelion.data,
             _day_width = timelion.config.year_width/12/30,
-            _years = timelion.data.map(function(d){return d.date[0]}),
+            _byears = _data.map(function(d){return _e.get_beg_triplet(d)[0]}),
+            _eyears = _data.map(function(d){return _e.get_end_triplet(d)[0]}),
+            _years = _byears.concat(_eyears),
             _;
 
         timelion.years_hash = {};
@@ -32,18 +36,18 @@
         }
     }
 
-    function load_event ( d ){
+    function _load_event ( d ){
         var firstYear = timelion.first_year;
         var yearLength = timelion.config.year_width;
         var monthLength = yearLength/12;
         var dayLength = monthLength/30;
 
-        var startYear = d.date[0];
-        var startMonth = d.date[1];
-        var startDate = d.date[2];
-        var endYear = undefined;
-        var endMonth = undefined;
-        var endDate = undefined;
+        var startYear  = timelion.e.get_beg_triplet(d)[0];
+        var startMonth = timelion.e.get_beg_triplet(d)[1];
+        var startDate  = timelion.e.get_beg_triplet(d)[2];
+        var endYear    = timelion.e.get_end_triplet(d)[0];
+        var endMonth   = timelion.e.get_end_triplet(d)[1];
+        var endDate    = timelion.e.get_end_triplet(d)[2];
         var width = 0;
 
         // Calculate offset
@@ -72,23 +76,31 @@
         d.width = width;
     }
 
-    function load_events (){
+    function _load_events (){
         timelion.data.forEach(function(d){
-            load_event( d )
+            _load_event( d )
         })
     }
 
-    function load_dom (){
+    function _load_dom (){
         timelion.$canvas = document.getElementById('timelion');
         timelion.$canvas.innerHTML = '';
     }
 
-    function load ( data ){
+    function _load ( data ){
         timelion.data = data.data;
-        load_years()
-        load_events()
-        load_dom()
+        _load_years()
+        _load_events()
+        _load_dom()
         timelion.loaded = true
+    }
+
+    function _get_date_triplet ( date, month_default, day_default ){
+        return [
+            date[0],
+            date.length > 1 ? date[1] : month_default,
+            date.length > 2 ? date[2] : day_default
+        ]
     }
 
     return {
@@ -102,6 +114,18 @@
         config: {
             year_width: 120, // pixels
             show_age: true   // show age on year axis
+        },
+
+        e: {
+            get_beg_triplet: function( event ){
+                return _get_date_triplet( event.date[0], 1, 1 )
+            },
+            get_end_triplet: function( event ){
+                if ( event.date.length === 1 )
+                    return _get_date_triplet( event.date[0], 12, 30 );
+                if ( event.date.length > 1 )
+                    return _get_date_triplet( event.date[1], 12, 30 )
+            }
         },
 
         init: function(){
@@ -132,7 +156,7 @@
                             reject('File is not JSON ('+xhr.responseText+')');
                         }
                         if ('data' in data){
-                            resolve(load( data ))
+                            resolve(_load( data ))
                         }
                         else
                             reject('File contains no "data" ('+xhr.status+')')
