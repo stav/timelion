@@ -27,7 +27,6 @@ describe("timelion", function() {
     it("should not be loaded", function() {
         timelion.init();
         expect(timelion.loaded).toBe(false);
-        // expect(timelion.html).toEqual('');
     });
 
     describe("data", function() {

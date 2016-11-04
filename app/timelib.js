@@ -87,12 +87,33 @@
         timelion.$canvas.innerHTML = '';
     }
 
+    function _get_search (){
+        var url = 'https://en.wikipedia.org/w/api.php?format=json&action=opensearch&search=William_Luther_Pierce';
+
+        return new Promise(function( resolve, reject ) {
+            resolve()
+        })
+    }
+
+    function _load_search ( response ){
+        console.log(response)
+    }
+
     function _load ( data ){
-        timelion.data = data.data;
-        _load_years()
-        _load_events()
-        _load_dom()
-        timelion.loaded = true
+        return new Promise(function( resolve, reject ) {
+            timelion.data = data.data;
+
+            _get_search()
+            .then(function( response ){
+                _load_search( response )
+                _load_years()
+                _load_events()
+                _load_dom()
+                timelion.loaded = true
+                resolve()
+            })
+            .catch(function(error) { reject(error) })
+        })
     }
 
     function _get_date_triplet ( date_tuple, month_default, day_default ){
@@ -156,7 +177,9 @@
                             reject('File is not JSON ('+xhr.responseText+')');
                         }
                         if ('data' in data){
-                            resolve(_load( data ))
+                            _load( data )
+                            .then(function(){ resolve() })
+                            .catch(function(error) { reject(error) })
                         }
                         else
                             reject('File contains no "data" ('+ xhr.status +')')
