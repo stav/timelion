@@ -4,6 +4,18 @@ describe("timelion", function() {
         timelion_data_filename = '../app/example.json',
         _;
 
+    function load( done ) {
+        timelion.load( timelion_data_filename )
+        .then(function(response){ done() })
+        .catch(function(error) { console.log(error); done() })
+    }
+
+    function render( done ) {
+        timelion.render()
+        .then(function(response) { done() })
+        .catch(function(error) { console.log(error); done() })
+    }
+
     it("should be an object", function() {
         expect(typeof timelion).toEqual('object');
     });
@@ -20,13 +32,9 @@ describe("timelion", function() {
 
     describe("data", function() {
 
-        beforeAll(function(done) {
-            timelion.reset();
-            setTimeout(function() {
-                timelion.load( timelion_data_filename )
-                .then(function(response) { done() })
-                .catch(function(error) { console.log(error); done() })
-            }, 1);
+        beforeAll(function( done ) {
+            timelion.reset()
+            setTimeout(function(){ load( done ) }, 1)
         });
 
         it("should be loaded", function() {
@@ -68,13 +76,7 @@ describe("timelion", function() {
 
             beforeAll(function(done) {
                 timelion.reset();
-                setTimeout(function() {
-                    timelion.render().then(function(response) {
-                      done();
-                    }, function(error) {
-                      done();
-                    })
-                }, 1);
+                setTimeout(render( done ), 1);
             });
 
             it("should not be rendered", function() {
@@ -88,13 +90,7 @@ describe("timelion", function() {
                 timelion.reset();
                 setTimeout(function() {
                     timelion.load( timelion_data_filename )
-                    .then(function(response) {
-                        timelion.render().then(function(response) {
-                          done();
-                        }, function(error) {
-                          done();
-                        })
-                    });
+                    .then(function(response) { render( done ) });
                 }, 1);
             });
 
