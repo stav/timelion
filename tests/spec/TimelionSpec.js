@@ -24,8 +24,8 @@ describe("timelion", function() {
         expect(typeof timelion.config.show_age).toEqual('boolean');
         expect(timelion.config.year_width).toBeGreaterThan(0);
     });
-    timelion.init();
     it("should not be loaded", function() {
+        timelion.init();
         expect(timelion.loaded).toBe(false);
         // expect(timelion.html).toEqual('');
     });
@@ -96,6 +96,7 @@ describe("timelion", function() {
             it("should have some children", function() {
                 expect(timelion.$canvas.children.length).toBeGreaterThan(0);
             });
+
         });
 
     });
@@ -117,6 +118,7 @@ describe("timelion", function() {
             it("should not be rendered", function() {
                 expect(timelion.rendered).toBe(false);
             });
+
         });
 
         describe("loaded", function() {
@@ -132,8 +134,14 @@ describe("timelion", function() {
             it("should be rendered", function() {
                 expect(timelion.rendered).toBe(true);
             });
+
         });
 
+    });
+
+    afterAll(function(done) {
+        timelion.reset();
+        done();
     });
 
 });

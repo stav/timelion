@@ -109,6 +109,7 @@
         },
 
         reset: function(){
+            document.getElementById('timelion').innerHTML = '';
             timelion.$canvas = null;
             timelion.data = null;
             timelion.loaded = false;
