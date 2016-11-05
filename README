@@ -29,3 +29,10 @@ Run tests:
 Run app:
 
 	http://localhost:8000/app/index.html
+
+Note:
+
+	Search is only available currently without browser security enabled,
+	no CORS support, start browser like:
+
+		chromium-browser --disable-web-security --user-data-dir &

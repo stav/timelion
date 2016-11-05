@@ -87,33 +87,44 @@
         timelion.$canvas.innerHTML = '';
     }
 
-    function _get_search (){
-        var url = 'https://en.wikipedia.org/w/api.php?format=json&action=opensearch&search=William_Luther_Pierce';
+    function _get_search ( event ){
+        if ( 'search' in event ){
+            var url = 'https://en.wikipedia.org/w/api.php?format=json&action=opensearch&search='+ event.search;
 
-        return new Promise(function( resolve, reject ) {
-            resolve()
-        })
+            return new Promise(function( resolve, reject ) {
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);
+                xhr.onload = function(){
+                    var data;
+                    if (xhr.status == 200){
+                        try{
+                            data = JSON.parse( xhr.responseText );
+                            event.title = data[1][0];
+                            console.log(event, data)
+                            resolve( data )
+                        }
+                        catch (error){
+                            reject('File is not JSON ('+ xhr.responseText +') '+ error);
+                        }
+                    }
+                    else
+                        reject('Could not load ('+ url +') status ('+ xhr.status +')')
+                };
+                xhr.send();
+            })
+        }
     }
 
-    function _load_search ( response ){
-        console.log(response)
-    }
-
-    function _load ( data ){
-        return new Promise(function( resolve, reject ) {
-            timelion.data = data.data;
-
-            _get_search()
-            .then(function( response ){
-                _load_search( response )
+    function _load ( data ) {
+        var promises = data.data.map(function(e){return _get_search(e)});
+        return Promise.all( promises )
+            .then(function(){
+                timelion.data = data.data;
                 _load_years()
                 _load_events()
                 _load_dom()
                 timelion.loaded = true
-                resolve()
             })
-            .catch(function(error) { reject(error) })
-        })
     }
 
     function _get_date_triplet ( date_tuple, month_default, day_default ){
@@ -177,9 +188,7 @@
                             reject('File is not JSON ('+xhr.responseText+')');
                         }
                         if ('data' in data){
-                            _load( data )
-                            .then(function(){ resolve() })
-                            .catch(function(error) { reject(error) })
+                            resolve(_load( data ))
                         }
                         else
                             reject('File contains no "data" ('+ xhr.status +')')
@@ -188,7 +197,7 @@
                         reject('Could not load ('+ filename +') status ('+ xhr.status +')')
                 };
                 xhr.send();
-            });
+            })
         },
 
         render: function( filename ){
