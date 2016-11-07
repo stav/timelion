@@ -127,7 +127,6 @@
         var
             name = data[1][0],
             info = data[2][0],
-            re, matches, b, date_born, d, date_died,
             _;
 
         if ( name ) event.title = name;
@@ -196,7 +195,7 @@
         first_year: undefined,
 
         config: {
-            year_width: 50, // pixels
+            year_width: 10, // pixels
             show_age: false   // show age on year axis
         },
 
