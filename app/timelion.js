@@ -16,6 +16,7 @@
 
     function init () {
         console.log('init');
+        timelion.init();
 
         timelion.load('example.json').then(function(response){
             console.log('load');

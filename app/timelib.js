@@ -26,7 +26,7 @@
             year <= timelion.last_year + 1;
             year++, age++
         ){
-            var days = (year % 4 == 0) ? 366 : 365; // leap years
+            var days = (year % 4 == 0) ? 366 : 365; // rudimentary leap years
             timelion.years_list.push( year );
             timelion.years_hash[year] = {
                 age: age,
@@ -121,7 +121,7 @@
             re, matches, b, date_born, d, date_died,
             _;
 
-        event.title = name;
+        if ( name ) event.title = name;
 
         // ["(September 11, 1933 – July 23, 2002)", "September 11, 1933 ", " July 23, 2002"]
         re = new RegExp("\\(([^)]+)(?:–|-)([^)]+)\\)");
@@ -152,7 +152,6 @@
 
     function _fake_search ( event ){
         if ( 'search' in event ){
-
             // const json = '['
             //     +'"William_Luther_Pierce",'
             //     +'["William Luther Pierce"],'
@@ -165,10 +164,15 @@
     }
 
     function _load ( data ) {
-        var promises = data.data.map(function(e){return _get_search(e)});
+        // Remove all events that don't have either a date or a search
+        timelion.data = data.data.filter(function(e){return e.date || e.search});
+
+        // Request all searches up front, needs to be improved with dynamic loading
+        var promises = timelion.data.map(function(e){return _get_search(e)});
         return Promise.all( promises )
             .then(function(){
-                timelion.data = data.data;
+                // Remove any events that did not resolve dates
+                timelion.data = timelion.data.filter(function(e){return e.date && e.date.length > 0});
                 _load_years()
                 _load_events()
                 _load_dom()
@@ -291,8 +295,9 @@
                     time.addClassName('time');
                     time.style = 'width:' + d.width.toFixed(2) + 'px';
 
-                    event.addClassName('event');
+                    event.title = d.title;
                     event.style = 'margin-left:' + d.offset.toFixed(2) + 'px';
+                    event.addClassName('event');
                     event.appendChild( time )
                     event.appendChild( data )
                     event.appendChild( text )
