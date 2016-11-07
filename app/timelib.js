@@ -37,17 +37,22 @@
     }
 
     function _load_event ( d ){
+        var
+            _beg_date = timelion.e.get_beg_triplet(d),
+            _end_date = timelion.e.get_end_triplet(d),
+            _;
+
         var firstYear = timelion.first_year;
         var yearLength = timelion.config.year_width;
         var monthLength = yearLength/12;
         var dayLength = monthLength/30;
 
-        var startYear  = timelion.e.get_beg_triplet(d)[0];
-        var startMonth = timelion.e.get_beg_triplet(d)[1];
-        var startDay   = timelion.e.get_beg_triplet(d)[2];
-        var endYear    = timelion.e.get_end_triplet(d)[0];
-        var endMonth   = timelion.e.get_end_triplet(d)[1];
-        var endDay    = timelion.e.get_end_triplet(d)[2];
+        var startYear  = _beg_date[0];
+        var startMonth = _beg_date[1];
+        var startDay   = _beg_date[2];
+        var endYear    = _end_date[0];
+        var endMonth   = _end_date[1];
+        var endDay     = _end_date[2];
         var width = 0;
 
         // Calculate offset
@@ -123,6 +128,11 @@
 
         if ( name ) event.title = name;
 
+        if ( info === undefined ) {
+            console.log('No info found for event:', event, data)
+            return
+        }
+
         // ["(September 11, 1933 – July 23, 2002)", "September 11, 1933 ", " July 23, 2002"]
         re = new RegExp("\\(([^)]+)(?:–|-)([^)]+)\\)");
         matches = re.exec( info );
@@ -130,7 +140,15 @@
             date_born = matches[1];
             date_died = matches[2];
             b = new Date( date_born );
+            if ( !b.isValid() ) {
+                console.log(b +': "'+ date_born +'" - '+ info)
+                return
+            }
             d = new Date( date_died );
+            if ( !d.isValid() ) {
+                console.log(d +': "'+ date_died +'" - '+ info)
+                return
+            }
             event.date = [
                 [b.getFullYear(), b.getMonth()+1, b.getDate()],
                 [d.getFullYear(), d.getMonth()+1, d.getDate()]];
@@ -138,16 +156,22 @@
         }
 
         // "David Vaughan Icke (/aɪk/, born 29 April 1952) is an English writer and public speaker. A former footballer and sports broadcaster, Icke has made his name since the 1990s as a professional conspiracy theorist, calling himself a "full time investigator into who and what is really controlling the world." He is the author of over 20 books and numerous DVDs, and has lectured in over 25 countries, speaking for up to 10 hours to audiences that cut across the political spectrum."
-        re = new RegExp("\\([^)]*born([^)]+)\\)");
+        re = new RegExp("\\([^)]*born([^)]+?)(?:\\s+in\\s+[^)]+)?\\)");
         matches = re.exec( info );
         if ( matches ){
             date_born = matches[1];
             b = new Date( date_born );
+            if ( !b.isValid() ) {
+                console.log(b +': "'+ date_born +'" - '+ info)
+                return
+            }
             event.date = [
                 [b.getFullYear(), b.getMonth()+1, b.getDate()],
                 [2016]];
             return
         }
+
+        console.log('Dates could not be parsed from "'+ info +'" for event:', event, data)
     }
 
     function _fake_search ( event ){
@@ -181,11 +205,14 @@
     }
 
     function _get_date_triplet ( date_tuple, month_default, day_default ){
-        return [
-            date_tuple[0],
-            date_tuple.length > 1 ? date_tuple[1] : month_default,
-            date_tuple.length > 2 ? date_tuple[2] : day_default
-        ]
+        if ( date_tuple && date_tuple[0].isNumber() )
+            return [
+                date_tuple[0],
+                date_tuple.length > 1 ? date_tuple[1] : month_default,
+                date_tuple.length > 2 ? date_tuple[2] : day_default
+            ];
+        else
+            return [ timelion.first_year ];
     }
 
     return {

@@ -55,3 +55,10 @@
         )
       }
 }());
+
+// Dates
+(function() {
+      Date.prototype.isValid = function() {
+        return this.toString() != 'Invalid Date'
+      }
+}());
