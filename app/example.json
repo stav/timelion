@@ -5,6 +5,8 @@
     {"date": [[2016,2,3]], "title": "3 Feb 2016"},
     {"date": [[2016], [2017]], "title": "2016 & 2017"},
     {"date": [[2016], [2018]], "title": "2016 - 2018"},
+    {"date": [[2016]], "search": "PPRROOBBAABBLLYY NNOOTT FFOOUUNNDD", "title": "has default dates"},
+    {"search": "PPRROOBBAABBLLYY NNOOTT FFOOUUNNDD", "title": "should not be displayed"},
     {"search": "William Luther Pierce"},
     {"search": "Walter Russell"},
     {"search": "Donald J Trump"},
@@ -13,8 +15,6 @@
     {"search": "Joseph McCarthy"},
     {"search": "General Charles Lindbergh"},
     {"search": "Carl Lundström"},
-    {"date": [[2016]], "search": "PPRROOBBAABBLLYY NNOOTT FFOOUUNNDD", "title": "has default dates"},
-    {"search": "PPRROOBBAABBLLYY NNOOTT FFOOUUNNDD", "title": "should not be displayed"},
     {}
   ]
 }
