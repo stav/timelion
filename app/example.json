@@ -5,6 +5,7 @@
     {"date": [[2016,2,3]], "title": "3 Feb 2016"},
     {"date": [[2016], [2017]], "title": "2016 & 2017"},
     {"date": [[2016], [2018]], "title": "2016 - 2018"},
-    {"date": [[1993, 9, 11], [2002, 7, 23]], "search": "William_Luther_Pierce"}
+    {"date": [[1993, 9, 11], [2002, 7, 23]], "search": "William Luther Pierce"},
+    {"date": [[1993, 9, 11], [2002, 7, 23]], "search": "David Icke"}
   ]
 }

@@ -36,3 +36,16 @@ Note:
 	no CORS support, start browser like:
 
 		chromium-browser --disable-web-security --user-data-dir &
+
+	Months in data
+
+		one-based [1,2,3,4,5,6,7,8,9,10,11,12]
+
+			1 is January
+			2 is February
+			3 is March...
+			12 is December
+
+		cannot be prefixed by a leading zero
+
+			January is "1" not "01"

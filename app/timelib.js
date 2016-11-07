@@ -99,8 +99,7 @@
                     if (xhr.status == 200){
                         try{
                             data = JSON.parse( xhr.responseText );
-                            event.title = data[1][0];
-                            console.log(event, data)
+                            _extend_event( event, data )
                             resolve( data )
                         }
                         catch (error){
@@ -112,6 +111,56 @@
                 };
                 xhr.send();
             })
+        }
+    }
+
+    function _extend_event ( event, data ){
+        var
+            name = data[1][0],
+            info = data[2][0],
+            re, matches, b, date_born, d, date_died,
+            _;
+
+        event.title = name;
+
+        // ["(September 11, 1933 – July 23, 2002)", "September 11, 1933 ", " July 23, 2002"]
+        re = new RegExp("\\(([^)]+)(?:–|-)([^)]+)\\)");
+        matches = re.exec( info );
+        if ( matches ){
+            date_born = matches[1];
+            date_died = matches[2];
+            b = new Date( date_born );
+            d = new Date( date_died );
+            event.date = [
+                [b.getFullYear(), b.getMonth()+1, b.getDate()],
+                [d.getFullYear(), d.getMonth()+1, d.getDate()]];
+            return
+        }
+
+        // "David Vaughan Icke (/aɪk/, born 29 April 1952) is an English writer and public speaker. A former footballer and sports broadcaster, Icke has made his name since the 1990s as a professional conspiracy theorist, calling himself a "full time investigator into who and what is really controlling the world." He is the author of over 20 books and numerous DVDs, and has lectured in over 25 countries, speaking for up to 10 hours to audiences that cut across the political spectrum."
+        re = new RegExp("\\([^)]*born([^)]+)\\)");
+        matches = re.exec( info );
+        if ( matches ){
+            date_born = matches[1];
+            b = new Date( date_born );
+            event.date = [
+                [b.getFullYear(), b.getMonth()+1, b.getDate()],
+                [2016]];
+            return
+        }
+    }
+
+    function _fake_search ( event ){
+        if ( 'search' in event ){
+
+            // const json = '['
+            //     +'"William_Luther_Pierce",'
+            //     +'["William Luther Pierce"],'
+            //     +'["William Luther Pierce III (September 11, 1933 – July 23, 2002) was an American white nationalist and political activist."],'
+            //     +'["https://en.wikipedia.org/wiki/William_Luther_Pierce"]]';
+            const json = '["David Icke",["David Icke","David Icke, the Lizards and the Jews","David McKellar","David McKenzie (footballer)","Dave Dickenson","David McKey","David Hickernell","David Vickers","David McKee","David McKenzie (economist)"],["David Vaughan Icke (/aɪk/, born 29 April 1952) is an English writer and public speaker. A former footballer and sports broadcaster, Icke has made his name since the 1990s as a professional conspiracy theorist, calling himself a \\"full time investigator into who and what is really controlling the world.\\" He is the author of over 20 books and numerous DVDs, and has lectured in over 25 countries, speaking for up to 10 hours to audiences that cut across the political spectrum.","","David McKellar is a retired Scottish football goalkeeper and manager, best remembered for his time in the Football League with Carlisle United, making over 160 appearances for the club over two spells.","David McKenzie (born 1 September 1942) is a former Australian rules footballer who played with Fitzroy in the Victorian Football League (VFL).","David Dickenson (born January 11, 1973) is a Canadian football head coach with the Calgary Stampeders and former professional Canadian football player with the Stampeders and the BC Lions.","David McKey (born December 3, 1954) coached women`s basketball at St. Edward`s University (1984–1994) and Lamar University (1995-1998).","David S. \\"Dave\\" Hickernell (born January 2, 1959) is a Republican member of the Pennsylvania House of Representatives for the 98th District and was elected in 2002. He currently sits on the House Agriculture and Rural Affairs, Local Government, and Transportation Committees.","David Vickers is a fictional character from the American soap opera One Life to Live portrayed by Tuc Watkins.","David McKee (born 2 January 1935) is a British writer and illustrator, chiefly of children`s books and animations.","David McKenzie is a lead economist at the World Bank`s Development Research Group, Finance and Private Sector Development Unit in Washington, D.C.."],["https://en.wikipedia.org/wiki/David_Icke","https://en.wikipedia.org/wiki/David_Icke,_the_Lizards_and_the_Jews","https://en.wikipedia.org/wiki/David_McKellar","https://en.wikipedia.org/wiki/David_McKenzie_(footballer)","https://en.wikipedia.org/wiki/Dave_Dickenson","https://en.wikipedia.org/wiki/David_McKey","https://en.wikipedia.org/wiki/David_Hickernell","https://en.wikipedia.org/wiki/David_Vickers","https://en.wikipedia.org/wiki/David_McKee","https://en.wikipedia.org/wiki/David_McKenzie_(economist)"]]'
+            const data = JSON.parse(json);
+            _extend_event( event, data )
         }
     }
 
@@ -144,8 +193,8 @@
         first_year: undefined,
 
         config: {
-            year_width: 120, // pixels
-            show_age: true   // show age on year axis
+            year_width: 50, // pixels
+            show_age: false   // show age on year axis
         },
 
         e: {
