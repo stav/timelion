@@ -177,15 +177,28 @@
             })
     }
 
-    function _get_date_triplet ( date_tuple, month_default, day_default ){
-        if ( date_tuple && date_tuple[0].isNumber() )
-            return [
-                date_tuple[0],
-                date_tuple.length > 1 ? date_tuple[1] : month_default,
-                date_tuple.length > 2 ? date_tuple[2] : day_default
-            ];
-        else
-            return [ timelion.first_year ];
+    function _get_date_triplet ( date_input, month_default, day_default ){
+        if ( date_input && date_input.isArray() && date_input.length > 0 ) {
+            if ( date_input.length === 1 && date_input[0].isString() ){
+               var date = new Date( date_input );
+               if ( date.isValid() )
+                   return [
+                       date.getFullYear(),
+                       date.getMonth() + 1,
+                       date.getDate()
+                   ]
+            }
+            else if ( date_input[0].isNumber() ){
+                return [
+                    date_input[0],
+                    date_input.length > 1 ? date_input[1] : month_default,
+                    date_input.length > 2 ? date_input[2] : day_default
+                ]
+            }
+        }
+        console.log('Date input invalid: ', date_input.type(), date_input)
+
+        return [ timelion.first_year ];
     }
 
     return {
@@ -203,6 +216,7 @@
 
         e: {
             get_beg_triplet: function( event ){
+                console.log(_get_date_triplet( event.date[0], 1, 1 ))
                 return _get_date_triplet( event.date[0], 1, 1 )
             },
             get_end_triplet: function( event ){

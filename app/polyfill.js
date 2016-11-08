@@ -42,11 +42,19 @@
 
 // http://www.ecma-international.org/ecma-262/5.1/#sec-8.6.2
 (function() {
+      Object.prototype.type = function() {
+        var type = Object.prototype.toString.call(this);
+        matches = new RegExp("\\[object (\\w+)\\]").exec(type);
+        return matches && matches.length === 2 ? matches[1] : 'Unknown'
+      }
       Object.prototype.isObject = function() {
         return Object.prototype.toString.call(this) === '[object Object]'
       }
       Object.prototype.isArray = function() {
         return Object.prototype.toString.call(this) === '[object Array]'
+      }
+      Object.prototype.isString = function() {
+        return Object.prototype.toString.call(this) === '[object String]'
       }
       Object.prototype.isNumber = function() {
         return (
