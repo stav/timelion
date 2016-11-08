@@ -13,10 +13,10 @@
     function _load_years (){
         var
             _e = timelion.e,
-            _data = timelion.data,
+            _events = timelion.events,
             _day_width = timelion.config.year_width/12/30,
-            _byears = _data.map(function(e){return _e.get_beg_triplet(e)[0]}),
-            _eyears = _data.map(function(e){return _e.get_end_triplet(e)[0]}),
+            _byears = _events.map(function(e){return _e.get_beg_triplet(e)[0]}),
+            _eyears = _events.map(function(e){return _e.get_end_triplet(e)[0]}),
             _years = _byears.concat(_eyears),
             _;
 
@@ -40,10 +40,10 @@
         }
     }
 
-    function _load_event ( d ){
+    function _load_event ( event ){
         var
-            _beg_date = timelion.e.get_beg_triplet(d),
-            _end_date = timelion.e.get_end_triplet(d),
+            _beg_date = timelion.e.get_beg_triplet(event),
+            _end_date = timelion.e.get_end_triplet(event),
             _;
 
         var firstYear = timelion.first_year;
@@ -63,7 +63,7 @@
         var startTime = new Date(firstYear, 0, 1);
         var endTime = new Date(startYear, startMonth ? startMonth-1 : 0, startDay || 1);
         var daysDiff = (endTime - startTime)/(24*60*60*1000);
-        d.offset = daysDiff*dayLength;
+        event.offset = daysDiff*dayLength;
 
         // Calculate width
         if (endYear){
@@ -82,11 +82,11 @@
                 width = yearLength;
             }
         }
-        d.width = width;
+        event.width = width;
     }
 
     function _load_events (){
-        timelion.data.forEach(function( e ){
+        timelion.events.forEach(function( e ){
             _load_event( e )
         })
     }
@@ -108,6 +108,7 @@
                     if (xhr.status == 200){
                         try{
                             data = JSON.parse( xhr.responseText );
+                            console.log(xhr)
                             _extend_event( event, data )
                             resolve( data )
                         }
@@ -161,14 +162,14 @@
 
     function _load ( data ) {
         // Remove all events that don't have either a date or a search
-        timelion.data = data.data.filter(function(e){return e.date || e.search});
+        timelion.events = data.events.filter(function(e){return e.date || e.search});
 
         // Request all searches up front, needs to be improved with dynamic loading
-        var promises = timelion.data.map(function(e){return _get_search(e)});
+        var promises = timelion.events.map(function(e){return _get_search(e)});
         return Promise.all( promises )
             .then(function(){
                 // Remove any events that did not resolve dates
-                timelion.data = timelion.data.filter(function(e){return e.date && e.date.length > 0});
+                timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
                 _load_years()
                 _load_events()
                 _load_dom()
@@ -189,7 +190,7 @@
 
     return {
 
-        data: undefined,
+        events: undefined,
         loaded: undefined,
         rendered: undefined,
         last_year: undefined,
@@ -219,7 +220,7 @@
         reset: function(){
             document.getElementById('timelion').innerHTML = '';
             timelion.$canvas = null;
-            timelion.data = null;
+            timelion.events = null;
             timelion.loaded = false;
             timelion.rendered = false;
             timelion.last_year = 0;
@@ -239,11 +240,11 @@
                         catch (e){
                             reject('File is not JSON ('+xhr.responseText+')');
                         }
-                        if ('data' in data){
+                        if ('events' in data){
                             resolve(_load( data ))
                         }
                         else
-                            reject('File contains no "data" ('+ xhr.status +')')
+                            reject('File contains no "events" ('+ xhr.status +')')
                     }
                     else
                         reject('Could not load ('+ filename +') status ('+ xhr.status +')')
@@ -281,27 +282,27 @@
                 })
                 events.appendChild( years )
 
-                timelion.data.forEach(function(d){
+                timelion.events.forEach(function(event){
                     var
-                        event = document.createElement('div'),
+                        event_container = document.createElement('div'),
                         time = document.createElement('div'),
                         data = document.createElement('b'),
-                        text = document.createTextNode( d.title ),
+                        text = document.createTextNode( event.title ),
                         _;
 
-                    data.innerHTML = d.date;
+                    data.innerHTML = event.date;
 
                     time.addClassName('time');
-                    time.style = 'width:' + d.width.toFixed(2) + 'px';
+                    time.style = 'width:' + event.width.toFixed(2) + 'px';
 
-                    event.title = d.title;
-                    event.style = 'margin-left:' + d.offset.toFixed(2) + 'px';
-                    event.addClassName('event');
-                    event.appendChild( time )
-                    event.appendChild( data )
-                    event.appendChild( text )
+                    event_container.title = event.title;
+                    event_container.style = 'margin-left:' + event.offset.toFixed(2) + 'px';
+                    event_container.addClassName('event');
+                    event_container.appendChild( time )
+                    event_container.appendChild( data )
+                    event_container.appendChild( text )
 
-                    events.appendChild( event )
+                    events.appendChild( event_container )
                 });
 
                 timelion.$canvas.appendChild( events )

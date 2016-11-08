@@ -40,11 +40,11 @@ describe("timelion", function() {
             expect(timelion.loaded).toBe(true);
         });
         it("should contain at least one record", function() {
-            expect(timelion.data.isArray()).toBe(true);
-            expect(timelion.data.length).toBeGreaterThan(0);
+            expect(timelion.events.isArray()).toBe(true);
+            expect(timelion.events.length).toBeGreaterThan(0);
         });
         it("should contain valid events", function() {
-            timelion.data.forEach(function( event ){
+            timelion.events.forEach(function( event ){
                 var
                     btrip = timelion.e.get_beg_triplet( event ),
                     etrip = timelion.e.get_end_triplet( event ),
