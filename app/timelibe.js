@@ -160,20 +160,24 @@
         }
     }
 
+    function _setup_canvas () {
+        _load_years()
+        _load_events()
+        _load_dom()
+        timelion.loaded = true
+    }
+
     function _load ( data ) {
         // Remove all events that don't have either a date or a search
         timelion.events = data.events.filter(function(e){return e.date || e.search});
 
         // Request all searches up front, needs to be improved with dynamic loading
-        var promises = timelion.events.map(function(e){return _get_search(e)});
+        var promises = timelion.events.map(function(e){return _fake_search(e)});
         return Promise.all( promises )
             .then(function(){
                 // Remove any events that did not resolve dates
                 timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
-                _load_years()
-                _load_events()
-                _load_dom()
-                timelion.loaded = true
+                _setup_canvas()
             })
     }
 
@@ -210,7 +214,7 @@
         first_year: undefined,
 
         config: {
-            year_width: 10, // pixels
+            year_width: 100, // pixels
             show_age: false   // show age on year axis
         },
 
@@ -227,6 +231,24 @@
         },
 
         init: function(){
+            var body = document.getElementsByTagName('body')[0];
+            body.addEventListener('keypress', function (e) {
+                // console.log('keypress', e.key, e)
+                if ( e.key === "1" && timelion.config.year_width > 10 ){
+                    timelion.reset()
+                    timelion.config.year_width -= 10;
+                    _setup_canvas()
+                    timelion.render();
+                }
+                else
+                if ( e.key === "2" ){
+                    timelion.reset()
+                    timelion.config.year_width += 10;
+                    _setup_canvas()
+                    timelion.render();
+                }
+            }, false);
+
             timelion.events = null;
             timelion.reset()
         },
@@ -314,6 +336,20 @@
                     event_container.appendChild( time )
                     event_container.appendChild( data )
                     event_container.appendChild( text )
+
+                    if ( event.id )
+                        event_container.id = event.id;
+
+                    event_container.addEventListener("click", function(e) {
+                        this.style.backgroundColor = this.style.backgroundColor ? '' : 'black';
+                        console.log('click',
+                            e.target.offsetTop,
+                            e.target.offsetLeft,
+                            e.target.offsetWidth,
+                            e.target.offsetHeight,
+                            ''
+                        )
+                    });
 
                     events.appendChild( event_container )
                 });
