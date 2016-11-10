@@ -4,6 +4,7 @@
  * Requires:
  *
  * - timelyze: text parseing
+ * - httplibe: promise-based url resolution
  */
 (function( root, factory ){
     root.timelion = factory()
@@ -116,28 +117,19 @@
 
     function _get_search ( event ){
         if ( 'search' in event ){
-            var url = 'https://en.wikipedia.org/w/api.php?format=json&action=opensearch&search='+ event.search;
-
+            var url = 'https://en.wikipedia.org/w/api.php'
+                +'?format=json'
+                +'&action=opensearch'
+                +'&search='+ event.search;
             return new Promise(function( resolve, reject ) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', url, true);
-                xhr.onload = function(){
-                    var data;
-                    if (xhr.status == 200){
-                        try{
-                            data = JSON.parse( xhr.responseText );
-                            console.log(xhr)
-                            _extend_event( event, data )
-                            resolve( data )
-                        }
-                        catch (error){
-                            reject('File is not JSON ('+ xhr.responseText +') '+ error);
-                        }
-                    }
-                    else
-                        reject('Could not load ('+ url +') status ('+ xhr.status +')')
-                };
-                xhr.send();
+                httplibe.get_json( url )
+                .then(function( data ){
+                    _extend_event( event, data )
+                    resolve()
+                },
+                function( error ){
+                    reject( error )
+                })
             })
         }
     }
@@ -189,17 +181,26 @@
         timelion.loaded = true
     }
 
+    /**
+     * Do the actual loading
+     *
+     * Note: this only resolves when all requests have been fulfilled.
+     *  A better way to do it would be to load the events as they come in.
+     */
     function _load ( data ) {
         // Remove all events that don't have either a date or a search
         timelion.events = data.events.filter(function(e){return e.date || e.search});
 
         // Request all searches up front, needs to be improved with dynamic loading
-        var promises = timelion.events.map(function(e){return _fake_search(e)});
+        var promises = timelion.events.map(function(e){return _get_search(e)});
         return Promise.all( promises )
             .then(function(){
                 // Remove any events that did not resolve dates
                 timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
                 _setup_canvas()
+            },
+            function(error){
+                console.log(error)
             })
     }
 
