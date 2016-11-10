@@ -306,27 +306,17 @@
 
         load: function( filename ){
             return new Promise(function( resolve, reject ) {
-                var xhr = new XMLHttpRequest();
-                xhr.open('GET', filename, true);
-                xhr.onload = function(){
-                    var data;
-                    if (xhr.status == 200){
-                        try{
-                            data = JSON.parse( xhr.responseText );
-                        }
-                        catch (e){
-                            reject('File is not JSON ('+xhr.responseText+')');
-                        }
-                        if ('events' in data){
-                            resolve(_load( data ))
-                        }
-                        else
-                            reject('File contains no "events" ('+ xhr.status +')')
+                httplibe.get_json( filename )
+                .then(function( data ){
+                    if ('events' in data){
+                        resolve(_load( data ))
                     }
                     else
-                        reject('Could not load ('+ filename +') status ('+ xhr.status +')')
-                };
-                xhr.send();
+                        reject('File contains no "events" ('+ xhr.status +')')
+                },
+                function( error ){
+                    reject( error )
+                })
             })
         },
 
