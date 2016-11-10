@@ -10,6 +10,7 @@
      * Request url and return the result
      */
     return {
+
         get_json: function ( url ){
             return new Promise(function( resolve, reject ) {
                 var xhr = new XMLHttpRequest();

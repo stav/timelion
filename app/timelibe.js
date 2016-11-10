@@ -11,6 +11,10 @@
 })(this, function(){
     "use strict"
 
+    const
+
+        ONLINE_SEARCH = true;  // false for offline devel
+
     /**
      * Load year-based data
      *
@@ -115,25 +119,40 @@
         })
     }
 
-    function _get_search ( event ){
+    /**
+     * Search Wikipedia for given search term
+     */
+    function _search ( event ){
         if ( 'search' in event ){
-            var url = 'https://en.wikipedia.org/w/api.php'
-                +'?format=json'
-                +'&action=opensearch'
-                +'&search='+ event.search;
-            return new Promise(function( resolve, reject ) {
-                httplibe.get_json( url )
-                .then(function( data ){
-                    _extend_event( event, data )
-                    resolve()
-                },
-                function( error ){
-                    reject( error )
+            // Search Wikipedia on the network
+            if ( ONLINE_SEARCH ){
+                var url = 'https://en.wikipedia.org/w/api.php'
+                    +'?format=json'
+                    +'&action=opensearch'
+                    +'&search='+ event.search;
+                return new Promise(function( resolve, reject ) {
+                    httplibe.get_json( url )
+                    .then(function( data ){
+                        _extend_event( event, data )
+                        resolve()
+                    },
+                    function( error ){
+                        reject( error )
+                    })
                 })
-            })
+            }
+            // Fake search results, network not accessed
+            else {
+                const json = '["William Luther Pierce",["William Luther Pierce"],["William Luther Pierce III (September 11, 1933 – July 23, 2002) was an American white nationalist and political activist."],["https://en.wikipedia.org/wiki/William_Luther_Pierce"]]'
+                const data = JSON.parse(json);
+                _extend_event( event, data )
+            }
         }
     }
 
+    /**
+     * Extend the event objecct with data found from search
+     */
     function _extend_event ( event, data ){
         var
             name = data[1][0],
@@ -154,20 +173,6 @@
         }
 
         event.date = from_to_dates_pair;
-    }
-
-    function _fake_search ( event ){
-        if ( 'search' in event ){
-            // const json = '['
-            //     +'"William_Luther_Pierce",'
-            //     +'["William Luther Pierce"],'
-            //     +'["William Luther Pierce III (September 11, 1933 – July 23, 2002) was an American white nationalist and political activist."],'
-            //     +'["https://en.wikipedia.org/wiki/William_Luther_Pierce"]]';
-            // const json = '["David Icke",["David Icke","David Icke, the Lizards and the Jews","David McKellar","David McKenzie (footballer)","Dave Dickenson","David McKey","David Hickernell","David Vickers","David McKee","David McKenzie (economist)"],["David Vaughan Icke (/aɪk/, born 29 April 1952) is an English writer and public speaker. A former footballer and sports broadcaster, Icke has made his name since the 1990s as a professional conspiracy theorist, calling himself a \\"full time investigator into who and what is really controlling the world.\\" He is the author of over 20 books and numerous DVDs, and has lectured in over 25 countries, speaking for up to 10 hours to audiences that cut across the political spectrum.","","David McKellar is a retired Scottish football goalkeeper and manager, best remembered for his time in the Football League with Carlisle United, making over 160 appearances for the club over two spells.","David McKenzie (born 1 September 1942) is a former Australian rules footballer who played with Fitzroy in the Victorian Football League (VFL).","David Dickenson (born January 11, 1973) is a Canadian football head coach with the Calgary Stampeders and former professional Canadian football player with the Stampeders and the BC Lions.","David McKey (born December 3, 1954) coached women`s basketball at St. Edward`s University (1984–1994) and Lamar University (1995-1998).","David S. \\"Dave\\" Hickernell (born January 2, 1959) is a Republican member of the Pennsylvania House of Representatives for the 98th District and was elected in 2002. He currently sits on the House Agriculture and Rural Affairs, Local Government, and Transportation Committees.","David Vickers is a fictional character from the American soap opera One Life to Live portrayed by Tuc Watkins.","David McKee (born 2 January 1935) is a British writer and illustrator, chiefly of children`s books and animations.","David McKenzie is a lead economist at the World Bank`s Development Research Group, Finance and Private Sector Development Unit in Washington, D.C.."],["https://en.wikipedia.org/wiki/David_Icke","https://en.wikipedia.org/wiki/David_Icke,_the_Lizards_and_the_Jews","https://en.wikipedia.org/wiki/David_McKellar","https://en.wikipedia.org/wiki/David_McKenzie_(footballer)","https://en.wikipedia.org/wiki/Dave_Dickenson","https://en.wikipedia.org/wiki/David_McKey","https://en.wikipedia.org/wiki/David_Hickernell","https://en.wikipedia.org/wiki/David_Vickers","https://en.wikipedia.org/wiki/David_McKee","https://en.wikipedia.org/wiki/David_McKenzie_(economist)"]]'
-            const json = '["William Luther Pierce",["William Luther Pierce"],["William Luther Pierce III (September 11, 1933 – July 23, 2002) was an American white nationalist and political activist."],["https://en.wikipedia.org/wiki/William_Luther_Pierce"]]'
-            const data = JSON.parse(json);
-            _extend_event( event, data )
-        }
     }
 
     /**
@@ -192,7 +197,7 @@
         timelion.events = data.events.filter(function(e){return e.date || e.search});
 
         // Request all searches up front, needs to be improved with dynamic loading
-        var promises = timelion.events.map(function(e){return _get_search(e)});
+        var promises = timelion.events.map(function(e){return _search(e)});
         return Promise.all( promises )
             .then(function(){
                 // Remove any events that did not resolve dates
@@ -204,6 +209,17 @@
             })
     }
 
+    /**
+     * return the data tuple
+     *
+     * Format:
+     *
+     *  [
+     *      Full Year e.g.: 1976,
+     *      Month 1-based (1-12) no leading zero e.g.: 1 (January),
+     *      Day of month 1-based (1-31) no leading zero e.g.: 9
+     *  ]
+     */
     function _get_date_triplet ( date_input, month_default, day_default ){
         if ( date_input && date_input.isArray() && date_input.length > 0 ) {
             if ( date_input.length === 1 && date_input[0].isString() ){
@@ -228,6 +244,9 @@
         return [ timelion.year_first ];
     }
 
+    /**
+     * Now begins the return object
+     */
     return {
 
         events: undefined,
