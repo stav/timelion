@@ -10,11 +10,21 @@
 })(this, function(){
     "use strict"
 
+    /**
+     * Load year-based data
+     *
+     * Updates self:
+     *
+     * - year_first
+     * - year_last
+     * - years_hash
+     * - years_list
+     */
     function _load_years (){
         var
             _e = timelion.e,
             _events = timelion.events,
-            _day_width = timelion.config.year_width/12/30,
+            _day_width = timelion.config.year_width/12/30,  // rough numbers
             _byears = _events.map(function(e){return _e.get_beg_triplet(e)[0]}),
             _eyears = _events.map(function(e){return _e.get_end_triplet(e)[0]}),
             _years = _byears.concat(_eyears),
@@ -22,12 +32,12 @@
 
         timelion.years_hash = {};
         timelion.years_list = [];
-        timelion.first_year = Math.min.apply(null, _years);
-        timelion.last_year = Math.max.apply(null, _years);
+        timelion.year_first = Math.min.apply(null, _years);
+        timelion.year_last = Math.max.apply(null, _years);
 
         for (
-            var year = timelion.first_year, age = 0;
-            year <= timelion.last_year + 1;
+            var year = timelion.year_first, age = 0;
+            year <= timelion.year_last + 1;
             year++, age++
         ){
             var days = (year % 4 == 0) ? 366 : 365; // rudimentary leap years
@@ -40,13 +50,21 @@
         }
     }
 
+    /**
+     * Load an event
+     *
+     * Mogrifies event argument:
+     *
+     * - offset
+     * - width
+     */
     function _load_event ( event ){
         var
             _beg_date = timelion.e.get_beg_triplet(event),
             _end_date = timelion.e.get_end_triplet(event),
             _;
 
-        var firstYear = timelion.first_year;
+        var firstYear = timelion.year_first;
         var yearLength = timelion.config.year_width;
         var monthLength = yearLength/12;
         var dayLength = monthLength/30;
@@ -85,15 +103,15 @@
         event.width = width;
     }
 
+    /**
+     * Load event data
+     *
+     * Spin thru all the input event data
+     */
     function _load_events (){
         timelion.events.forEach(function( event ){
             _load_event( event )
         })
-    }
-
-    function _load_dom (){
-        timelion.$canvas = document.getElementById('timelion');
-        timelion.$canvas.innerHTML = '';
     }
 
     function _get_search ( event ){
@@ -160,10 +178,14 @@
         }
     }
 
+    /**
+     * Setup display canvas
+     */
     function _setup_canvas () {
         _load_years()
         _load_events()
-        _load_dom()
+        timelion.$canvas = document.getElementById('timelion');
+        timelion.$canvas.innerHTML = '';
         timelion.loaded = true
     }
 
@@ -202,7 +224,7 @@
         }
         console.log('Date input invalid: ', date_input.type(), date_input)
 
-        return [ timelion.first_year ];
+        return [ timelion.year_first ];
     }
 
     return {
@@ -210,8 +232,8 @@
         events: undefined,
         loaded: undefined,
         rendered: undefined,
-        last_year: undefined,
-        first_year: undefined,
+        year_last: undefined,
+        year_first: undefined,
 
         config: {
             year_width: 100, // pixels
@@ -256,8 +278,8 @@
         reset: function(){
             document.getElementById('timelion').innerHTML = '';
             timelion.$canvas = null;
-            timelion.first_year = 0;
-            timelion.last_year = 0;
+            timelion.year_first = 0;
+            timelion.year_last = 0;
             timelion.loaded = false;
             timelion.rendered = false;
         },

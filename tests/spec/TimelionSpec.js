@@ -65,14 +65,14 @@ describe("timelion", function() {
             });
         });
         it("should have valid years", function() {
-            expect(typeof timelion.first_year).toEqual('number');
-            expect(typeof timelion.last_year).toEqual('number');
-            expect(timelion.first_year).toBeGreaterThan(0);
-            expect(timelion.last_year).toBeGreaterThan(0);
-            expect(timelion.last_year).toBeGreaterThanOrEqual(timelion.first_year);
+            expect(typeof timelion.year_first).toEqual('number');
+            expect(typeof timelion.year_last).toEqual('number');
+            expect(timelion.year_first).toBeGreaterThan(0);
+            expect(timelion.year_last).toBeGreaterThan(0);
+            expect(timelion.year_last).toBeGreaterThanOrEqual(timelion.year_first);
             expect(typeof timelion.years_list).toEqual('object');
             expect(typeof timelion.years_hash).toEqual('object');
-            expect(typeof timelion.years_hash[timelion.first_year]).toEqual('object');
+            expect(typeof timelion.years_hash[timelion.year_first]).toEqual('object');
         });
     });
 
