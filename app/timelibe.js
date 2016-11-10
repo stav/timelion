@@ -86,8 +86,8 @@
     }
 
     function _load_events (){
-        timelion.events.forEach(function( e ){
-            _load_event( e )
+        timelion.events.forEach(function( event ){
+            _load_event( event )
         })
     }
 
@@ -216,7 +216,6 @@
 
         e: {
             get_beg_triplet: function( event ){
-                console.log(_get_date_triplet( event.date[0], 1, 1 ))
                 return _get_date_triplet( event.date[0], 1, 1 )
             },
             get_end_triplet: function( event ){
@@ -228,17 +227,17 @@
         },
 
         init: function(){
+            timelion.events = null;
             timelion.reset()
         },
 
         reset: function(){
             document.getElementById('timelion').innerHTML = '';
             timelion.$canvas = null;
-            timelion.events = null;
+            timelion.first_year = 0;
+            timelion.last_year = 0;
             timelion.loaded = false;
             timelion.rendered = false;
-            timelion.last_year = 0;
-            timelion.first_year = 0;
         },
 
         load: function( filename ){
@@ -267,7 +266,7 @@
             })
         },
 
-        render: function( filename ){
+        render: function(){
             return new Promise(function( resolve, reject ) {
                 if ( !timelion.loaded ){
                     reject('Timelion not loaded, run load first');
@@ -288,7 +287,7 @@
                         text = document.createElement('span'),
                         _;
 
-                    year.addClassName('year');
+                    year.classList.add('year');
                     year.style = 'width:' + timelion.years_hash[y].width.toFixed(2) + 'px';
                     text.innerHTML = y + (timelion.config.show_age ? (' <i>(' + timelion.years_hash[y].age + ')</i>') : '')
                     year.innerHTML = text.outerHTML;
@@ -306,12 +305,12 @@
 
                     data.innerHTML = event.date;
 
-                    time.addClassName('time');
+                    time.classList.add('time');
                     time.style = 'width:' + event.width.toFixed(2) + 'px';
 
                     event_container.title = event.title;
                     event_container.style = 'margin-left:' + event.offset.toFixed(2) + 'px';
-                    event_container.addClassName('event');
+                    event_container.classList.add('event');
                     event_container.appendChild( time )
                     event_container.appendChild( data )
                     event_container.appendChild( text )

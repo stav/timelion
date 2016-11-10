@@ -21,25 +21,7 @@
     }
 }());
 
-// Element class manupulation
-// http://stackoverflow.com/questions/14104881/add-remove-class-to-a-dom-element-using-only-javascript-and-best-of-these-2-way#answer-14105170
-(function() {
-    Element.prototype.hasClassName = function(name) {
-        return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
-    };
-    Element.prototype.addClassName = function(name) {
-        if (!this.hasClassName(name)) {
-            this.className = this.className ? [this.className, name].join(' ') : name;
-        }
-    };
-    Element.prototype.removeClassName = function(name) {
-        if (this.hasClassName(name)) {
-            var c = this.className;
-            this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
-        }
-    };
-}());
-
+// Object checks
 // http://www.ecma-international.org/ecma-262/5.1/#sec-8.6.2
 (function() {
       Object.prototype.type = function() {
