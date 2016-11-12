@@ -5,6 +5,7 @@
  *
  * - timelyze: text parseing
  * - httplibe: promise-based url resolution
+ * - timescal: screen display
  */
 (function( root, factory ){
     root.timelion = factory()
@@ -256,8 +257,8 @@
         year_first: undefined,
 
         config: {
-            year_width: 100, // pixels
-            show_age: false   // show age on year axis
+            year_width: 10,  // pixels
+            show_age: false  // show age on year axis
         },
 
         e: {
@@ -266,29 +267,31 @@
             },
             get_end_triplet: function( event ){
                 if ( event.date.length === 1 )
-                    return _get_date_triplet( event.date[0], 12, 30 );
+                    return _get_date_triplet( event.date[0], 12, 30 )
                 if ( event.date.length > 1 )
                     return _get_date_triplet( event.date[1], 12, 30 )
             }
         },
 
         init: function(){
-            var body = document.getElementsByTagName('body')[0];
+            var
+                body = document.getElementsByTagName('body')[0],
+                target = document.getElementById('target'),
+                _;
+
+            function zoom ( factor ){
+                timelion.reset()
+                timelion.config.year_width += factor;
+                _setup_canvas()
+                timelion.render()
+                timescal.keep_right( target, timelion.$canvas )
+            }
             body.addEventListener('keypress', function (e) {
-                // console.log('keypress', e.key, e)
-                if ( e.key === "1" && timelion.config.year_width > 10 ){
-                    timelion.reset()
-                    timelion.config.year_width -= 10;
-                    _setup_canvas()
-                    timelion.render();
-                }
+                if ( e.key === "1" && timelion.config.year_width > 10 )
+                    zoom( -10 )
                 else
-                if ( e.key === "2" ){
-                    timelion.reset()
-                    timelion.config.year_width += 10;
-                    _setup_canvas()
-                    timelion.render();
-                }
+                if ( e.key === "2" )
+                    zoom( 10 )
             }, false);
 
             timelion.events = null;
