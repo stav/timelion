@@ -1,6 +1,5 @@
 describe("timelion", function() {
     var
-        timelion = window.timelion,
         timelion_data_filename = '../app/example.json',
         _;
 
@@ -65,14 +64,18 @@ describe("timelion", function() {
             });
         });
         it("should have valid years", function() {
-            expect(typeof timelion.year_first).toEqual('number');
-            expect(typeof timelion.year_last).toEqual('number');
-            expect(timelion.year_first).toBeGreaterThan(0);
-            expect(timelion.year_last).toBeGreaterThan(0);
-            expect(timelion.year_last).toBeGreaterThanOrEqual(timelion.year_first);
-            expect(typeof timelion.years_list).toEqual('object');
-            expect(typeof timelion.years_hash).toEqual('object');
-            expect(typeof timelion.years_hash[timelion.year_first]).toEqual('object');
+            expect(typeof timelion.years).toEqual('object');
+            expect(timelion.years.length).toBeGreaterThan(0);
+            expect(typeof timelion.years[0]).toEqual('object');
+            expect(
+                timelion.years.every(function(y){
+                    return typeof y.year == 'number'
+                })).toBe(true);
+            var
+                first_year = timelion.years[0].year,
+                final_year = timelion.years[timelion.years.length-1].year,
+                _;
+            expect(first_year).toBeLessThanOrEqual(final_year);
         });
     });
 

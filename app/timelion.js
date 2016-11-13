@@ -3,8 +3,8 @@
  *
  * Requires:
  *
- * - timelyze: text parseing
  * - httplibe: promise-based url resolution
+ * - timelyze: text parsing
  * - timescal: screen display
  */
 (function( root, factory ){
@@ -21,10 +21,7 @@
      *
      * Updates self:
      *
-     * - year_first
-     * - year_last
-     * - years_hash
-     * - years_list
+     * - years
      */
     function _load_years (){
         var
@@ -34,32 +31,32 @@
             _byears = _events.map(function(e){return _e.get_beg_triplet(e)[0]}),
             _eyears = _events.map(function(e){return _e.get_end_triplet(e)[0]}),
             _years = _byears.concat(_eyears),
+            _first_year = Math.min.apply(null, _years),
+            _final_year = Math.max.apply(null, _years),
             _;
 
-        timelion.years_hash = {};
-        timelion.years_list = [];
-        timelion.year_first = Math.min.apply(null, _years);
-        timelion.year_last = Math.max.apply(null, _years);
+        timelion.years = [];
 
         for (
-            var year = timelion.year_first, age = 0;
-            year <= timelion.year_last + 1;
+            var year = _first_year, age = 0;
+            year <= _final_year + 1;
             year++, age++
         ){
             var days = (year % 4 == 0) ? 366 : 365; // rudimentary leap years
-            timelion.years_list.push( year );
-            timelion.years_hash[year] = {
+            var data = {
                 age: age,
                 days: days,
+                year: year,
                 width: (days*_day_width)
-            };
+            }
+            timelion.years.push( data );
         }
     }
 
     /**
      * Load an event
      *
-     * Mogrifies event argument:
+     * Mogrifys event argument:
      *
      * - offset
      * - width
@@ -70,7 +67,7 @@
             _end_date = timelion.e.get_end_triplet(event),
             _;
 
-        var firstYear = timelion.year_first;
+        var firstYear = timelion.years[0].year;
         var yearLength = timelion.config.year_width;
         var monthLength = yearLength/12;
         var dayLength = monthLength/30;
@@ -152,7 +149,7 @@
     }
 
     /**
-     * Extend the event objecct with data found from search
+     * Extend the event object with data found from search
      */
     function _extend_event ( event, data ){
         var
@@ -242,7 +239,7 @@
         }
         console.log('Date input invalid: ', date_input.type(), date_input)
 
-        return [ timelion.year_first ];
+        return [ timelion.years[0].year ];
     }
 
     /**
@@ -250,14 +247,13 @@
      */
     return {
 
+        years: undefined,
         events: undefined,
         loaded: undefined,
         rendered: undefined,
-        year_last: undefined,
-        year_first: undefined,
 
         config: {
-            year_width: 10,  // pixels
+            year_width: 100,  // pixels
             show_age: false  // show age on year axis
         },
 
@@ -299,10 +295,9 @@
 
         reset: function(){
             document.getElementById('timelion').innerHTML = '';
-            timelion.$canvas = null;
-            timelion.year_first = 0;
-            timelion.year_last = 0;
+            timelion.years = [];
             timelion.loaded = false;
+            timelion.$canvas = null;
             timelion.rendered = false;
         },
 
@@ -337,21 +332,21 @@
                 years.id = 'timelion-years';
                 years.class = 'comment_';
 
-                timelion.years_list.forEach(function( y ){
+                timelion.years.forEach(function( y ){
                     var
                         year = document.createElement('div'),
                         text = document.createElement('span'),
                         _;
 
                     year.classList.add('year');
-                    year.style = 'width:' + timelion.years_hash[y].width.toFixed(2) + 'px';
-                    text.innerHTML = y + (timelion.config.show_age ? (' <i>(' + timelion.years_hash[y].age + ')</i>') : '')
+                    year.style = 'width:' + y.width.toFixed(2) + 'px';
+                    text.innerText = y.year + (timelion.config.show_age ? (' <i>(' + y.age + ')</i>') : '')
                     year.innerHTML = text.outerHTML;
                     years.appendChild( year );
                 })
-                events.appendChild( years )
+                timelion.$canvas.appendChild( years )
 
-                timelion.events.forEach(function(event){
+                timelion.events.forEach(function( event ){
                     var
                         event_container = document.createElement('div'),
                         time = document.createElement('div'),
@@ -394,4 +389,5 @@
             });
         }
     }
+
 })
