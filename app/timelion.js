@@ -132,7 +132,7 @@
                     +'&action=opensearch'
                     +'&search='+ event.search;
                 return new Promise(function( resolve, reject ) {
-                    httplibe.get_json( url )
+                    httplibe.get_json_data( url )
                     .then(function( data ){
                         _extend_event( event, data )
                         resolve()
@@ -256,7 +256,7 @@
         rendered: undefined,
 
         config: {
-            year_width: 10,  // pixels
+            year_width: 3,  // pixels
             show_age: false  // show age on year axis
         },
 
@@ -279,15 +279,17 @@
 
             function zoom ( factor ){
                 timelion.config.year_width += factor;
+                timelion.config.year_width = Math.max( timelion.config.year_width, 1 );
                 timelion.update()
                 timescal.keep_right( timelion.$canvas )
             }
             body.addEventListener('keypress', function (e) {
-                if ( e.key === "1" && timelion.config.year_width > 10 )
-                    zoom( -10 )
+                var sub_factor = timelion.config.year_width > 10 ? 10 : 1;
+                if ( e.key === "1" && timelion.config.year_width > 1 )
+                    zoom( -1 * sub_factor )
                 else
                 if ( e.key === "2" )
-                    zoom( 10 )
+                    zoom( sub_factor )
             }, false);
 
             timelion.events = null;
@@ -304,7 +306,7 @@
 
         load: function( filename ){
             return new Promise(function( resolve, reject ) {
-                httplibe.get_json( filename )
+                httplibe.get_json_data( filename )
                 .then(function( data ){
                     if ('events' in data){
                         resolve(_load( data ))

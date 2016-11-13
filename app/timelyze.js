@@ -15,16 +15,10 @@
         if ( matches ){
             beg_date = matches[1];
             bd = new Date( beg_date );
-            if ( !bd.isValid() ) {
-                console.log(bd +': "'+ beg_date +'" - '+ info)
-                return
-            }
+            if ( !bd.isValid() ) return;
             end_date = matches.length > 2 ? matches[2] : new Date();
             ed = new Date( end_date );
-            if ( !ed.isValid() ) {
-                console.log(ed +': "'+ end_date +'" - '+ info)
-                return
-            }
+            if ( !ed.isValid() ) return;
             return [
                 [bd.getFullYear(), bd.getMonth()+1, bd.getDate()],
                 [ed.getFullYear(), ed.getMonth()+1, ed.getDate()]];
@@ -39,13 +33,19 @@
                 _;
 
             regexs = [
+                // John Napier of Merchiston (/ˈneɪpɪər/; 1550 – 4 April 1617; also signed as Neper...
+                "\\((?:[^)]+);([^);]+)(?:–|-)([^);]+);(?:[^)]+)\\)",
+
                 // "(September 11, 1933 – July 23, 2002)", "September 11, 1933 ", " July 23, 2002"
                 "\\(([^)]+)(?:–|-)([^)]+)\\)",
 
-                // "David Vaughan Icke (/aɪk/, born 29 April 1952) is an English writer and public speaker. A former footballer and sports broadcaster, Icke has made his name since the 1990s as a professional conspiracy theorist, calling himself a "full time investigator into who and what is really controlling the world." He is the author of over 20 books and numerous DVDs, and has lectured in over 25 countries, speaking for up to 10 hours to audiences that cut across the political spectrum."
+                // Willebrord Snellius (born Willebrord Snel van Royen) (1580 – 30 October 1626, Leiden) was a Dutch astronomer
+                "\\(([^)]+)(?:–|-)([^)]+),(?:[^)]+)\\)",
+
+                // "David Vaughan Icke (/aɪk/, born 29 April 1952) is an English...
                 "\\([^)]*born([^)]+?)(?:\\s+in\\s+[^)]+)?\\)",
 
-                // "World War I (WWI or WW1), also known as the First World War, or the Great War, was a global war originating in Europe that lasted from 28 July 1914 to 11 November 1918. More than 70 million military personnel, including 60 million Europeans, were mobilised in one of the largest wars in history."
+                // "World War I (WWI or WW1)... lasted from 28 July 1914 to 11 November 1918.
                 "from (\\d{1,2} \\w+ \\d{4}) to (\\d{1,2} \\w+ \\d{4})",
 
                 '' // Enable trailing comma
@@ -57,6 +57,7 @@
                         return from_to_dates_pair;
                 }
             }
+            console.log('No date parsed from:'+ info)
         }
     }
 })
