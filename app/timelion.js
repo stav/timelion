@@ -14,7 +14,9 @@
 
     const
 
-        ONLINE_SEARCH = true;  // false for offline devel
+        OFFLINE = 0x00,
+        WIKIPEDIA_API = 0x01,
+        ONLINE_SEARCH = WIKIPEDIA_API;
 
     /**
      * Load year-based data
@@ -126,7 +128,7 @@
     function _search ( event ){
         if ( 'search' in event ){
             // Search Wikipedia on the network
-            if ( ONLINE_SEARCH ){
+            if ( ONLINE_SEARCH === WIKIPEDIA_API ){
                 var url = 'https://en.wikipedia.org/w/api.php'
                     +'?format=json'
                     +'&action=opensearch'
@@ -134,7 +136,7 @@
                 return new Promise(function( resolve, reject ) {
                     httplibe.get_json_data( url )
                     .then(function( data ){
-                        _extend_event( event, data )
+                        timelyze.extend_event_api( event, data )
                         resolve()
                     },
                     function( error ){
@@ -145,35 +147,10 @@
             // Fake search results, network not accessed
             else {
                 const json = '["William Luther Pierce",["William Luther Pierce"],["William Luther Pierce III (September 11, 1933 – July 23, 2002) was an American white nationalist and political activist."],["https://en.wikipedia.org/wiki/William_Luther_Pierce"]]'
-                const data = JSON.parse(json);
-                _extend_event( event, data )
+                const data = JSON.parse( json );
+                timelyze.extend_event_api( event, data )
             }
         }
-    }
-
-    /**
-     * Extend the event object with data found from search
-     */
-    function _extend_event ( event, data ){
-        var
-            name = data[1][0],
-            info = data[2][0],
-            _;
-
-        if ( name ) event.title = name;
-
-        if ( info === undefined ) {
-            console.log('No info found for event:', event, data)
-            return
-        }
-
-        var from_to_dates_pair = timelyze.parse_dates( info );
-        if ( from_to_dates_pair === undefined ) {
-            console.log('Dates could not be parsed from "'+ info +'" for event:', event, data)
-            return
-        }
-
-        event.date = from_to_dates_pair;
     }
 
     /**
