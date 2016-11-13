@@ -16,12 +16,9 @@
         var events_selected = [];
 
         for (var i = 0; i < events_collection.length; i++) {
-            // if ( events_collection[i].style.backgroundColor )
+            if ( events_collection[i].style.backgroundColor )
                 events_selected.push( events_collection[i] )
         }
-
-        // Then convert to an array before returning
-        // return [].slice.call( events_collection )
         return events_selected
     }
 

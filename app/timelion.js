@@ -59,7 +59,7 @@
     /**
      * Load an event
      *
-     * Mogrifys event argument:
+     * Mogrifies event argument:
      *
      * - offset
      * - width
@@ -256,7 +256,7 @@
         rendered: undefined,
 
         config: {
-            year_width: 100,  // pixels
+            year_width: 10,  // pixels
             show_age: false  // show age on year axis
         },
 
@@ -278,10 +278,8 @@
                 _;
 
             function zoom ( factor ){
-                timelion.reset()
                 timelion.config.year_width += factor;
-                _setup_canvas()
-                timelion.render()
+                timelion.update()
                 timescal.keep_right( timelion.$canvas )
             }
             body.addEventListener('keypress', function (e) {
@@ -358,20 +356,20 @@
                 timelion.events.forEach(function( event ){
                     var
                         event_container = document.createElement('div'),
-                        time = document.createElement('div'),
+                        line = document.createElement('div'),
                         data = document.createElement('b'),
                         text = document.createTextNode( event.title ),
                         _;
 
                     data.innerHTML = event.date;
 
-                    time.classList.add('time');
-                    time.style = 'width:' + event.width.toFixed(2) + 'px';
+                    line.classList.add('line');
+                    line.style = 'width:' + event.width.toFixed(2) + 'px';
 
                     event_container.title = event.title;
                     event_container.style = 'margin-left:' + event.offset.toFixed(2) + 'px';
                     event_container.classList.add('event');
-                    event_container.appendChild( time )
+                    event_container.appendChild( line )
                     event_container.appendChild( data )
                     event_container.appendChild( text )
 
@@ -380,17 +378,11 @@
 
                     event_container.addEventListener("click", function(e) {
                         this.style.backgroundColor = this.style.backgroundColor ? '' : 'black';
-                        console.log('click',
-                            e.target.offsetTop,
-                            e.target.offsetLeft,
-                            e.target.offsetWidth,
-                            e.target.offsetHeight,
-                            ''
-                        )
                     });
 
                     events.appendChild( event_container )
-                    event.$element = event_container;
+                    event.$container = event_container;
+                    event.$line = line;
                 });
 
                 timelion.$canvas.appendChild( events )
@@ -400,7 +392,23 @@
                 timelion.rendered = true;
                 resolve()
             });
-        }
-    }
+        },
 
-})
+        update: function(){
+            // Years
+            _load_years()
+            timelion.years.forEach(function( year ){
+                year.$element.style.width = year.width.toFixed(2) + 'px';
+            })
+
+            // Events
+            _load_events()
+            timelion.events.forEach(function( event ){
+                event.$container.style.marginLeft = event.offset.toFixed(2) + 'px';
+                event.$line.style.width = event.width.toFixed(2) + 'px';
+            })
+        }
+
+    }  // timelion
+
+})  // Closure

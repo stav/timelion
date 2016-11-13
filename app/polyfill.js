@@ -21,8 +21,9 @@
     }
 }());
 
-// Object checks
+// Object prototypes
 // http://www.ecma-international.org/ecma-262/5.1/#sec-8.6.2
+// Also, convert to Array: [].slice.call(this)
 (function() {
       Object.prototype.type = function() {
         var type = Object.prototype.toString.call(this);
