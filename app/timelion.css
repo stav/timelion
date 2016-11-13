@@ -1,17 +1,17 @@
 
 body{
-	font-family: Open Sans, Helvetica, Arial, sans-serif;
-	color: #fff;
-	background-color: #384047;
-	margin: 0;
-	padding: 0;
-	font-size: 12px;
-	-webkit-text-size-adjust: none;
-	-webkit-user-select: none;
 	-moz-user-select: none;
 	-ms-user-select: none;
-	user-select: none;
+	-webkit-text-size-adjust: none;
+	-webkit-user-select: none;
+	background-color: #384047;
+	color: #fff;
 	cursor: default;
+	font-family: Open Sans, Helvetica, Arial, sans-serif;
+	font-size: 12px;
+	margin: 0;
+	padding: 0;
+	user-select: none;
 }
 a{
 	color: #fff;
@@ -19,11 +19,22 @@ a{
 h1{
 	display: inline;
 	font-size: 20px;
+	font-weight: 300;
 	line-height: 1em;
 	opacity: .5;
-	z-index: 3;
-	font-weight: 300;
 	white-space: nowrap;
+	z-index: 3;
+}
+footer{
+	background: linear-gradient(to bottom, rgba(56,64,71,0) 0%,rgba(56,64,71,.5) 20%,rgba(56,64,71,1) 50%,rgba(56,64,71,.5) 80%,rgba(56,64,71,0) 100%);
+	bottom: 0;
+	font-size: 30px;
+	font-family: monospace;
+	left: 0;
+	margin: 0;
+	padding: 10px;
+	position: fixed;
+	z-index: 3;
 }
 #timelion{
 	position: absolute;

@@ -324,6 +324,8 @@
                     reject('Timelion not loaded, run load first');
                     return
                 }
+                const
+                    footer = document.getElementById('footer');
                 var
                     events = document.createElement('div'),
                     years = document.createElement('div'),
@@ -359,6 +361,7 @@
                         line = document.createElement('div'),
                         data = document.createElement('b'),
                         text = document.createTextNode( event.title ),
+                        event_binding = event,
                         _;
 
                     data.innerHTML = event.date;
@@ -378,6 +381,7 @@
 
                     event_container.addEventListener("click", function(e) {
                         this.style.backgroundColor = this.style.backgroundColor ? '' : 'black';
+                        footer.innerText = event_binding.date + ': ' + event_binding.title;
                     });
 
                     events.appendChild( event_container )
