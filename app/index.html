@@ -12,16 +12,13 @@
         <link rel="stylesheet" href="timelion.css">
         <script src="vendor/modernizr.js"></script>
         <script>
-            window.addEventListener("load", function( event ) {
-                init();
-            }, {once: true});
+            window.addEventListener("load", init, {once: true})
 
             function init () {
                 timelion.init();
                 timelion.load('example.json').then(function( response ){
                 timelion.render().then(function( response ) {})
-                }, function(e){console.log(e)});
-                // slider.init();
+                }, function(e){console.log(e)})
             }
         </script>
     </head>

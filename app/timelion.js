@@ -276,7 +276,6 @@
         init: function(){
             var
                 body = document.getElementsByTagName('body')[0],
-                target = document.getElementById('target'),
                 _;
 
             function zoom ( factor ){
@@ -284,7 +283,7 @@
                 timelion.config.year_width += factor;
                 _setup_canvas()
                 timelion.render()
-                timescal.keep_right( target, timelion.$canvas )
+                timescal.keep_right( timelion.$canvas )
             }
             body.addEventListener('keypress', function (e) {
                 if ( e.key === "1" && timelion.config.year_width > 10 )

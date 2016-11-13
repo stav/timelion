@@ -3,8 +3,8 @@
     {"date": [[1950]], "title": "1950"},
     {"date": [[1960,1]], "title": "Jan 1960"},
     {"date": [["February 3, 1969"]], "title": "3 Feb 1969"},
-    {"date": [[1970], [1980]], "title": "1970 & 1980", "id": "target"},
-    {"date": [[2016], [2018]], "title": "2016 - 2018"},
+    {"date": [[1970], [1980]], "title": "1970 & 1980", "id": "target1"},
+    {"date": [[2016], [2018]], "title": "2016 - 2018", "id": "target2"},
     {"search": "Donald Trump"},
     {"search": "Hillary Clinton"},
     {}
