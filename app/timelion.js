@@ -35,21 +35,24 @@
             _final_year = Math.max.apply(null, _years),
             _;
 
-        timelion.years = [];
+        function get_year_map ( year ){
+            if ( !timelion.years.has( year ) )
+                timelion.years.set( year, {} );
+            return timelion.years.get( year );
+        }
 
+        // Loop from first event year to final event year to set yearly data
         for (
             var year = _first_year, age = 0;
             year <= _final_year + 1;
             year++, age++
         ){
-            var days = (year % 4 == 0) ? 366 : 365; // rudimentary leap years
-            var data = {
-                age: age,
-                days: days,
-                year: year,
-                width: (days*_day_width)
-            }
-            timelion.years.push( data );
+            const days = (year % 4 == 0) ? 366 : 365; // rudimentary leap years
+            var year_map = get_year_map( year );
+            year_map.age   = age;
+            year_map.days  = days;
+            year_map.year  = year;
+            year_map.width = (days*_day_width);
         }
     }
 
@@ -67,7 +70,7 @@
             _end_date = timelion.e.get_end_triplet(event),
             _;
 
-        var firstYear = timelion.years[0].year;
+        var firstYear = timelion.years.values().next().value.year;
         var yearLength = timelion.config.year_width;
         var monthLength = yearLength/12;
         var dayLength = monthLength/30;
@@ -239,7 +242,7 @@
         }
         console.log('Date input invalid: ', date_input.type(), date_input)
 
-        return [ timelion.years[0].year ];
+        return [ timelion.years.values().next().value.year ];
     }
 
     /**
@@ -295,7 +298,7 @@
 
         reset: function(){
             document.getElementById('timelion').innerHTML = '';
-            timelion.years = [];
+            timelion.years = new Map();
             timelion.loaded = false;
             timelion.$canvas = null;
             timelion.rendered = false;
@@ -328,7 +331,8 @@
                     years = document.createElement('div'),
                     _;
 
-                events.id = 'timelion-events';
+                // Years
+
                 years.id = 'timelion-years';
                 years.class = 'comment_';
 
@@ -342,9 +346,14 @@
                     year.style = 'width:' + y.width.toFixed(2) + 'px';
                     text.innerText = y.year + (timelion.config.show_age ? (' <i>(' + y.age + ')</i>') : '')
                     year.innerHTML = text.outerHTML;
-                    years.appendChild( year );
+                    years.appendChild( year )
+                    y.$element = year;
                 })
                 timelion.$canvas.appendChild( years )
+
+                // Events
+
+                events.id = 'timelion-events';
 
                 timelion.events.forEach(function( event ){
                     var
@@ -381,9 +390,13 @@
                     });
 
                     events.appendChild( event_container )
+                    event.$element = event_container;
                 });
 
                 timelion.$canvas.appendChild( events )
+
+                // Resolution
+
                 timelion.rendered = true;
                 resolve()
             });
