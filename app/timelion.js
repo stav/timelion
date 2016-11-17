@@ -6,6 +6,7 @@
  * - httplibe: promise-based url resolution
  * - timelyze: text parsing
  * - timescal: screen display
+ * - polyfill: prototype extensions
  */
 (function( root, factory ){
     root.timelion = factory()
@@ -16,7 +17,8 @@
 
         OFFLINE = 0x00,
         WIKIPEDIA_API = 0x01,
-        ONLINE_SEARCH = WIKIPEDIA_API;
+        WIKIPEDIA_RAW = 0x02,
+        ONLINE_SEARCH = WIKIPEDIA_RAW;
 
     /**
      * Load year-based data
@@ -127,7 +129,7 @@
      */
     function _search ( event ){
         if ( 'search' in event ){
-            // Search Wikipedia on the network
+            // Search Wikipedia API on the network
             if ( ONLINE_SEARCH === WIKIPEDIA_API ){
                 var url = 'https://en.wikipedia.org/w/api.php'
                     +'?format=json'
@@ -137,6 +139,23 @@
                     httplibe.get_json_data( url )
                     .then(function( data ){
                         timelyze.extend_event_api( event, data )
+                        resolve()
+                    },
+                    function( error ){
+                        reject( error )
+                    })
+                })
+            }
+            else
+            // Search Wikipedia RAW pages on the network
+            if ( ONLINE_SEARCH === WIKIPEDIA_RAW ){
+                var url = 'https://en.wikipedia.org/w/index.php'
+                    +'?action=raw'
+                    +'&title='+ event.search;
+                return new Promise(function( resolve, reject ) {
+                    httplibe.get( url )
+                    .then(function( text ){
+                        timelyze.extend_event_raw( event, text )
                         resolve()
                     },
                     function( error ){
@@ -184,6 +203,9 @@
             },
             function(error){
                 console.log(error)
+                // Remove any events that did not resolve dates
+                timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
+                _setup_canvas()
             })
     }
 
@@ -199,9 +221,11 @@
      *  ]
      */
     function _get_date_triplet ( date_input, month_default, day_default ){
+        var date;
+
         if ( date_input && date_input.isArray() && date_input.length > 0 ) {
             if ( date_input.length === 1 && date_input[0].isString() ){
-               var date = new Date( date_input );
+               date = new Date( date_input );
                if ( date.isValid() )
                    return [
                        date.getFullYear(),
@@ -217,9 +241,12 @@
                 ]
             }
         }
-        console.log('Date input invalid: ', date_input.type(), date_input)
-
-        return [ timelion.years.values().next().value.year ];
+       date = new Date();
+       return [
+           date.getFullYear(),
+           date.getMonth() + 1,
+           date.getDate()
+       ]
     }
 
     /**
@@ -233,7 +260,7 @@
         rendered: undefined,
 
         config: {
-            year_width: 3,  // pixels
+            year_width: 18,  // pixels
             show_age: false  // show age on year axis
         },
 
@@ -242,10 +269,11 @@
                 return _get_date_triplet( event.date[0], 1, 1 )
             },
             get_end_triplet: function( event ){
-                if ( event.date.length === 1 )
-                    return _get_date_triplet( event.date[0], 12, 30 )
                 if ( event.date.length > 1 )
-                    return _get_date_triplet( event.date[1], 12, 30 )
+                    if ( event.date[1].length )
+                        return _get_date_triplet( event.date[1], 12, 30 );
+
+                return _get_date_triplet( null )
             }
         },
 
@@ -392,6 +420,6 @@
             })
         }
 
-    }  // timelion
+    }  // timelion export
 
 })  // Closure

@@ -1,12 +1,16 @@
 /**
  * Timelion analyzing - text parsing library
+ *
+ * Requires:
+ *
+ * - polyfill: prototype extensions
  */
 (function( root, factory ){
     root.timelyze = factory()
 })(this, function(){
     "use strict"
 
-    function _parse( re, info ){
+    function _parse_info_for_two_dates( re, info ){
         var
             matches, bd, beg_date, ed, end_date,
             _;
@@ -51,7 +55,7 @@
         ]
         for (var i = 0; i < regexs.length; i++) {
             if ( regexs[i] ){
-                from_to_dates_pair = _parse( new RegExp( regexs[i] ), info );
+                from_to_dates_pair = _parse_info_for_two_dates( new RegExp( regexs[i] ), info );
                 if ( from_to_dates_pair && from_to_dates_pair.isArray() )
                     return from_to_dates_pair;
             }
@@ -62,7 +66,7 @@
     return {
 
         /**
-         * Extend the event object with data found from search
+         * Extend the event object with data found from search using the Wikipedia API
          */
         extend_event_api: function ( event, data ){
             var
@@ -70,7 +74,7 @@
                 info = data[2][0],
                 _;
 
-            if ( name ) event.title = name;
+            if ( name && !event.title ) event.title = name;
 
             if ( info === undefined ) {
                 console.log('No info found for event:', event, data)
@@ -84,7 +88,139 @@
             }
 
             event.date = from_to_dates_pair;
+        },
+
+        /**
+         * Extend the event object with data found from search using RAW Wikipedia text
+         *
+         * To do:
+         *
+         *   {"search": "Viktor Schauberger"},
+         */
+        // {{Infobox scientist
+        // | name        = Nicolaus Copernicus
+        // | image       = Nikolaus Kopernikus.jpg
+        // | caption     = 1580 portrait (artist unknown) in the Old Town City Hall, [[Toruń]]
+        // | birth_date  = {{birth date|df=yes|1473|2|19}}
+        // | birth_place = {{nowrap|[[Toruń|Toruń (Thorn)]], [[Royal Prussia]],<br/>[[Kingdom of Poland (1385–1569)|Kingdom of Poland]]}}
+        // | death_date  = {{death date and age|df=yes|1543|5|24|1473|2|19}}
+        // | death_place = {{nowrap|[[Frombork|Frombork (Frauenburg)]],<br/>[[Prince-Bishopric of Warmia]],<br/>Royal Prussia, Kingdom of<br/>Poland}}
+        // | field       = {{hlist|Astronomy |[[Canon law]] |Economics |Mathematics |Medicine |Politics}}
+        extend_event_raw: function ( event, text ){
+            // console.log(text.substr(0,1999))
+            const
+                date_rex = "^__!__XXX_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
+                // birth_rex = "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
+                // death_rex = "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
+                // birth_rex = /^\s*\|\s*birth_date\s*=.*?{{.+?\|(\d{4})(?:\|(\d{1,2}))?(?:\|(\d{1,2}))?/m,
+                // death_rex = /^\s*\|\s*death_date\s*=.*?{{.+?\|(\d{4})(?:\|(\d{1,2}))?(?:\|(\d{1,2}))?/m,
+                _=undefined;
+            var
+                re, matches, d, birth_date, death_date;
+
+            // RegExp objects exec as-is, strings get find/replace
+            function re_exec ( res ){
+                // Arrayify scalars
+                if ( !res.isArray() )
+                    res = [ res ];
+
+                // Loop thru regexs
+                for (var i = 0; i < res.length; i++) {
+                    var re = res[i];
+                    if ( re.type() !== 'RegExp' ){
+                        re = re.replace(/___/g, '\\s+'    )
+                        re = re.replace( /__/g, '\\s*'    )
+                        re = re.replace( /#4/g, '\\d{4}'  )
+                        re = re.replace( /#2/g, '\\d{1,2}')
+                        re = re.replace(  /!/g, '\\|'     )
+                        re = re.replace(  / /g, ''        )
+                        re = new RegExp( re, "m" )
+                    }
+                    var matches = re.exec( text );
+                    if ( matches )
+                        return matches;
+                }
+            }
+
+            // Name
+
+            if ( !event.title ){
+                matches = re_exec("^__!__name__=__  (.+)  $")  // /^\s*\|\s*name\s*=\s*(.+)$/m
+                if ( matches )
+                    event.title = matches[1];
+            }
+
+            // Birth
+
+            birth_date = [];
+            var rexs = [
+                "^__!__birth_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
+                "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
+            ];
+            matches = re_exec( rexs )
+            if ( matches ){
+                birth_date = [ parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]) ];
+            }
+            else {
+                matches = re_exec("^\\|\\s*birth_date\\s*=\\s*(.+)$");
+                if ( matches ){
+                    d = new Date( matches[1] );
+                    if ( d.isValid() ){
+                        birth_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
+                    }
+                    else {
+                        console.log('No beginning date for', text)
+                    }
+                }
+            }
+
+            // Death
+
+            death_date = [];
+            var rexs = [
+                "^__!__death_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
+                "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
+            ];
+            matches = re_exec( rexs )
+            if ( matches ){
+                death_date = [ parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]) ];
+            }
+            else {
+                matches = re_exec("^!__death_date__=__([\\w,\\d\\s]+?)__(?:,?__age__\\d+)");
+                // matches = re_exec("^!__death_date__=__([\\w\\d ]+) (?:age__\\d+)");
+                // matches = re_exec("^\\|\\s*death_date\\s*=\\s*([\\w\\d ]+)");
+                if ( matches ){
+                    d = new Date( matches[1] );
+                    if ( d.isValid() ){
+                        death_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
+                    }
+                    else {
+                        console.log('No ending date for', text)
+                    }
+                }
+            }
+
+            if ( birth_date.length === 0 && death_date.length === 0 ){
+                matches = re_exec(/^'''(.+?)''' \((.+)&ndash;(.+)\)/);
+                if ( matches ){
+                    if ( !event.title )
+                        event.title = matches[1];
+                    d = new Date( matches[2] );
+                    if ( d.isValid() )
+                        birth_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
+                    d = new Date( matches[3] );
+                    if ( d.isValid() )
+                        death_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
+                }
+            }
+
+            if ( !event.title )
+                event.title = event.search;
+
+            event.date = [ birth_date, death_date ];
+            console.log(event)
         }
 
-    }
-})
+    }  // timelyze export
+
+})  // Closure

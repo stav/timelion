@@ -41,6 +41,6 @@
                 canvas.scrollLeft = Math.abs( shift )
             }
         }
-    }
+    }  // timescal export
 
-})
+})  // Closure
