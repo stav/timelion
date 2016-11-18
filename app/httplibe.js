@@ -14,7 +14,6 @@
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true)
             xhr.onload = function(){
-                console.log(xhr)
                 if (xhr.status == 200)
                     resolve( xhr.responseText );
                 else
@@ -33,7 +32,6 @@
             xhr.open('GET', url, true)
             xhr.setRequestHeader('Accept', 'application/json')
             xhr.onload = function(){
-                console.log(xhr)
                 if (xhr.status == 200)
                     resolve( xhr.responseText );
                 else

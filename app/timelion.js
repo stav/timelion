@@ -223,30 +223,33 @@
     function _get_date_triplet ( date_input, month_default, day_default ){
         var date;
 
-        if ( date_input && date_input.isArray() && date_input.length > 0 ) {
-            if ( date_input.length === 1 && date_input[0].isString() ){
-               date = new Date( date_input );
-               if ( date.isValid() )
-                   return [
-                       date.getFullYear(),
-                       date.getMonth() + 1,
-                       date.getDate()
-                   ]
-            }
-            else if ( date_input[0].isNumber() ){
+        // Check if we have a non-empty array
+        if ( date_input.isArray() && date_input.length > 0 ) {
+            // Short circuit if first arary element is a number
+            if ( date_input[0].isNumber() ){
                 return [
                     date_input[0],
                     date_input.length > 1 ? date_input[1] : month_default,
                     date_input.length > 2 ? date_input[2] : day_default
                 ]
             }
+            // If we have a single string element then try to make it a date
+            if ( date_input.length === 1 && date_input[0].isString() ){
+               date = new Date( date_input );
+            }
         }
-       date = new Date();
-       return [
-           date.getFullYear(),
-           date.getMonth() + 1,
-           date.getDate()
-       ]
+        // Maybe we already have a date
+        else
+        if ( date_input.isDate() )
+            date = date_input;
+
+        // Return the the date parts as tuple triple
+        if ( date.isValid() )
+            return [
+                date.getFullYear(),
+                date.getMonth() + 1,
+                date.getDate()
+            ]
     }
 
     /**
@@ -266,14 +269,22 @@
 
         e: {
             get_beg_triplet: function( event ){
+                // The beginning date is always the first date given
                 return _get_date_triplet( event.date[0], 1, 1 )
             },
             get_end_triplet: function( event ){
+                // If we only have one date then it is a single event
+                // One day, one month or one year
+                if ( event.date.length === 1 )
+                    return _get_date_triplet( event.date[0], 12, 30 );
+
+                // If we have two dates then use the second as the end date
                 if ( event.date.length > 1 )
                     if ( event.date[1].length )
                         return _get_date_triplet( event.date[1], 12, 30 );
 
-                return _get_date_triplet( null )
+                // We have two dates but the second one is empty so use today
+                return _get_date_triplet( new Date() )
             }
         },
 

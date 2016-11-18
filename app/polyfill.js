@@ -39,6 +39,9 @@
       Object.prototype.isString = function() {
         return Object.prototype.toString.call(this) === '[object String]'
       }
+      Object.prototype.isDate = function() {
+        return Object.prototype.toString.call(this) === '[object Date]'
+      }
       Object.prototype.isNumber = function() {
         return (
             Object.prototype.toString.call(this) === '[object Number]'

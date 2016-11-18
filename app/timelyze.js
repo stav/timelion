@@ -218,7 +218,6 @@
                 event.title = event.search;
 
             event.date = [ birth_date, death_date ];
-            console.log(event)
         }
 
     }  // timelyze export
