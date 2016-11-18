@@ -19,7 +19,6 @@ Tests courtesy of Jasmine with MIT license from http://jasmine.github.io/
 
 ## Usage
 
-Data is currently harcoded to use only `example.json`.
 
 ### Start a web-server with something like:
 
@@ -34,14 +33,81 @@ Data is currently harcoded to use only `example.json`.
 
 	http://localhost:8000/app/index.html
 
-## Note:
+## Notes on Data:
 
-Search is only available currently without browser security enabled,
-no CORS support, start browser like:
+Data acquisition is currently hard-coded to use only `example.json`.
+
+### Search
+
+Search is only available currently without browser security enabled which will
+prevent cross domain requests (no CORS support), start browser like:
 
 	chromium-browser --disable-web-security --user-data-dir &
 
-### Months in events data
+### Fields
+
+#### `date`
+
+Determines starting and ending positions for the event on the timeline
+
+Format:
+
+	Array( Array( YEAR[, MONTH[, DAY]])[, Array( YEAR[, MONTH[, DAY]])] )
+
+	YEAR, MONTH, DAY are all integers
+
+Examples:
+
+	[[1950]]
+	[[ 1950, 1 ]]
+	[[1950,1,27]]
+	[ [ 1933 ], [ 1945 ] ]
+	[[ 1942, 12, 21 ],[ 1960, 5, 1 ]]
+	[["February 3, 1969"]]
+
+#### `title`
+
+Display text for the event
+
+Format:
+
+	String()
+
+Examples:
+
+	"Birth of a nation"
+	"Grad school"
+	"Wedding"
+
+#### `search`
+
+Goes to Wikipedia and searches for text, best when you use a person
+
+Format:
+
+	String()
+
+Examples:
+
+	"Nicolaus Copernicus"
+	"Frederic Chopin"
+	"Donald Trump"
+
+#### `id`
+
+HTML identifier used on event container
+
+Format:
+
+	String()
+
+Examples:
+
+	"nicolaus-copernicus"
+	"frederic-chopin"
+	"donald-trump"
+
+### Months
 
 #### one-based [1,2,3,4,5,6,7,8,9,10,11,12]
 
@@ -53,6 +119,11 @@ no CORS support, start browser like:
 #### cannot be prefixed by a leading zero
 
 	January is 1 not 01
+
+## Zoom
+
+You can redraw the timeline with more (`2`) or less (`1`) space between years
+by using the `1` and `2` keys.
 
 ## Example:
 
