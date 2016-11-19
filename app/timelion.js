@@ -3,9 +3,10 @@
  *
  * Requires:
  *
- * - httplibe: promise-based url resolution
+ * - timelist: listeners
  * - timelyze: text parsing
  * - timescal: screen display
+ * - httplibe: promise-based url resolution
  * - polyfill: prototype extensions
  */
 (function( root, factory ){
@@ -29,6 +30,7 @@
      */
     function _load_years (){
         var
+            ty = timelion.years,
             _e = timelion.e,
             _events = timelion.events,
             _day_width = timelion.config.year_width/12/30,  // rough numbers
@@ -38,13 +40,6 @@
             _first_year = Math.min.apply(null, _years),
             _final_year = Math.max.apply(null, _years),
             _;
-
-        function get_year_map ( year ){
-            if ( !timelion.years.has( year ) )
-                timelion.years.set( year, {} );
-            return timelion.years.get( year );
-        }
-
         // Loop from first event year to final event year to set yearly data
         for (
             var year = _first_year, age = 0;
@@ -52,7 +47,7 @@
             year++, age++
         ){
             const days = (year % 4 == 0) ? 366 : 365; // rudimentary leap years
-            var year_map = get_year_map( year );
+            var year_map = ty.has( year ) ? ty.get( year ) : ty.set( year, {} ).get( year );
             year_map.age   = age;
             year_map.days  = days;
             year_map.year  = year;
@@ -289,25 +284,7 @@
         },
 
         init: function(){
-            var
-                body = document.getElementsByTagName('body')[0],
-                _;
-
-            function zoom ( factor ){
-                timelion.config.year_width += factor;
-                timelion.config.year_width = Math.max( timelion.config.year_width, 1 );
-                timelion.update()
-                timescal.keep_right( timelion.$canvas )
-            }
-            body.addEventListener('keypress', function (e) {
-                var sub_factor = timelion.config.year_width > 10 ? 10 : 1;
-                if ( e.key === "1" && timelion.config.year_width > 1 )
-                    zoom( -1 * sub_factor )
-                else
-                if ( e.key === "2" )
-                    zoom( sub_factor )
-            }, false);
-
+            timelist.listen( document.getElementsByTagName('body')[0] )
             timelion.events = null;
             timelion.reset()
         },

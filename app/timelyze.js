@@ -6,7 +6,12 @@
  * - polyfill: prototype extensions
  */
 (function( root, factory ){
-    root.timelyze = factory()
+    var timelyze = factory()
+    root.timelyze = {
+        extend_event_api: timelyze.extend_event_api,
+        extend_event_raw: timelyze.extend_event_raw,
+        _: null
+    }
 })(this, function(){
     "use strict"
 

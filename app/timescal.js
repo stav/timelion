@@ -2,7 +2,10 @@
  * Timelion scaling - screen display library
  */
 (function( root, factory ){
-    root.timescal = factory()
+    var timescal = factory()
+    root.timescal = {
+        keep_right: timescal.keep_right
+    }
 })(this, function(){
     "use strict"
 
