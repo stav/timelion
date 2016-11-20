@@ -4,9 +4,11 @@
 (function( root, factory ){
     var timeland = factory()
     root.timeland = {
-        select:  timeland.select,
-        toggle:  timeland.toggle,
-        advance: timeland.advance,
+        select:   timeland.select,
+        toggle:   timeland.toggle,
+        advance:  timeland.advance,
+        zoom_in:  timeland.zoom_in,
+        zoom_out: timeland.zoom_out,
         _: null
     }
 })(this, function(){
@@ -30,6 +32,30 @@
      */
     function _display ( text ){
         document.getElementById('footer').innerText = text;
+    }
+
+    /**
+     * Zoom in / out
+     */
+    function _zoom ( factor ){
+        timelion.config.year_width += factor;
+        timelion.config.year_width = Math.max( timelion.config.year_width, 1 );
+        timelion.update()
+        timescal.keep_right( timelion.$canvas )
+    }
+
+    /**
+     *
+     */
+    function zoom_in (){
+        _zoom( timelion.config.year_width / 10 );
+    }
+
+    /**
+     *
+     */
+    function zoom_out (){
+        _zoom( timelion.config.year_width / -10 );
     }
 
     /**
@@ -79,8 +105,11 @@
     }
 
     return {
-        advance: advance,
-        select: select,
-        toggle: toggle
+        select:   select,
+        toggle:   toggle,
+        advance:  advance,
+        zoom_in:  zoom_in,
+        zoom_out: zoom_out,
+        _: null
     }
 })

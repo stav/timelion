@@ -20,18 +20,12 @@
          * Add keypress event handler
          */
         handleKeypress: function ( body ){
-            function zoom ( factor ){
-                timelion.config.year_width += factor;
-                timelion.config.year_width = Math.max( timelion.config.year_width, 1 );
-                timelion.update()
-                timescal.keep_right( timelion.$canvas )
-            }
             body.addEventListener('keypress', function (e) {
                 if ( e.key === "1" && timelion.config.year_width > 1 )
-                    zoom( timelion.config.year_width / -10 );
+                    timeland.zoom_out();
                 else
                 if ( e.key === "2" )
-                    zoom( timelion.config.year_width / 10 );
+                    timeland.zoom_in();
                 else
                 if ( e.key === "`" )
                     timeland.advance();
