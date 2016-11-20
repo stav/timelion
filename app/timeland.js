@@ -41,7 +41,7 @@
         timelion.config.year_width += factor;
         timelion.config.year_width = Math.max( timelion.config.year_width, 1 );
         timelion.update()
-        timescal.keep_right( timelion.$canvas )
+        timelast.keep_right( timelion.$canvas )
     }
 
     /**

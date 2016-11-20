@@ -2,9 +2,9 @@
  * Timelion scaling - screen display library
  */
 (function( root, factory ){
-    var timescal = factory()
-    root.timescal = {
-        keep_right: timescal.keep_right
+    var timelast = factory()
+    root.timelast = {
+        keep_right: timelast.keep_right
     }
 })(this, function(){
     "use strict"
@@ -44,6 +44,5 @@
                 canvas.scrollLeft = Math.abs( shift )
             }
         }
-    }  // timescal export
-
-})  // Closure
+    }
+})

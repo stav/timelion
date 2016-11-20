@@ -6,10 +6,10 @@
  * - polyfill: prototype extensions
  */
 (function( root, factory ){
-    var timelyze = factory()
-    root.timelyze = {
-        extend_event_api: timelyze.extend_event_api,
-        extend_event_raw: timelyze.extend_event_raw,
+    var timelies = factory()
+    root.timelies = {
+        extend_event_api: timelies.extend_event_api,
+        extend_event_raw: timelies.extend_event_raw,
         _: null
     }
 })(this, function(){
@@ -224,7 +224,5 @@
 
             event.date = [ birth_date, death_date ];
         }
-
-    }  // timelyze export
-
-})  // Closure
+    }
+})

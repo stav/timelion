@@ -4,8 +4,8 @@
  * Requires:
  *
  * - timelist: listeners
- * - timelyze: text parsing
- * - timescal: screen display
+ * - timelies: text parsing
+ * - timelast: screen display
  * - httplibe: promise-based url resolution
  * - polyfill: prototype extensions
  */
@@ -133,7 +133,7 @@
                 return new Promise(function( resolve, reject ) {
                     httplibe.get_json_data( url )
                     .then(function( data ){
-                        timelyze.extend_event_api( event, data )
+                        timelies.extend_event_api( event, data )
                         resolve()
                     },
                     function( error ){
@@ -150,7 +150,7 @@
                 return new Promise(function( resolve, reject ) {
                     httplibe.get( url )
                     .then(function( text ){
-                        timelyze.extend_event_raw( event, text )
+                        timelies.extend_event_raw( event, text )
                         resolve()
                     },
                     function( error ){
@@ -162,7 +162,7 @@
             else {
                 const json = '["William Luther Pierce",["William Luther Pierce"],["William Luther Pierce III (September 11, 1933 – July 23, 2002) was an American white nationalist and political activist."],["https://en.wikipedia.org/wiki/William_Luther_Pierce"]]'
                 const data = JSON.parse( json );
-                timelyze.extend_event_api( event, data )
+                timelies.extend_event_api( event, data )
             }
         }
     }
@@ -405,7 +405,5 @@
                 event.$line.style.width = event.width.toFixed(2) + 'px';
             })
         }
-
-    }  // timelion export
-
-})  // Closure
+    }
+})
