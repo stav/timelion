@@ -284,7 +284,7 @@
         },
 
         init: function(){
-            timelist.listen( document.getElementsByTagName('body')[0] )
+            timelist.keypress( document.getElementsByTagName('body')[0] )
             timelion.events = null;
             timelion.reset()
         },
@@ -293,8 +293,10 @@
             document.getElementById('timelion').innerHTML = '';
             timelion.years = new Map();
             timelion.loaded = false;
-            timelion.$canvas = null;
             timelion.rendered = false;
+            timelion.$canvas = null;
+            timelion.$events = null;
+            timelion.$years = null;
         },
 
         load: function( filename ){
@@ -345,6 +347,7 @@
                     y.$element = year;
                 })
                 timelion.$canvas.appendChild( years )
+                timelion.$years = years;
 
                 // Events
 
@@ -374,17 +377,14 @@
                     if ( event.id )
                         event_container.id = event.id;
 
-                    event_container.addEventListener("click", function(e) {
-                        this.style.backgroundColor = this.style.backgroundColor ? '' : 'black';
-                        footer.innerText = event_binding.date + ': ' + event_binding.title;
-                    });
-
+                    timelist.click( event_container, event, footer )
                     events.appendChild( event_container )
                     event.$container = event_container;
                     event.$line = line;
                 });
 
                 timelion.$canvas.appendChild( events )
+                timelion.$events = events;
 
                 // Resolution
 
