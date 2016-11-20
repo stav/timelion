@@ -284,7 +284,7 @@
         },
 
         init: function(){
-            timelist.keypress( document.getElementsByTagName('body')[0] )
+            timelist.handleKeypress( document.getElementsByTagName('body')[0] )
             timelion.events = null;
             timelion.reset()
         },
@@ -321,8 +321,6 @@
                     reject('Timelion not loaded, run load first');
                     return
                 }
-                const
-                    footer = document.getElementById('footer');
                 var
                     events = document.createElement('div'),
                     years = document.createElement('div'),
@@ -359,7 +357,6 @@
                         line = document.createElement('div'),
                         data = document.createElement('b'),
                         text = document.createTextNode( event.title ),
-                        event_binding = event,
                         _;
 
                     data.innerHTML = event.date;
@@ -377,8 +374,9 @@
                     if ( event.id )
                         event_container.id = event.id;
 
-                    timelist.click( event_container, event, footer )
+                    timelist.handleClick( event_container )
                     events.appendChild( event_container )
+                    event_container.timelion_event = event;
                     event.$container = event_container;
                     event.$line = line;
                 });
