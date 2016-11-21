@@ -8,11 +8,11 @@
  * - timelast: screen display
  * - httplibe: promise-based url resolution
  * - polyfill: prototype extensions
+ * - utils
  */
 (function( root, factory ){
     root.timelion = factory()
-})(this, function(){
-    "use strict"
+})(this, function(){"use strict"
 
     const
 
@@ -34,9 +34,9 @@
             _e = timelion.e,
             _events = timelion.events,
             _day_width = timelion.config.year_width/12/30,  // rough numbers
-            _byears = _events.map(function(e){return _e.get_beg_triplet(e)[0]}),
-            _eyears = _events.map(function(e){return _e.get_end_triplet(e)[0]}),
-            _years = _byears.concat(_eyears),
+            _byears = _events.map(function(e){return u.first(_e.get_beg_triplet(e))}),
+            _eyears = _events.map(function(e){return u.first(_e.get_end_triplet(e))}),
+            _years = _byears.concat(_eyears).filter(function(y){return y}),
             _first_year = Math.min.apply(null, _years),
             _final_year = Math.max.apply(null, _years),
             _;
@@ -196,6 +196,8 @@
                 timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
                 _setup_canvas()
             },
+            // NOTE: refactor for individual requests/responses
+            // A 404 response (because it is rejected) will terminate on filter (no dates)
             function(error){
                 console.log(error)
                 // Remove any events that did not resolve dates
@@ -219,9 +221,9 @@
         var date;
 
         // Check if we have a non-empty array
-        if ( date_input.isArray() && date_input.length > 0 ) {
+        if ( u.isFilled( date_input )) {
             // Short circuit if first arary element is a number
-            if ( date_input[0].isNumber() ){
+            if ( u.isNumber( date_input[0] ) ){
                 return [
                     date_input[0],
                     date_input.length > 1 ? date_input[1] : month_default,
@@ -229,17 +231,17 @@
                 ]
             }
             // If we have a single string element then try to make it a date
-            if ( date_input.length === 1 && date_input[0].isString() ){
+            if ( date_input.length === 1 && u.isString( date_input[0] ) ){
                date = new Date( date_input );
             }
         }
         // Maybe we already have a date
         else
-        if ( date_input.isDate() )
+        if ( u.isDate( date_input ) )
             date = date_input;
 
         // Return the the date parts as tuple triple
-        if ( date.isValid() )
+        if ( u.isValidDate( date ) )
             return [
                 date.getFullYear(),
                 date.getMonth() + 1,
@@ -295,7 +297,6 @@
             timelion.loaded = false;
             timelion.rendered = false;
             timelion.$canvas = null;
-            timelion.$events = null;
             timelion.$years = null;
         },
 
@@ -351,8 +352,9 @@
 
                 events.id = 'timelion-events';
 
-                timelion.events.forEach(function( event ){
+                for (var i = 0; i < timelion.events.length; i++) {
                     var
+                        event = timelion.events[i],
                         event_container = document.createElement('div'),
                         line = document.createElement('div'),
                         data = document.createElement('b'),
@@ -364,31 +366,45 @@
                     line.classList.add('line');
                     line.style = 'width:' + event.width.toFixed(2) + 'px';
 
+                    if ( event.id )
+                    event_container.id = event.id;
                     event_container.title = event.title;
                     event_container.style = 'margin-left:' + event.offset.toFixed(2) + 'px';
                     event_container.classList.add('event');
+                    event_container.setAttribute('data-index', i)
+                    event_container.setAttribute('v-on:click', 'toggle')
                     event_container.appendChild( line )
                     event_container.appendChild( data )
                     event_container.appendChild( text )
 
-                    if ( event.id )
-                        event_container.id = event.id;
-
-                    timelist.handleClick( event_container )
                     events.appendChild( event_container )
-                    event_container.timelion_event = event;
                     event.$container = event_container;
                     event.$line = line;
-                });
+                };
 
                 timelion.$canvas.appendChild( events )
-                timelion.$events = events;
 
                 // Resolution
 
                 timelion.rendered = true;
                 resolve()
             });
+        },
+
+        view: function(){
+            timelion.vue = new Vue({
+                el: '#app',
+                data: {
+                    message: ''
+                },
+                methods: {
+                    reverseMessage: function () {
+                        // this.message = 'asdf'
+                        this.message = this.message.split('').reverse().join('')
+                    },
+                    toggle: timeland.vue_click
+                }
+            })
         },
 
         update: function(){

@@ -3,17 +3,15 @@
  *
  * Requires:
  *
- * - polyfill: prototype extensions
+ * - utils
  */
 (function( root, factory ){
     var timelies = factory()
     root.timelies = {
         extend_event_api: timelies.extend_event_api,
-        extend_event_raw: timelies.extend_event_raw,
-        _: null
+        extend_event_raw: timelies.extend_event_raw
     }
-})(this, function(){
-    "use strict"
+})(this, function(){"use strict"
 
     function _parse_info_for_two_dates( re, info ){
         var
@@ -24,10 +22,10 @@
         if ( matches ){
             beg_date = matches[1];
             bd = new Date( beg_date );
-            if ( !bd.isValid() ) return;
+            if ( !u.isValidDate( bd ) ) return;
             end_date = matches.length > 2 ? matches[2] : new Date();
             ed = new Date( end_date );
-            if ( !ed.isValid() ) return;
+            if ( !u.isValidDate( ed ) ) return;
             return [
                 [bd.getFullYear(), bd.getMonth()+1, bd.getDate()],
                 [ed.getFullYear(), ed.getMonth()+1, ed.getDate()]];
@@ -61,7 +59,7 @@
         for (var i = 0; i < regexs.length; i++) {
             if ( regexs[i] ){
                 from_to_dates_pair = _parse_info_for_two_dates( new RegExp( regexs[i] ), info );
-                if ( from_to_dates_pair && from_to_dates_pair.isArray() )
+                if ( u.isArray( from_to_dates_pair ) )
                     return from_to_dates_pair;
             }
         }
@@ -112,27 +110,29 @@
         // | death_place = {{nowrap|[[Frombork|Frombork (Frauenburg)]],<br/>[[Prince-Bishopric of Warmia]],<br/>Royal Prussia, Kingdom of<br/>Poland}}
         // | field       = {{hlist|Astronomy |[[Canon law]] |Economics |Mathematics |Medicine |Politics}}
         extend_event_raw: function ( event, text ){
-            // console.log(text.substr(0,1999))
             const
                 date_rex = "^__!__XXX_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
                 // birth_rex = "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
                 // death_rex = "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
                 // birth_rex = /^\s*\|\s*birth_date\s*=.*?{{.+?\|(\d{4})(?:\|(\d{1,2}))?(?:\|(\d{1,2}))?/m,
                 // death_rex = /^\s*\|\s*death_date\s*=.*?{{.+?\|(\d{4})(?:\|(\d{1,2}))?(?:\|(\d{1,2}))?/m,
-                _=undefined;
+                _c=undefined;
             var
-                re, matches, d, birth_date, death_date;
+                re, matches, d,
+                birth_date = [],
+                death_date = [],
+                _;
 
             // RegExp objects exec as-is, strings get find/replace
             function re_exec ( res ){
                 // Arrayify scalars
-                if ( !res.isArray() )
+                if ( !u.isArray( res ) )
                     res = [ res ];
 
                 // Loop thru regexs
                 for (var i = 0; i < res.length; i++) {
                     var re = res[i];
-                    if ( re.type() !== 'RegExp' ){
+                    if ( u.type( re ) !== 'RegExp' ){
                         re = re.replace(/___/g, '\\s+'    )
                         re = re.replace( /__/g, '\\s*'    )
                         re = re.replace( /#4/g, '\\d{4}'  )
@@ -157,7 +157,6 @@
 
             // Birth
 
-            birth_date = [];
             var rexs = [
                 "^__!__birth_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
                 "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
@@ -170,7 +169,7 @@
                 matches = re_exec("^\\|\\s*birth_date\\s*=\\s*(.+)$");
                 if ( matches ){
                     d = new Date( matches[1] );
-                    if ( d.isValid() ){
+                    if ( u.isValidDate( d ) ){
                         birth_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
                     }
                     else {
@@ -181,7 +180,6 @@
 
             // Death
 
-            death_date = [];
             var rexs = [
                 "^__!__death_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
                 "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
@@ -196,7 +194,7 @@
                 // matches = re_exec("^\\|\\s*death_date\\s*=\\s*([\\w\\d ]+)");
                 if ( matches ){
                     d = new Date( matches[1] );
-                    if ( d.isValid() ){
+                    if ( u.isValidDate( d ) ){
                         death_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
                     }
                     else {
@@ -211,10 +209,10 @@
                     if ( !event.title )
                         event.title = matches[1];
                     d = new Date( matches[2] );
-                    if ( d.isValid() )
+                    if ( u.isValidDate( d ) )
                         birth_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
                     d = new Date( matches[3] );
-                    if ( d.isValid() )
+                    if ( u.isValidDate( d ) )
                         death_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
                 }
             }
@@ -222,7 +220,9 @@
             if ( !event.title )
                 event.title = event.search;
 
-            event.date = [ birth_date, death_date ];
+            event.date = [];
+            if ( u.isFilled( birth_date ) ) event.date.push( birth_date );
+            if ( u.isFilled( death_date ) ) event.date.push( death_date );
         }
     }
 })

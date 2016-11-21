@@ -8,12 +8,9 @@
 (function( root, factory ){
     var timelist = factory()
     root.timelist = {
-        handleClick: timelist.handleClick,
-        handleKeypress: timelist.handleKeypress,
-        _: null
+        handleKeypress: timelist.handleKeypress
     }
-})(this, function(){
-    "use strict"
+})(this, function(){"use strict"
 
     return {
         /**
@@ -31,14 +28,5 @@
                     timeland.advance();
             }, false);
         },
-
-        /**
-         * Add event click event handler
-         */
-        handleClick: function ( container ){
-            container.addEventListener("click", function(e) {
-                timeland.toggle( this )
-            });
-        }
     }
 })

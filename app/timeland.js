@@ -4,15 +4,16 @@
 (function( root, factory ){
     var timeland = factory()
     root.timeland = {
+
         select:   timeland.select,
         toggle:   timeland.toggle,
         advance:  timeland.advance,
         zoom_in:  timeland.zoom_in,
         zoom_out: timeland.zoom_out,
-        _: null
+
+        vue_click:timeland.vue_click
     }
-})(this, function(){
-    "use strict"
+})(this, function(){"use strict"
 
     /**
      * Unselect all events
@@ -31,7 +32,7 @@
      * Display the text in the corner of the screen
      */
     function _display ( text ){
-        document.getElementById('footer').innerText = text;
+        timelion.vue.message = text
     }
 
     /**
@@ -62,11 +63,14 @@
      * Unselect the current event and select the next one down
      */
     function advance (){
-        var found_selected = false;
+        var
+            found_selected = false,
+            events = document.getElementById('timelion-events'),
+            _;
 
-        for (var i = 0; i < timelion.$events.children.length; i++) {
+        for (var i = 0; i < events.children.length; i++) {
             var
-                event = timelion.$events.children[i];
+                event = events.children[i];
 
             if ( found_selected ){
                 timeland.select( event )
@@ -77,7 +81,7 @@
                 found_selected = true;
             }
         }
-        select( timelion.$events.children[0] )
+        select( events.children[0] )
     }
 
     /**
@@ -85,7 +89,8 @@
      */
     function select ( event_container ){
         var
-            event = event_container.timelion_event;
+            index = event_container.dataset.index,
+            event = timelion.events[ index ];
 
         _display( event.date + ': ' + event.title );
         _unselect_all( event_container.parentElement )
@@ -104,12 +109,23 @@
             select( event_container );
     }
 
+    /**
+     * Toggle event selection
+     */
+    function vue_click ( click ){
+        var
+            event_container = click.currentTarget;
+
+        toggle( event_container )
+    }
+
     return {
         select:   select,
         toggle:   toggle,
         advance:  advance,
         zoom_in:  zoom_in,
         zoom_out: zoom_out,
+        vue_click:vue_click,
         _: null
     }
 })
