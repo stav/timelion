@@ -96,6 +96,8 @@
         /**
          * Extend the event object with data found from search using RAW Wikipedia text
          *
+         * NOTE: This is just used for searching people, not events
+         *
          * To do:
          *
          *   {"search": "Viktor Schauberger"},
@@ -110,13 +112,6 @@
         // | death_place = {{nowrap|[[Frombork|Frombork (Frauenburg)]],<br/>[[Prince-Bishopric of Warmia]],<br/>Royal Prussia, Kingdom of<br/>Poland}}
         // | field       = {{hlist|Astronomy |[[Canon law]] |Economics |Mathematics |Medicine |Politics}}
         extend_event_raw: function ( event, text ){
-            const
-                date_rex = "^__!__XXX_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
-                // birth_rex = "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
-                // death_rex = "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
-                // birth_rex = /^\s*\|\s*birth_date\s*=.*?{{.+?\|(\d{4})(?:\|(\d{1,2}))?(?:\|(\d{1,2}))?/m,
-                // death_rex = /^\s*\|\s*death_date\s*=.*?{{.+?\|(\d{4})(?:\|(\d{1,2}))?(?:\|(\d{1,2}))?/m,
-                _c=undefined;
             var
                 re, matches, d,
                 birth_date = [],
@@ -157,7 +152,7 @@
 
             // Birth
 
-            var rexs = [
+            var rexs = [ // these regexs are custom as defined in re_exec()
                 "^__!__birth_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
                 "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
             ];
@@ -180,7 +175,7 @@
 
             // Death
 
-            var rexs = [
+            var rexs = [ // these regexs are custom as defined in re_exec()
                 "^__!__death_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
                 "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
             ];
@@ -220,9 +215,7 @@
             if ( !event.title )
                 event.title = event.search;
 
-            event.date = [];
-            if ( u.isFilled( birth_date ) ) event.date.push( birth_date );
-            if ( u.isFilled( death_date ) ) event.date.push( death_date );
+            event.date = [ birth_date, death_date ];
         }
     }
 })

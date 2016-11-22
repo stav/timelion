@@ -168,17 +168,6 @@
     }
 
     /**
-     * Setup display canvas
-     */
-    function _setup_canvas () {
-        _load_years()
-        _load_events()
-        timelion.$canvas = document.getElementById('timelion');
-        timelion.$canvas.innerHTML = '';
-        timelion.loaded = true
-    }
-
-    /**
      * Do the actual loading
      *
      * Note: this only resolves when all requests have been fulfilled.
@@ -194,15 +183,14 @@
             .then(function(){
                 // Remove any events that did not resolve dates
                 timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
-                _setup_canvas()
+                _load_years()
+                _load_events()
+                timelion.loaded = true
             },
-            // NOTE: refactor for individual requests/responses
-            // A 404 response (because it is rejected) will terminate on filter (no dates)
             function(error){
-                console.log(error)
-                // Remove any events that did not resolve dates
-                timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
-                _setup_canvas()
+                // NOTE: refactor for individual requests/responses
+                // A 404 response (because it is rejected) will terminate on filter (no dates)
+                throw error
             })
     }
 
@@ -296,7 +284,6 @@
             timelion.years = new Map();
             timelion.loaded = false;
             timelion.rendered = false;
-            timelion.$canvas = null;
             timelion.$years = null;
         },
 
@@ -322,6 +309,8 @@
                     reject('Timelion not loaded, run load first');
                     return
                 }
+                const
+                    $canvas = document.getElementById('timelion');
                 var
                     events = document.createElement('div'),
                     years = document.createElement('div'),
@@ -332,20 +321,20 @@
                 years.id = 'timelion-years';
                 years.class = 'comment_';
 
-                timelion.years.forEach(function( y ){
+                timelion.years.forEach(function( year ){
                     var
-                        year = document.createElement('div'),
-                        text = document.createElement('span'),
+                        $year = document.createElement('div'),
+                        $text = document.createElement('span'),
                         _;
 
-                    year.classList.add('year');
-                    year.style = 'width:' + y.width.toFixed(2) + 'px';
-                    text.innerText = y.year + (timelion.config.show_age ? (' <i>(' + y.age + ')</i>') : '')
-                    year.innerHTML = text.outerHTML;
-                    years.appendChild( year )
-                    y.$element = year;
+                    $year.classList.add('year');
+                    $year.style = 'width:' + year.width.toFixed(2) + 'px';
+                    $text.innerText = year.year + (timelion.config.show_age ? (' <i>(' + year.age + ')</i>') : '')
+                    $year.innerHTML = $text.outerHTML;
+                    $year.setAttribute('data-year', year.year)
+                    years.appendChild( $year )
                 })
-                timelion.$canvas.appendChild( years )
+                $canvas.appendChild( years )
                 timelion.$years = years;
 
                 // Events
@@ -358,7 +347,7 @@
                         event_container = document.createElement('div'),
                         line = document.createElement('div'),
                         data = document.createElement('b'),
-                        text = document.createTextNode( event.title ),
+                        $text = document.createTextNode( event.title ),
                         _;
 
                     data.innerHTML = event.date;
@@ -375,14 +364,12 @@
                     event_container.setAttribute('v-on:click', 'toggle')
                     event_container.appendChild( line )
                     event_container.appendChild( data )
-                    event_container.appendChild( text )
+                    event_container.appendChild( $text )
 
                     events.appendChild( event_container )
-                    event.$container = event_container;
-                    event.$line = line;
                 };
 
-                timelion.$canvas.appendChild( events )
+                $canvas.appendChild( events )
 
                 // Resolution
 
@@ -408,17 +395,41 @@
         },
 
         update: function(){
+
             // Years
+
+            var
+                $years = document.getElementById('timelion-years'),
+                years = u.toArray( $years.children ),
+                _;
+
             _load_years()
-            timelion.years.forEach(function( year ){
-                year.$element.style.width = year.width.toFixed(2) + 'px';
+
+            years.forEach(function( $year ){
+                var
+                    year_number = parseInt($year.dataset.year),
+                    year = timelion.years.get( year_number ),
+                    _;
+                $year.style.width = year.width.toFixed(2) + 'px';
             })
 
             // Events
+
+            var
+                $events = document.getElementById('timelion-events'),
+                events = u.toArray( $events.children ),
+                _;
+
             _load_events()
-            timelion.events.forEach(function( event ){
-                event.$container.style.marginLeft = event.offset.toFixed(2) + 'px';
-                event.$line.style.width = event.width.toFixed(2) + 'px';
+
+            events.forEach(function( $event ){
+                var
+                    index = $event.dataset.index,
+                    event = timelion.events[ index ],
+                    $line = $event.querySelector('.line'),
+                    _;
+                $event.style.marginLeft = event.offset.toFixed(2) + 'px';
+                $line.style.width = event.width.toFixed(2) + 'px';
             })
         }
     }

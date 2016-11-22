@@ -5,8 +5,7 @@
     root.u = factory()
 })(this, function(){"use strict"
 
-// // http://www.ecma-international.org/ecma-262/5.1/#sec-8.6.2
-// // Also, convert to Array: [].slice.call(this)
+// http://www.ecma-international.org/ecma-262/5.1/#sec-8.6.2
 
     return {
 
@@ -36,6 +35,20 @@
         },
 
         /**
+         * Convert iterable to Array
+         */
+        toArray: function ( o ){
+            return [].slice.call( o )
+        },
+
+        /**
+         *
+         */
+        isArray: function ( o ){
+            return Object.prototype.toString.call( o ) === '[object Array]'
+        },
+
+        /**
          *
          */
         isValidDate: function ( o ) {
@@ -47,13 +60,6 @@
          */
         isDate: function ( o ){
             return Object.prototype.toString.call( o ) === '[object Date]'
-        },
-
-        /**
-         *
-         */
-        isArray: function ( o ){
-            return Object.prototype.toString.call( o ) === '[object Array]'
         },
 
         /**
