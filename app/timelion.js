@@ -19,7 +19,7 @@
         OFFLINE = 0x00,
         WIKIPEDIA_API = 0x01,
         WIKIPEDIA_RAW = 0x02,
-        ONLINE_SEARCH = WIKIPEDIA_RAW;
+        ONLINE_SEARCH = OFFLINE;
 
     /**
      * Load year-based data
@@ -33,7 +33,7 @@
             ty = timelion.years,
             _e = timelion.e,
             _events = timelion.events,
-            _day_width = timelion.config.year_width/12/30,  // rough numbers
+            _day_width = timelion.year_width/12/30,  // rough numbers
             _byears = _events.map(function(e){return u.first(_e.get_beg_triplet(e))}),
             _eyears = _events.map(function(e){return u.first(_e.get_end_triplet(e))}),
             _years = _byears.concat(_eyears).filter(function(y){return y}),
@@ -70,7 +70,7 @@
             _;
 
         var firstYear = timelion.years.values().next().value.year;
-        var yearLength = timelion.config.year_width;
+        var yearLength = timelion.year_width;
         var monthLength = yearLength/12;
         var dayLength = monthLength/30;
 
@@ -277,10 +277,11 @@
 
         reset: function(){
             document.getElementById('timelion').innerHTML = '';
-            timelion.years = new Map();
-            timelion.loaded = false;
             timelion.rendered = false;
+            timelion.loaded = false;
             timelion.$years = null;
+            timelion.years = new Map();
+            timelion.year_width = timelion.config.year_width;
         },
 
         load: function( filename ){

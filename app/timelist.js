@@ -18,7 +18,7 @@
          */
         handleKeypress: function ( body ){
             body.addEventListener('keypress', function (e) {
-                if ( e.key === "1" && timelion.config.year_width > 1 )
+                if ( e.key === "1" && timelion.year_width > 1 )
                     timeland.zoom_out();
                 else
                 if ( e.key === "2" )

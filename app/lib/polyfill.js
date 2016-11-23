@@ -1,4 +1,4 @@
-// Avoid `console` errors in browsers that lack a console.
+// Avoid `console` errors in browsers that lack a console
 (function() {"use strict"
     var
         method,
@@ -18,5 +18,16 @@
         if (!console[method]) {  // Only stub undefined methods.
             console[method] = noop;
         }
+    }
+}());
+
+// Date formatters
+(function() {"use strict"
+    if (!Date.prototype.toLocaleFormat) {
+        (function() {
+            Date.prototype.toLocaleFormat = function( formatString ) {
+                return this.toISOString().split('T')[0]
+            }
+        }())
     }
 }());

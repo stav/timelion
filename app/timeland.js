@@ -39,8 +39,8 @@
      * Zoom in / out
      */
     function _zoom ( factor ){
-        timelion.config.year_width += factor;
-        timelion.config.year_width = Math.max( timelion.config.year_width, 1 );
+        timelion.year_width += factor;
+        timelion.year_width = Math.max( timelion.year_width, 1 );
         timelion.update()
         timelast.keep_right()
     }
@@ -49,14 +49,14 @@
      *
      */
     function zoom_in (){
-        _zoom( timelion.config.year_width / 10 );
+        _zoom( timelion.year_width / 10 );
     }
 
     /**
      *
      */
     function zoom_out (){
-        _zoom( timelion.config.year_width / -10 );
+        _zoom( timelion.year_width / -10 );
     }
 
     /**
@@ -85,6 +85,21 @@
     }
 
     /**
+     * Display description of the given event to the screen
+     */
+    function _display_event ( event ){
+        var
+            beg_date = event.date[0],
+            beg_stng = new Date( beg_date ).toLocaleFormat('%Y %b %e %A'),
+            end_date = event.date.length > 1 ? event.date[1] : [],
+            end_stng = u.isFilled( end_date ) ? new Date( end_date ).toLocaleFormat('%Y %b %e %A') : '',
+            event_desc = event.title + ': ' + beg_stng + (end_stng ? ' - ' + end_stng : ''),
+            _;
+
+         _display( event_desc )
+    }
+
+    /**
      * Select the given event container
      */
     function select ( event_container ){
@@ -92,7 +107,7 @@
             index = event_container.dataset.index,
             event = timelion.events[ index ];
 
-        _display( event.date + ': ' + event.title );
+        _display_event( event );
         _unselect_all( event_container.parentElement )
         event_container.style.backgroundColor = 'black';
     }
