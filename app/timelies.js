@@ -6,10 +6,11 @@
  * - utils
  */
 (function( root, factory ){
-    var timelies = factory()
+    var self = factory()
     root.timelies = {
-        extend_event_api: timelies.extend_event_api,
-        extend_event_raw: timelies.extend_event_raw
+        // Export public API
+        extend_event_api: self.extend_event_api,
+        extend_event_raw: self.extend_event_raw
     }
 })(this, function(){"use strict"
 

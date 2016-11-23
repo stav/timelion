@@ -2,16 +2,16 @@
  * Timelion landing - dom manipulation
  */
 (function( root, factory ){
-    var timeland = factory()
+    var self = factory()
     root.timeland = {
+        // Export public API
+        select:   self.select,
+        toggle:   self.toggle,
+        advance:  self.advance,
+        zoom_in:  self.zoom_in,
+        zoom_out: self.zoom_out,
 
-        select:   timeland.select,
-        toggle:   timeland.toggle,
-        advance:  timeland.advance,
-        zoom_in:  timeland.zoom_in,
-        zoom_out: timeland.zoom_out,
-
-        vue_click:timeland.vue_click
+        vue_click:self.vue_click
     }
 })(this, function(){"use strict"
 
@@ -120,12 +120,13 @@
     }
 
     return {
+        // Exposed factory functions
         select:   select,
         toggle:   toggle,
         advance:  advance,
         zoom_in:  zoom_in,
         zoom_out: zoom_out,
         vue_click:vue_click,
-        _: null
+        _: null  // allow trailing comma
     }
 })

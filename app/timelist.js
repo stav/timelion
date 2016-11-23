@@ -6,12 +6,12 @@
  * - timeland: dom manipulations
  */
 (function( root, factory ){
-    var timelist = factory()
+    var self = factory()
     root.timelist = {
-        handleKeypress: timelist.handleKeypress
+        // Export public API
+        handleKeypress: self.handleKeypress
     }
 })(this, function(){"use strict"
-
     return {
         /**
          * Add keypress event handler
