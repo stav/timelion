@@ -8,6 +8,7 @@
  * - timelast: screen display
  * - httplibe: promise-based url resolution
  * - polyfill: prototype extensions
+ * - utils
  */
 (function( root, factory ){
     root.timelion = factory()
@@ -32,7 +33,7 @@
             ty = timelion.years,
             _e = timelion.e,
             _events = timelion.events,
-            _day_width = timelion.config.year_width/12/30,  // rough numbers
+            _day_width = timelion.year_width/12/30,  // rough numbers
             _byears = _events.map(function(e){return u.first(_e.get_beg_triplet(e))}),
             _eyears = _events.map(function(e){return u.first(_e.get_end_triplet(e))}),
             _years = _byears.concat(_eyears),
@@ -69,7 +70,7 @@
             _;
 
         var firstYear = timelion.years.values().next().value.year;
-        var yearLength = timelion.config.year_width;
+        var yearLength = timelion.year_width;
         var monthLength = yearLength/12;
         var dayLength = monthLength/30;
 
@@ -296,6 +297,7 @@
             timelion.$canvas = null;
             timelion.$events = null;
             timelion.$years = null;
+            timelion.year_width = timelion.config.year_width;
         },
 
         load: function( filename ){

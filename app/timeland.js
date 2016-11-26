@@ -38,8 +38,8 @@
      * Zoom in / out
      */
     function _zoom ( factor ){
-        timelion.config.year_width += factor;
-        timelion.config.year_width = Math.max( timelion.config.year_width, 1 );
+        timelion.year_width += factor;
+        timelion.year_width = Math.max( timelion.year_width, 1 );
         timelion.update()
         timelast.keep_right( timelion.$canvas )
     }
@@ -48,14 +48,14 @@
      *
      */
     function zoom_in (){
-        _zoom( timelion.config.year_width / 10 );
+        _zoom( timelion.year_width / 10 );
     }
 
     /**
      *
      */
     function zoom_out (){
-        _zoom( timelion.config.year_width / -10 );
+        _zoom( timelion.year_width / -10 );
     }
 
     /**
