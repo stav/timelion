@@ -325,7 +325,7 @@
                         _;
 
                     $year.classList.add('year');
-                    $year.style = 'width:' + year.width.toFixed(2) + 'px';
+                    $year.style.width = year.width.toFixed(2) + 'px';
                     $text.innerText = year.year + (timelion.config.show_age ? (' <i>(' + year.age + ')</i>') : '')
                     $year.innerHTML = $text.outerHTML;
                     $year.setAttribute('data-year', year.year)
@@ -350,12 +350,12 @@
                     data.innerHTML = event.date;
 
                     line.classList.add('line');
-                    line.style = 'width:' + event.width.toFixed(2) + 'px';
+                    line.style.width = event.width.toFixed(2) + 'px';
 
                     if ( event.id )
                     event_container.id = event.id;
                     event_container.title = event.title;
-                    event_container.style = 'margin-left:' + event.offset.toFixed(2) + 'px';
+                    event_container.style.marginLeft = event.offset.toFixed(2) + 'px';
                     event_container.classList.add('event');
                     event_container.setAttribute('data-index', i)
                     event_container.setAttribute('v-on:click', 'toggle')
