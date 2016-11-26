@@ -2,17 +2,25 @@
  * HTTP Promise-based request resolution
  */
 (function( root, factory ){
-    root.httplibe = factory()
+    var self = factory();
+    root.httplibe = {
+        // Export public API
+        get:           self.get,
+        get_json:      self.get_json,
+        get_json_data: self.get_json_data
+    }
 })(this, function(){
     "use strict"
 
     /**
      * Request url and return the result
      */
-    function get ( url ){
+    function get ( url, accept ){
         return new Promise(function( resolve, reject ) {
             var xhr = new XMLHttpRequest();
             xhr.open('GET', url, true)
+            if ( accept )
+                xhr.setRequestHeader('Accept', accept);
             xhr.onload = function(){
                 if (xhr.status == 200)
                     resolve( xhr.responseText );
@@ -28,16 +36,10 @@
      */
     function get_json ( url ){
         return new Promise(function( resolve, reject ) {
-            var xhr = new XMLHttpRequest();
-            xhr.open('GET', url, true)
-            xhr.setRequestHeader('Accept', 'application/json')
-            xhr.onload = function(){
-                if (xhr.status == 200)
-                    resolve( xhr.responseText );
-                else
-                    reject('Could not load ('+ url +') status ('+ xhr.status +')');
-            }
-            xhr.send()
+            get( url, 'application/json' ).then(function( text ){
+                resolve( text )
+            },
+            function(error){reject(error)})
         })
     }
 
@@ -53,20 +55,16 @@
                 catch (error){
                     reject('File is not JSON ('+ json +') '+ error);
                 }
-            }, function( error ){
-                reject(error)
-            })
+            },
+            function(error){reject(error)})
         })
     }
 
-    // Export
-
     return {
-
+        // Exposed factory functions
         get:           get,
         get_json:      get_json,
-        get_json_data: get_json_data
-
-    }  // httplibe export
-
-})  // Closure
+        get_json_data: get_json_data,
+        _: null  // allow trailing comma
+    }
+})

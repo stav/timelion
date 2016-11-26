@@ -11,8 +11,7 @@
  */
 (function( root, factory ){
     root.timelion = factory()
-})(this, function(){
-    "use strict"
+})(this, function(){"use strict"
 
     const
 

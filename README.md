@@ -44,6 +44,8 @@ prevent cross domain requests (no CORS support), start browser like:
 
 	chromium-browser --disable-web-security --user-data-dir &
 
+	/opt/google/chrome/google-chrome --disable-web-security --user-data-dir &
+
 ### Fields
 
 #### `date`
