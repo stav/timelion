@@ -41,7 +41,7 @@
         timelion.year_width += factor;
         timelion.year_width = Math.max( timelion.year_width, 1 );
         timelion.update()
-        timelast.keep_right( timelion.$canvas )
+        timelast.keep_right()
     }
 
     /**

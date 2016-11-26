@@ -15,14 +15,14 @@
         return element.getBoundingClientRect().right
     }
 
-    function get_selected_events ( canvas ){
+    function get_selected_events ( $canvas ){
         // First collect all the selected events into an HTMLCollection
-        const events_collection = canvas.getElementsByClassName('event');
+        const $events = $canvas.getElementsByClassName('event');
         var events_selected = [];
 
-        for (var i = 0; i < events_collection.length; i++) {
-            if ( events_collection[i].style.backgroundColor )
-                events_selected.push( events_collection[i] )
+        for (var i = 0; i < $events.length; i++) {
+            if ( $events[i].style.backgroundColor )
+                events_selected.push( $events[i] )
         }
         return events_selected
     }
@@ -32,17 +32,18 @@
      * var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0)
      * var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0)
      */
-    function keep_right ( canvas ){
+    function keep_right(){
         const
-            events = get_selected_events( canvas ),
+            $canvas = document.getElementById('timelion'),
+            events = get_selected_events( $canvas ),
             rights = events.map( get_bounding_box_right ),
             rightest = Math.max.apply( null, rights ),
-            amount_obscured = rightest + canvas.scrollLeft,
+            amount_obscured = rightest + $canvas.scrollLeft,
             viewport_width = document.documentElement.clientWidth,
             shift = Math.ceil( viewport_width - amount_obscured );
 
         if ( shift < 0 ){
-            canvas.scrollLeft = Math.abs( shift )
+            $canvas.scrollLeft = Math.abs( shift )
         }
     }
 

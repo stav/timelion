@@ -169,8 +169,7 @@
     function _setup_canvas () {
         _load_years()
         _load_events()
-        timelion.$canvas = document.getElementById('timelion');
-        timelion.$canvas.innerHTML = '';
+        document.getElementById('timelion').innerHTML = '';
         timelion.loaded = true
     }
 
@@ -290,7 +289,6 @@
             timelion.years = new Map();
             timelion.loaded = false;
             timelion.rendered = false;
-            timelion.$canvas = null;
             timelion.$events = null;
             timelion.$years = null;
             timelion.year_width = timelion.config.year_width;
@@ -319,6 +317,7 @@
                     return
                 }
                 var
+                    $canvas = document.getElementById('timelion'),
                     events = document.createElement('div'),
                     years = document.createElement('div'),
                     _;
@@ -335,13 +334,13 @@
                         _;
 
                     year.classList.add('year');
-                    year.style = 'width:' + y.width.toFixed(2) + 'px';
+                    year.style.width = y.width.toFixed(2) + 'px';
                     text.innerText = y.year + (timelion.config.show_age ? (' <i>(' + y.age + ')</i>') : '')
                     year.innerHTML = text.outerHTML;
                     years.appendChild( year )
                     y.$element = year;
                 })
-                timelion.$canvas.appendChild( years )
+                $canvas.appendChild( years )
                 timelion.$years = years;
 
                 // Events
@@ -359,10 +358,10 @@
                     data.innerHTML = event.date;
 
                     line.classList.add('line');
-                    line.style = 'width:' + event.width.toFixed(2) + 'px';
+                    line.style.width = event.width.toFixed(2) + 'px';
 
                     event_container.title = event.title;
-                    event_container.style = 'margin-left:' + event.offset.toFixed(2) + 'px';
+                    event_container.style.marginLeft = event.offset.toFixed(2) + 'px';
                     event_container.classList.add('event');
                     event_container.appendChild( line )
                     event_container.appendChild( data )
@@ -378,7 +377,7 @@
                     event.$line = line;
                 });
 
-                timelion.$canvas.appendChild( events )
+                $canvas.appendChild( events )
                 timelion.$events = events;
 
                 // Resolution

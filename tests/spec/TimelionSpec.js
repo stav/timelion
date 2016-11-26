@@ -81,14 +81,17 @@ describe("timelion", function() {
 
     describe("DOM", function() {
 
+        var $canvas;
+
         beforeAll(function(done) {
             timelion.reset();
+            $canvas = document.getElementById('timelion');
             setTimeout(function(){ load( done ) }, 1)
         });
 
         it("should contain a valid empty canvas", function() {
-            expect(timelion.$canvas.nodeName).toEqual('SECTION');
-            expect(timelion.$canvas.children.length).toEqual(0);
+            expect( $canvas.nodeName ).toEqual('SECTION');
+            expect( $canvas.children.length ).toEqual(0);
         });
 
         describe("render", function() {
@@ -105,7 +108,7 @@ describe("timelion", function() {
                 expect(timelion.rendered).toBe(true);
             });
             it("should have some children", function() {
-                expect(timelion.$canvas.children.length).toBeGreaterThan(0);
+                expect( $canvas.children.length ).toBeGreaterThan(0);
             });
 
         });
