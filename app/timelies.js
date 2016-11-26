@@ -61,7 +61,7 @@
         for (var i = 0; i < regexs.length; i++) {
             if ( regexs[i] ){
                 from_to_dates_pair = _parse_info_for_two_dates( new RegExp( regexs[i] ), info );
-                if ( from_to_dates_pair && from_to_dates_pair.isArray() )
+                if ( from_to_dates_pair && u.isArray(from_to_dates_pair) )
                     return from_to_dates_pair;
             }
         }
@@ -126,13 +126,13 @@
             // RegExp objects exec as-is, strings get find/replace
             function re_exec ( res ){
                 // Arrayify scalars
-                if ( !res.isArray() )
+                if ( !u.isArray( res ))
                     res = [ res ];
 
                 // Loop thru regexs
                 for (var i = 0; i < res.length; i++) {
                     var re = res[i];
-                    if ( re.type() !== 'RegExp' ){
+                    if ( u.type( re ) !== 'RegExp' ){
                         re = re.replace(/___/g, '\\s+'    )
                         re = re.replace( /__/g, '\\s*'    )
                         re = re.replace( /#4/g, '\\d{4}'  )

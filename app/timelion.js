@@ -33,8 +33,8 @@
             _e = timelion.e,
             _events = timelion.events,
             _day_width = timelion.config.year_width/12/30,  // rough numbers
-            _byears = _events.map(function(e){return _e.get_beg_triplet(e)[0]}),
-            _eyears = _events.map(function(e){return _e.get_end_triplet(e)[0]}),
+            _byears = _events.map(function(e){return u.first(_e.get_beg_triplet(e))}),
+            _eyears = _events.map(function(e){return u.first(_e.get_end_triplet(e))}),
             _years = _byears.concat(_eyears),
             _first_year = Math.min.apply(null, _years),
             _final_year = Math.max.apply(null, _years),
@@ -218,9 +218,9 @@
         var date;
 
         // Check if we have a non-empty array
-        if ( date_input.isArray() && date_input.length > 0 ) {
+        if ( u.isArray( date_input ) && date_input.length > 0 ) {
             // Short circuit if first arary element is a number
-            if ( date_input[0].isNumber() ){
+            if ( u.isNumber( date_input[0] )){
                 return [
                     date_input[0],
                     date_input.length > 1 ? date_input[1] : month_default,
@@ -228,13 +228,13 @@
                 ]
             }
             // If we have a single string element then try to make it a date
-            if ( date_input.length === 1 && date_input[0].isString() ){
+            if ( date_input.length === 1 && u.isString( date_input[0] )){
                date = new Date( date_input );
             }
         }
         // Maybe we already have a date
         else
-        if ( date_input.isDate() )
+        if ( u.isDate( date_input ))
             date = date_input;
 
         // Return the the date parts as tuple triple

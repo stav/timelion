@@ -39,7 +39,7 @@ describe("timelion", function() {
             expect(timelion.loaded).toBe(true);
         });
         it("should contain at least one record", function() {
-            expect(timelion.events.isArray()).toBe(true);
+            expect( u.isArray( timelion.events )).toBe(true);
             expect(timelion.events.length).toBeGreaterThan(0);
         });
         it("should contain valid events", function() {
@@ -51,22 +51,22 @@ describe("timelion", function() {
                 expect(btrip.length).toEqual(3);
                 expect(etrip.length).toEqual(3);
 
-                expect(btrip[0].isNumber()).toBe(true);
-                expect(btrip[1].isNumber()).toBe(true);
-                expect(btrip[2].isNumber()).toBe(true);
-                expect(etrip[0].isNumber()).toBe(true);
-                expect(etrip[1].isNumber()).toBe(true);
-                expect(etrip[2].isNumber()).toBe(true);
+                expect( u.isNumber( btrip[0] )).toBe(true);
+                expect( u.isNumber( btrip[1] )).toBe(true);
+                expect( u.isNumber( btrip[2] )).toBe(true);
+                expect( u.isNumber( etrip[0] )).toBe(true);
+                expect( u.isNumber( etrip[1] )).toBe(true);
+                expect( u.isNumber( etrip[2] )).toBe(true);
 
-                expect(event.offset.isNumber()).toBe(true);
-                expect(event.width.isNumber()).toBe(true);
+                expect( u.isNumber( event.offset )).toBe(true);
+                expect( u.isNumber( event.width )).toBe(true);
                 expect(typeof event.title).toEqual('string');
             });
         });
         it("should have valid years", function() {
-            expect(timelion.years.type()).toEqual('Map');
-            expect(timelion.years.size).toBeGreaterThan(0);
-            expect(timelion.years.values().next().value.type()).toEqual('Object');
+            expect( timelion.years.size ).toBeGreaterThan(0);
+            expect( u.type( timelion.years )).toEqual('Map');
+            expect( u.type(timelion.years.values().next().value) ).toEqual('Object');
             // expect(
             //     timelion.years.every(function(y){
             //         return typeof y.year == 'number'

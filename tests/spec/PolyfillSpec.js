@@ -1,7 +1,7 @@
 describe("polyfill", function() {
 
-  it("should expose the Object method: type", function() {
-    expect( typeof Object.type ).toEqual('function');
+  it("should expose the Date method: toLocaleFormat", function() {
+    expect( typeof (new Date()).toLocaleFormat ).toEqual('function');
   });
 
 });

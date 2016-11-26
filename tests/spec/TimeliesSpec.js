@@ -15,10 +15,8 @@ describe("timelies", function() {
             const data = JSON.parse( json );
             var event = {};
             timelies.extend_event_api( event, data )
-            expect(event.date.type()).toEqual('Array');
-            expect(event.date).toEqual([ [ 1933, 9, 11 ], [ 2002, 7, 23 ] ]);
+            expect( u.type( event.date )).toEqual('Array');
+            expect( event.date ).toEqual([ [ 1933, 9, 11 ], [ 2002, 7, 23 ] ]);
         });
-
     });
-
 });
