@@ -62,14 +62,17 @@
      * Unselect the current event and select the next one down
      */
     function advance (){
-        var found_selected = false;
+        var
+            found_selected = false,
+            events = document.getElementById('timelion-events'),
+            _;
 
-        for (var i = 0; i < timelion.$events.children.length; i++) {
+        for (var i = 0; i < events.children.length; i++) {
             var
-                event = timelion.$events.children[i];
+                event = events.children[i];
 
             if ( found_selected ){
-                timeland.select( event )
+                select( event )
                 return
             }
             if ( event.style.backgroundColor ){
@@ -77,7 +80,22 @@
                 found_selected = true;
             }
         }
-        select( timelion.$events.children[0] )
+        select( events.children[0] )
+    }
+
+    /**
+     * Display description of the given event to the screen
+     */
+    function _display_event ( event ){
+        var
+            beg_date = event.date[0],
+            beg_stng = new Date( beg_date ).toLocaleFormat('%Y %b %e %A'),
+            end_date = event.date.length > 1 ? event.date[1] : [],
+            end_stng = u.isFilled( end_date ) ? new Date( end_date ).toLocaleFormat('%Y %b %e %A') : '',
+            event_desc = event.title + ': ' + beg_stng + (end_stng ? ' - ' + end_stng : ''),
+            _;
+
+         _display( event_desc )
     }
 
     /**
@@ -85,9 +103,10 @@
      */
     function select ( event_container ){
         var
-            event = event_container.timelion_event;
+            index = event_container.dataset.index,
+            event = timelion.events[ index ];
 
-        _display( event.date + ': ' + event.title );
+        _display_event( event );
         _unselect_all( event_container.parentElement )
         event_container.style.backgroundColor = 'black';
     }
@@ -105,11 +124,12 @@
     }
 
     return {
+        // Exposed factory functions
         select:   select,
         toggle:   toggle,
         advance:  advance,
         zoom_in:  zoom_in,
         zoom_out: zoom_out,
-        _: null
+        _: null  // allow trailing comma
     }
 })

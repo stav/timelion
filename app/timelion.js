@@ -289,7 +289,6 @@
             timelion.years = new Map();
             timelion.loaded = false;
             timelion.rendered = false;
-            timelion.$events = null;
             timelion.$years = null;
             timelion.year_width = timelion.config.year_width;
         },
@@ -347,8 +346,9 @@
 
                 events.id = 'timelion-events';
 
-                timelion.events.forEach(function( event ){
+                for (var i = 0; i < timelion.events.length; i++) {
                     var
+                        event = timelion.events[i],
                         event_container = document.createElement('div'),
                         line = document.createElement('div'),
                         data = document.createElement('b'),
@@ -363,6 +363,7 @@
                     event_container.title = event.title;
                     event_container.style.marginLeft = event.offset.toFixed(2) + 'px';
                     event_container.classList.add('event');
+                    event_container.setAttribute('data-index', i)
                     event_container.appendChild( line )
                     event_container.appendChild( data )
                     event_container.appendChild( text )
@@ -375,10 +376,8 @@
                     event_container.timelion_event = event;
                     event.$container = event_container;
                     event.$line = line;
-                });
-
+                }
                 $canvas.appendChild( events )
-                timelion.$events = events;
 
                 // Resolution
 

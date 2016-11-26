@@ -114,16 +114,11 @@
         // | death_place = {{nowrap|[[Frombork|Frombork (Frauenburg)]],<br/>[[Prince-Bishopric of Warmia]],<br/>Royal Prussia, Kingdom of<br/>Poland}}
         // | field       = {{hlist|Astronomy |[[Canon law]] |Economics |Mathematics |Medicine |Politics}}
         extend_event_raw: function ( event, text ){
-            // console.log(text.substr(0,1999))
-            const
-                date_rex = "^__!__XXX_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
-                // birth_rex = "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
-                // death_rex = "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
-                // birth_rex = /^\s*\|\s*birth_date\s*=.*?{{.+?\|(\d{4})(?:\|(\d{1,2}))?(?:\|(\d{1,2}))?/m,
-                // death_rex = /^\s*\|\s*death_date\s*=.*?{{.+?\|(\d{4})(?:\|(\d{1,2}))?(?:\|(\d{1,2}))?/m,
-                _=undefined;
             var
-                re, matches, d, birth_date, death_date;
+                re, matches, d,
+                birth_date = [],
+                death_date = [],
+                _;
 
             // RegExp objects exec as-is, strings get find/replace
             function re_exec ( res ){
@@ -159,8 +154,7 @@
 
             // Birth
 
-            birth_date = [];
-            var rexs = [
+            var rexs = [ // these regexs are custom as defined in re_exec()
                 "^__!__birth_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
                 "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
             ];
@@ -183,8 +177,7 @@
 
             // Death
 
-            death_date = [];
-            var rexs = [
+            var rexs = [ // these regexs are custom as defined in re_exec()
                 "^__!__death_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
                 "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
             ];
