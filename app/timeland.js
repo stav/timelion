@@ -1,5 +1,5 @@
 /**
- * Timelion landing - dom manipulation
+ * Timelion landing - DOM manipulation
  */
 (function( root, factory ){
     var self = factory()
@@ -15,7 +15,7 @@
 })(this, function(){"use strict"
 
     /**
-     * Unselect all events
+     * Un-select all events
      */
     function _unselect_all ( events_container ){
         for (var i = 0; i < events_container.children.length; i++) {
@@ -35,13 +35,34 @@
     }
 
     /**
+     * Find the selected event and re-display it
+     */
+    function _update_selected_display (){
+        var
+            $events = document.getElementById('timelion-events');
+
+        for (var i = 0; i < $events.children.length; i++) {
+            var
+                $event = $events.children[i],
+                _;
+            if ( $event.style.backgroundColor ){
+                var
+                    index = $event.dataset.index,
+                    event = timelion.events[ index ],
+                    _;
+                _display_event( event );
+            }
+        }
+    }
+
+    /**
      * Zoom in / out
      */
     function _zoom ( factor ){
-        timelion.year_width += factor;
-        timelion.year_width = Math.max( timelion.year_width, 1 );
+        timelion.year_width = Math.max( timelion.year_width + factor, 1 );
         timelion.update()
         timelast.keep_right()
+        _update_selected_display()
     }
 
     /**
@@ -64,23 +85,23 @@
     function advance (){
         var
             found_selected = false,
-            events = document.getElementById('timelion-events'),
+            $events = document.getElementById('timelion-events'),
             _;
 
-        for (var i = 0; i < events.children.length; i++) {
+        for (var i = 0; i < $events.children.length; i++) {
             var
-                event = events.children[i];
+                $event = $events.children[i];
 
             if ( found_selected ){
-                select( event )
+                select( $event )
                 return
             }
-            if ( event.style.backgroundColor ){
-                event.style.backgroundColor = '';
+            if ( $event.style.backgroundColor ){
+                $event.style.backgroundColor = '';
                 found_selected = true;
             }
         }
-        select( events.children[0] )
+        select( $events.children[0] )
     }
 
     /**
@@ -92,10 +113,20 @@
             beg_stng = new Date( beg_date ).toLocaleFormat('%Y %b %e %A'),
             end_date = event.date.length > 1 ? event.date[1] : [],
             end_stng = u.isFilled( end_date ) ? new Date( end_date ).toLocaleFormat('%Y %b %e %A') : '',
-            event_desc = event.title + ': ' + beg_stng + (end_stng ? ' - ' + end_stng : ''),
+            event_desc,
             _;
 
-         _display( event_desc )
+        event_desc = ''
+            + event.title
+            + ': '
+            + beg_stng
+            + (end_stng ? ' - ' + end_stng : '')
+            + ' ::: '
+            + event.offset.toFixed(1)
+            + ', '
+            + event.width.toFixed(1)
+            ;
+        _display( event_desc )
     }
 
     /**

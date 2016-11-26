@@ -33,10 +33,10 @@
             ty = timelion.years,
             _e = timelion.e,
             _events = timelion.events,
-            _day_width = timelion.year_width/12/30,  // rough numbers
+            _day_width = timelion.year_width / 12 / 30,  // rough numbers
             _byears = _events.map(function(e){return u.first(_e.get_beg_triplet(e))}),
             _eyears = _events.map(function(e){return u.first(_e.get_end_triplet(e))}),
-            _years = _byears.concat(_eyears),
+            _years = _byears.concat(_eyears).filter(Boolean),
             _first_year = Math.min.apply(null, _years),
             _final_year = Math.max.apply(null, _years),
             _;
@@ -65,47 +65,58 @@
      */
     function _load_event ( event ){
         var
-            _beg_date = timelion.e.get_beg_triplet(event),
-            _end_date = timelion.e.get_end_triplet(event),
+            _beg_date = event.date[0],
+            _end_date = event.date[1] || [],
+            _daily_ms = 24 * 60 * 60 * 1000,
+            first_year = timelion.years.values().next().value.year,
+            days_in_month = 30,
+            months_in_year = 12,
+            year_length = timelion.year_width,
+            month_length = year_length / months_in_year,
+            day_length = month_length / days_in_month,
+            beg_year  = _beg_date[0],
+            beg_month = _beg_date[1],
+            beg_day   = _beg_date[2],
+            end_year  = _end_date[0],
+            end_month = _end_date[1],
+            end_day   = _end_date[2],
+            diff_ms, diff_days,
             _;
 
-        var firstYear = timelion.years.values().next().value.year;
-        var yearLength = timelion.year_width;
-        var monthLength = yearLength/12;
-        var dayLength = monthLength/30;
-
-        var startYear  = _beg_date[0];
-        var startMonth = _beg_date[1];
-        var startDay   = _beg_date[2];
-        var endYear    = _end_date[0];
-        var endMonth   = _end_date[1];
-        var endDay     = _end_date[2];
-        var width = 0;
+        // http://jesusnjim.com/common/julian-gregorian.html
+        // number of days must be processed without the epoch or you get the offset of 4719 years or so
+        function GregorianToDTime(Y, Mo, D ) {
+            var a=Math.floor((14-Mo)/12);
+            var y=Y/*+4800*/-a;
+            var m=Mo+(12*a)-3;
+            var JD = D + Math.floor((153*m+2)/5) + (365*y) + Math.floor(y/4) - Math.floor(y/100) + Math.floor(y/400) - 32045+32044+60;
+            return JD * 1000 * 60 * 60 * 24;
+        }
+        function GregorianDiffWithoutEpoch( yr1, mo1, dy1,  yr2, mo2, dy2 ) {
+            var dt1 = GregorianToDTime( yr1, mo1, dy1 );
+            var dt2 = GregorianToDTime( yr2, mo2, dy2 );
+            return dt1 - dt2;
+        }
 
         // Calculate offset
-        var startTime = new Date(firstYear, 0, 1);
-        var endTime = new Date(startYear, startMonth ? startMonth-1 : 0, startDay || 1);
-        var daysDiff = (endTime - startTime)/(24*60*60*1000);
-        event.offset = daysDiff*dayLength;
+        diff_ms = GregorianDiffWithoutEpoch( beg_year, beg_month || 1, beg_day || 1, first_year, 1, 1 );
+        diff_days = parseInt( diff_ms / _daily_ms );
+        event.offset = diff_days * day_length;
 
         // Calculate width
-        if (endYear){
-            var _endMonth = endMonth ? endMonth-1 : 11;
-            var _endDay = endDay || new Date(endYear, _endMonth+1, 0).getDate();
-            startTime = new Date(startYear, startMonth ? startMonth-1 : 0, startDay || 1);
-            endTime = new Date(endYear, _endMonth, _endDay);
-            daysDiff = (endTime - startTime)/(24*60*60*1000);
-            width = daysDiff*dayLength;
+        if ( end_year !== undefined ){
+            diff_ms = GregorianDiffWithoutEpoch( end_year, end_month || 12, end_day || 30, beg_year, beg_month || 1, beg_day || 1 );
+            diff_days = parseInt( diff_ms / _daily_ms );
+            event.width = diff_days * day_length;
         } else {
-            if (startDay){
-                width = dayLength;
-            } else if (startMonth){
-                width = monthLength;
+            if (beg_day){
+                event.width = day_length;
+            } else if (beg_month){
+                event.width = month_length;
             } else {
-                width = yearLength;
+                event.width = year_length;
             }
         }
-        event.width = width;
     }
 
     /**
@@ -225,7 +236,7 @@
             date = date_input;
 
         // Return the the date parts as tuple triple
-        if ( date.isValid() )
+        if ( u.isValidDate( date ))
             return [
                 date.getFullYear(),
                 date.getMonth() + 1,
@@ -250,7 +261,7 @@
 
         e: {
             get_beg_triplet: function( event ){
-                // The beginning date is always the first date given
+                // The first date is always the beginning date
                 return _get_date_triplet( event.date[0], 1, 1 )
             },
             get_end_triplet: function( event ){
@@ -261,7 +272,7 @@
 
                 // If we have two dates then use the second as the end date
                 if ( event.date.length > 1 )
-                    if ( event.date[1].length )
+                    if ( u.isFilled( event.date[1] ) )
                         return _get_date_triplet( event.date[1], 12, 30 );
 
                 // We have two dates but the second one is empty so use today

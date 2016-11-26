@@ -55,11 +55,8 @@ Determines starting and ending positions for the event on the timeline
 Format:
 
 * YEAR, MONTH, DAY are all integers.
-* DATE is a string.
 
 	Array( Array( YEAR [, MONTH [, DAY ] ] ) [, Array( YEAR [, MONTH [, DAY ] ] ) ] )
-
-	Array( Array( DATE )[, Array( DATE )] )
 
 Examples:
 
@@ -68,8 +65,6 @@ Examples:
 	[[1950,1,27]]
 	[ [ 1933 ], [ 1945 ] ]
 	[[ 1942, 12, 21 ],[ 1960, 5, 1 ]]
-	[["February 3, 1969"]]
-	[["1969-02-03"]]
 
 #### `title`
 

@@ -129,6 +129,7 @@
                 // Loop thru regexs
                 for (var i = 0; i < res.length; i++) {
                     var re = res[i];
+                    if ( !re ) continue; // Ignore if not truthy to allow trailing commas
                     if ( u.type( re ) !== 'RegExp' ){
                         re = re.replace(/___/g, '\\s+'    )
                         re = re.replace( /__/g, '\\s*'    )
@@ -156,11 +157,23 @@
 
             var rexs = [ // these regexs are custom as defined in re_exec()
                 "^__!__birth_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
-                "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
+                "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
+                "^__!__birth_date__=__c\\.__(\\d+)__(BC)",
+                "^__!__birth_date__=__c\\.__AD__(\\d+)",
+                null
             ];
             matches = re_exec( rexs )
             if ( matches ){
-                birth_date = [ parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]) ];
+                // Normal date
+                if ( matches.length === 4 )
+                    birth_date = [ parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]) ];
+                else
+                // BC
+                if ( matches.length === 3 )
+                    birth_date = [ parseInt(matches[1]) * -1 ];
+                // AD
+                else
+                    birth_date = [ parseInt(matches[1]) ];
             }
             else {
                 matches = re_exec("^\\|\\s*birth_date\\s*=\\s*(.+)$");
@@ -179,11 +192,23 @@
 
             var rexs = [ // these regexs are custom as defined in re_exec()
                 "^__!__death_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
-                "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?"
+                "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
+                "^__!__death_date__=__c\\.__(\\d+)__(BC)",
+                "^__!__death_date__=__c\\.__AD__(\\d+)",
+                null
             ];
             matches = re_exec( rexs )
             if ( matches ){
-                death_date = [ parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]) ];
+                // Normal date
+                if ( matches.length === 4 )
+                    death_date = [ parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]) ];
+                else
+                // BC
+                if ( matches.length === 3 )
+                    death_date = [ parseInt(matches[1]) * -1 ];
+                // AD
+                else
+                    death_date = [ parseInt(matches[1]) ];
             }
             else {
                 matches = re_exec("^!__death_date__=__([\\w,\\d\\s]+?)__(?:,?__age__\\d+)");

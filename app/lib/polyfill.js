@@ -27,7 +27,10 @@
     if (!Date.prototype.toLocaleFormat) {
         (function() {
             Date.prototype.toLocaleFormat = function( formatString ) {
-                return this.toISOString().split('T')[0]
+                if ( this.isValid() )
+                    return this.toISOString().split('T')[0];
+                else
+                    return '';
             }
         }())
     }
