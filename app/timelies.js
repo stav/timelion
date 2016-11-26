@@ -3,17 +3,17 @@
  *
  * Requires:
  *
- * - polyfill: prototype extensions
+ * - utils
  */
 (function( root, factory ){
-    var timelies = factory()
+    var self = factory()
     root.timelies = {
-        extend_event_api: timelies.extend_event_api,
-        extend_event_raw: timelies.extend_event_raw,
+        // Export public API
+        extend_event_api: self.extend_event_api,
+        extend_event_raw: self.extend_event_raw,
         _: null
     }
-})(this, function(){
-    "use strict"
+})(this, function(){"use strict"
 
     function _parse_info_for_two_dates( re, info ){
         var
@@ -61,7 +61,7 @@
         for (var i = 0; i < regexs.length; i++) {
             if ( regexs[i] ){
                 from_to_dates_pair = _parse_info_for_two_dates( new RegExp( regexs[i] ), info );
-                if ( from_to_dates_pair && u.isArray(from_to_dates_pair) )
+                if ( u.isArray( from_to_dates_pair ) )
                     return from_to_dates_pair;
             }
         }
@@ -97,6 +97,8 @@
 
         /**
          * Extend the event object with data found from search using RAW Wikipedia text
+         *
+         * NOTE: This is just used for searching people, not events
          *
          * To do:
          *

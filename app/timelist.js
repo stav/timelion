@@ -6,39 +6,44 @@
  * - timeland: dom manipulations
  */
 (function( root, factory ){
-    var timelist = factory()
+    var self = factory()
     root.timelist = {
-        handleClick: timelist.handleClick,
-        handleKeypress: timelist.handleKeypress,
+        // Export public API
+        handleClick:    self.handleClick,
+        handleKeypress: self.handleKeypress,
         _: null
     }
-})(this, function(){
-    "use strict"
+})(this, function(){"use strict"
+
+    /**
+     * Add keypress event handler
+     */
+    function handleKeypress ( body ){
+        body.addEventListener('keypress', function (e) {
+            if ( e.key === "1" && timelion.year_width > 1 )
+                timeland.zoom_out();
+            else
+            if ( e.key === "2" )
+                timeland.zoom_in();
+            else
+            if ( e.key === "`" )
+                timeland.advance();
+        }, false);
+    }
+
+    /**
+     * Add event click event handler
+     */
+    function handleClick ( container ){
+        container.addEventListener("click", function(e) {
+            timeland.toggle( this )
+        });
+    }
 
     return {
-        /**
-         * Add keypress event handler
-         */
-        handleKeypress: function ( body ){
-            body.addEventListener('keypress', function (e) {
-                if ( e.key === "1" && timelion.year_width > 1 )
-                    timeland.zoom_out();
-                else
-                if ( e.key === "2" )
-                    timeland.zoom_in();
-                else
-                if ( e.key === "`" )
-                    timeland.advance();
-            }, false);
-        },
-
-        /**
-         * Add event click event handler
-         */
-        handleClick: function ( container ){
-            container.addEventListener("click", function(e) {
-                timeland.toggle( this )
-            });
-        }
+        // Exposed factory functions
+        handleClick:    handleClick,
+        handleKeypress: handleKeypress,
+        _: null  // allow trailing comma
     }
 })

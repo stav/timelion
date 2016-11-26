@@ -136,9 +136,7 @@
                         timelies.extend_event_api( event, data )
                         resolve()
                     },
-                    function( error ){
-                        reject( error )
-                    })
+                    function(error){reject(error)})
                 })
             }
             else
@@ -153,9 +151,7 @@
                         timelies.extend_event_raw( event, text )
                         resolve()
                     },
-                    function( error ){
-                        reject( error )
-                    })
+                    function(error){reject(error)})
                 })
             }
             // Fake search results, network not accessed

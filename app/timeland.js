@@ -2,17 +2,17 @@
  * Timelion landing - dom manipulation
  */
 (function( root, factory ){
-    var timeland = factory()
+    var self = factory()
     root.timeland = {
-        select:   timeland.select,
-        toggle:   timeland.toggle,
-        advance:  timeland.advance,
-        zoom_in:  timeland.zoom_in,
-        zoom_out: timeland.zoom_out,
+        // Export public API
+        select:   self.select,
+        toggle:   self.toggle,
+        advance:  self.advance,
+        zoom_in:  self.zoom_in,
+        zoom_out: self.zoom_out,
         _: null
     }
-})(this, function(){
-    "use strict"
+})(this, function(){"use strict"
 
     /**
      * Unselect all events
