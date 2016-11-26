@@ -34,8 +34,8 @@
     /**
      * Add event click event handler
      */
-    function handleClick ( container ){
-        container.addEventListener("click", function(e) {
+    function handleClick ( $event ){
+        $event.addEventListener("click", function(e) {
             timeland.toggle( this )
         });
     }

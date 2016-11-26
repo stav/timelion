@@ -20,10 +20,10 @@
     function _unselect_all ( events_container ){
         for (var i = 0; i < events_container.children.length; i++) {
             var
-                event_container = events_container.children[i];
+                $event = events_container.children[i];
 
-            if ( event_container.style.backgroundColor )
-                event_container.style.backgroundColor = '';
+            if ( $event.style.backgroundColor )
+                $event.style.backgroundColor = '';
         }
     }
 
@@ -101,26 +101,26 @@
     /**
      * Select the given event container
      */
-    function select ( event_container ){
+    function select ( $event ){
         var
-            index = event_container.dataset.index,
+            index = $event.dataset.index,
             event = timelion.events[ index ];
 
         _display_event( event );
-        _unselect_all( event_container.parentElement )
-        event_container.style.backgroundColor = 'black';
+        _unselect_all( $event.parentElement )
+        $event.style.backgroundColor = 'black';
     }
 
     /**
      * Toggle event selection
      */
-    function toggle ( event_container ){
-        if ( event_container.style.backgroundColor ){
-            event_container.style.backgroundColor = '';
+    function toggle ( $event ){
+        if ( $event.style.backgroundColor ){
+            $event.style.backgroundColor = '';
             _display('');
         }
         else
-            select( event_container );
+            select( $event );
     }
 
     return {

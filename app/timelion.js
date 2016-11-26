@@ -164,16 +164,6 @@
     }
 
     /**
-     * Setup display canvas
-     */
-    function _setup_canvas () {
-        _load_years()
-        _load_events()
-        document.getElementById('timelion').innerHTML = '';
-        timelion.loaded = true
-    }
-
-    /**
      * Do the actual loading
      *
      * Note: this only resolves when all requests have been fulfilled.
@@ -189,13 +179,14 @@
             .then(function(){
                 // Remove any events that did not resolve dates
                 timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
-                _setup_canvas()
+                _load_years()
+                _load_events()
+                timelion.loaded = true
             },
             function(error){
-                console.log(error)
-                // Remove any events that did not resolve dates
-                timelion.events = timelion.events.filter(function(e){return e.date && e.date.length > 0});
-                _setup_canvas()
+                // NOTE: refactor for individual requests/responses
+                // A 404 response (because it is rejected) will terminate on filter (no dates)
+                throw error
             })
     }
 
@@ -214,7 +205,7 @@
         var date;
 
         // Check if we have a non-empty array
-        if ( u.isArray( date_input ) && date_input.length > 0 ) {
+        if ( u.isFilled( date_input )) {
             // Short circuit if first arary element is a number
             if ( u.isNumber( date_input[0] )){
                 return [
@@ -286,10 +277,9 @@
 
         reset: function(){
             document.getElementById('timelion').innerHTML = '';
-            timelion.years = new Map();
-            timelion.loaded = false;
             timelion.rendered = false;
-            timelion.$years = null;
+            timelion.loaded = false;
+            timelion.years = new Map();
             timelion.year_width = timelion.config.year_width;
         },
 
@@ -318,29 +308,28 @@
                 var
                     $canvas = document.getElementById('timelion'),
                     events = document.createElement('div'),
-                    years = document.createElement('div'),
+                    $years = document.createElement('div'),
                     _;
 
                 // Years
 
-                years.id = 'timelion-years';
-                years.class = 'comment_';
+                $years.id = 'timelion-years';
+                $years.class = 'comment_';
 
-                timelion.years.forEach(function( y ){
+                timelion.years.forEach(function( year ){
                     var
-                        year = document.createElement('div'),
-                        text = document.createElement('span'),
+                        $year = document.createElement('div'),
+                        $text = document.createElement('span'),
                         _;
 
-                    year.classList.add('year');
-                    year.style.width = y.width.toFixed(2) + 'px';
-                    text.innerText = y.year + (timelion.config.show_age ? (' <i>(' + y.age + ')</i>') : '')
-                    year.innerHTML = text.outerHTML;
-                    years.appendChild( year )
-                    y.$element = year;
+                    $year.classList.add('year');
+                    $year.style.width = year.width.toFixed(2) + 'px';
+                    $text.innerText = year.year + (timelion.config.show_age ? (' <i>(' + year.age + ')</i>') : '')
+                    $year.innerHTML = $text.outerHTML;
+                    $year.setAttribute('data-year', year.year)
+                    $years.appendChild( $year )
                 })
-                $canvas.appendChild( years )
-                timelion.$years = years;
+                $canvas.appendChild( $years )
 
                 // Events
 
@@ -349,34 +338,32 @@
                 for (var i = 0; i < timelion.events.length; i++) {
                     var
                         event = timelion.events[i],
-                        event_container = document.createElement('div'),
-                        line = document.createElement('div'),
-                        data = document.createElement('b'),
-                        text = document.createTextNode( event.title ),
+                        $event = document.createElement('div'),
+                        $line = document.createElement('div'),
+                        $data = document.createElement('b'),
+                        $text = document.createTextNode( event.title ),
                         _;
 
-                    data.innerHTML = event.date;
+                    timelist.handleClick( $event )
 
-                    line.classList.add('line');
-                    line.style.width = event.width.toFixed(2) + 'px';
+                    $data.innerHTML = event.date;
 
-                    event_container.title = event.title;
-                    event_container.style.marginLeft = event.offset.toFixed(2) + 'px';
-                    event_container.classList.add('event');
-                    event_container.setAttribute('data-index', i)
-                    event_container.appendChild( line )
-                    event_container.appendChild( data )
-                    event_container.appendChild( text )
+                    $line.classList.add('line');
+                    $line.style.width = event.width.toFixed(2) + 'px';
 
                     if ( event.id )
-                        event_container.id = event.id;
+                    $event.id = event.id;
+                    $event.title = event.title;
+                    $event.style.marginLeft = event.offset.toFixed(2) + 'px';
+                    $event.classList.add('event');
+                    $event.setAttribute('data-index', i)
+                    $event.appendChild( $line )
+                    $event.appendChild( $data )
+                    $event.appendChild( $text )
 
-                    timelist.handleClick( event_container )
-                    events.appendChild( event_container )
-                    event_container.timelion_event = event;
-                    event.$container = event_container;
-                    event.$line = line;
-                }
+                    events.appendChild( $event )
+                };
+
                 $canvas.appendChild( events )
 
                 // Resolution
@@ -387,17 +374,41 @@
         },
 
         update: function(){
+
             // Years
+
+            var
+                $years = document.getElementById('timelion-years'),
+                years = u.toArray( $years.children ),
+                _;
+
             _load_years()
-            timelion.years.forEach(function( year ){
-                year.$element.style.width = year.width.toFixed(2) + 'px';
+
+            years.forEach(function( $year ){
+                var
+                    year_number = parseInt($year.dataset.year),
+                    year = timelion.years.get( year_number ),
+                    _;
+                $year.style.width = year.width.toFixed(2) + 'px';
             })
 
             // Events
+
+            var
+                $events = document.getElementById('timelion-events'),
+                events = u.toArray( $events.children ),
+                _;
+
             _load_events()
-            timelion.events.forEach(function( event ){
-                event.$container.style.marginLeft = event.offset.toFixed(2) + 'px';
-                event.$line.style.width = event.width.toFixed(2) + 'px';
+
+            events.forEach(function( $event ){
+                var
+                    index = $event.dataset.index,
+                    event = timelion.events[ index ],
+                    $line = $event.querySelector('.line'),
+                    _;
+                $event.style.marginLeft = event.offset.toFixed(2) + 'px';
+                $line.style.width = event.width.toFixed(2) + 'px';
             })
         }
     }
