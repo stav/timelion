@@ -44,9 +44,11 @@ footer{
 	left: 0;
 	overflow: auto;
 	-webkit-overflow-scrolling: touch;
+/*
 	cursor: -webkit-grab;
 	cursor: -moz-grab;
 	cursor: grab;
+*/
 }
 #timelion-years{
 	position: absolute;
