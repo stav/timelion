@@ -1,0 +1,70 @@
+// http://pegjs.org/online
+// https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
+
+START = Text Date_line* Text Date_line* Text
+
+Date_line = _"|"_ type:("birth_date"/"death_date")_"="_ info:Line _
+{
+  var o = {};
+  o[type] = info;
+  return o
+}
+
+Line = line:$([^\n\r]+) { return line.trim() }
+
+_ "whitespace" = [ \t\n\r]*
+
+Text = $(!Date_line .)* {}
+
+
+// INPUT
+/*
+{{About|Constantine as an Emperor|St. Constantine as a Saint|Constantine the Great and Christianity}}
+{{Redirect|Constantine I}}
+{{redirect|Constantine of Constantinople|the Patriarchs of Constantinople|Patriarch Constantine of Constantinople (disambiguation){{!}}Patriarch Constantine of Constantinople}}
+{{Use dmy dates|date=July 2012}}
+{{Infobox Roman emperor
+| name            = {{plainlist|
+*Constantine the Great
+*Saint Constantine
+*Constantine I
+*Κωνσταντῖνος ὁ Μέγας}}
+| full name       = Flavius Valerius Aurelius Constantinus Augustus
+...
+*[[Eastern Orthodox Church]]
+*[[Lutheran Church]]
+*[[Oriental Orthodox Church]]
+*[[Roman Catholicism]]}}
+
+| birth_date   = 27 February {{c.}} 272<ref name=birthdate />
+
+| birth_place  = [[Niš|Naissus]], [[Moesia Superior]], Roman Empire (present-day [[Niš|Niš, Serbia]]) <!-- The place as it was known then. The present-day city should be mentioned in the main text -->
+
+| death_date   = {{death date and age|337|5|22|272|2|27|df=yes}}
+
+| death_place  = [[Nicomedia]], [[Bithynia]], Roman Empire
+
+| place of burial = [[Church of the Holy Apostles]], [[Constantinople]]
+|}}
+
+'''Constantine the Great''' ({{lang-la|Flavius Valerius Aurelius Constantinus Augustus}};<ref>In [[Classical Latin]], Constantine's official imperial title was IMPERATOR CAESAR FLAVIVS CONSTANTINVS PIVS FELIX INVICTVS AVGVSTVS, ''Imperator Caesar Flavius Constantine Augustus, the pious, the fortunate, the undefeated''. After 312, he added MAXIMVS ("the greatest"), and after 325 replaced ("undefeated") with VICTOR, as ''invictus'' reminded many of [[Sol Invictus]], the Sun God.</ref> {{lang-el|Κωνσταντῖνος ὁ Μέγας}}; 27 February {{circa}} 272&nbsp;AD<ref name=birthdate>Birth dates vary but most modern historians use {{c.}} 272". Lenski, "Reign of Constantine" (CC), 59.</ref> – 22 May 337&nbsp;AD), also known as '''Constantine I''' or '''Saint Constantine''' (in the [[Orthodox Church]] as '''Saint Constantine the Great, [[Equal-to-the-Apostles]]'''),<ref>Among [[Eastern Orthodox Church|Eastern Orthodox]], [[Oriental Orthodox Church|Oriental Orthodox]] and [[Byzantine Catholic]] Christians. The [[Byzantine Rite|Byzantine]] liturgical calendar, observed by the [[Eastern Orthodox Church]] and [[Eastern Catholic Churches]] of Byzantine rite, lists bo...
+*/
+
+// OUTPUT
+/*
+[
+   undefined,
+   [
+      {
+         "birth_date": "27 February {{c.}} 272<ref name=birthdate />"
+      }
+   ],
+   undefined,
+   [
+      {
+         "death_date": "{{death date and age|337|5|22|272|2|27|df=yes}}"
+      }
+   ],
+   undefined
+]
+*/
