@@ -1,12 +1,6 @@
 // http://pegjs.org/online
 // https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
 
-// http://pegjs.org/online
-// https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
-
-// http://pegjs.org/online
-// https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
-
 START = Text d1:Date_line* Text d2:Date_line* Text { return [ d1[0], d2[0] ] }
 
 Text = $(!Date_line .)* {}
@@ -21,7 +15,9 @@ Date_line = _"|"_ type:("birth_date"/"death_date")_"="_ line:Line _
 Line = Day_first / Bracketed
 Day_first = day:$Int _ month:Month _ C _ year:$Int { return ''+day+' '+month+' '+year}
 Bracketed = Bo data:Barred Bx { return data }
-Barred = $(!Bx .)*
+Barred = 'death date and age' bars:Bars $(!Bx .)* { return bars }
+Bars = Bar Bar Bar
+Bar = '|'  d:$[0-9]+ { return d }
 
 Bo = "{{"
 Bx = "}}"
@@ -72,7 +68,7 @@ _ "whitespace" = [ \t\n\r]*
       "birth_date": "27 February 272"
    },
    {
-      "death_date": "death date and age|337|5|22|272|2|27|df=yes"
+      "death_date": "22 5 337"
    }
 ]
 */
