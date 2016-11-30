@@ -1,20 +1,31 @@
 // http://pegjs.org/online
 // https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
 
+// http://pegjs.org/online
+// https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
+
 START = Text Date_line* Text Date_line* Text
 
-Date_line = _"|"_ type:("birth_date"/"death_date")_"="_ info:Line _
+Text = $(!Date_line .)* {}
+
+Date_line = _"|"_ type:("birth_date"/"death_date")_"="_ line:Line _
 {
   var o = {};
-  o[type] = info;
+  o[type] = line;
   return o
 }
 
-Line = line:$([^\n\r]+) { return line.trim() }
+Line = Day_first / $Bracketed
+Day_first = day:$Int _ month:Month _ Bracketed _ year:$Int { return ''+day+' '+month+' '+year}
+Bracketed = Open (!Close .)* Close
 
+Open = "{{"
+Close = "}}"
+Any = [^\n\r]*
+Int = [0-9]+
+Month = ('January' / 'February')
+C "circa" = "{{c.}}"
 _ "whitespace" = [ \t\n\r]*
-
-Text = $(!Date_line .)* {}
 
 
 // INPUT
@@ -56,7 +67,7 @@ Text = $(!Date_line .)* {}
    undefined,
    [
       {
-         "birth_date": "27 February {{c.}} 272<ref name=birthdate />"
+         "birth_date": "27 February 272"
       }
    ],
    undefined,
