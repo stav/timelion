@@ -4,7 +4,10 @@
 // http://pegjs.org/online
 // https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
 
-START = Text Date_line* Text Date_line* Text
+// http://pegjs.org/online
+// https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
+
+START = Text d1:Date_line* Text d2:Date_line* Text { return [ d1[0], d2[0] ] }
 
 Text = $(!Date_line .)* {}
 
@@ -15,12 +18,13 @@ Date_line = _"|"_ type:("birth_date"/"death_date")_"="_ line:Line _
   return o
 }
 
-Line = Day_first / $Bracketed
-Day_first = day:$Int _ month:Month _ Bracketed _ year:$Int { return ''+day+' '+month+' '+year}
-Bracketed = Open (!Close .)* Close
+Line = Day_first / Bracketed
+Day_first = day:$Int _ month:Month _ C _ year:$Int { return ''+day+' '+month+' '+year}
+Bracketed = Bo data:Barred Bx { return data }
+Barred = $(!Bx .)*
 
-Open = "{{"
-Close = "}}"
+Bo = "{{"
+Bx = "}}"
 Any = [^\n\r]*
 Int = [0-9]+
 Month = ('January' / 'February')
@@ -64,18 +68,11 @@ _ "whitespace" = [ \t\n\r]*
 // OUTPUT
 /*
 [
-   undefined,
-   [
-      {
-         "birth_date": "27 February 272"
-      }
-   ],
-   undefined,
-   [
-      {
-         "death_date": "{{death date and age|337|5|22|272|2|27|df=yes}}"
-      }
-   ],
-   undefined
+   {
+      "birth_date": "27 February 272"
+   },
+   {
+      "death_date": "death date and age|337|5|22|272|2|27|df=yes"
+   }
 ]
 */
