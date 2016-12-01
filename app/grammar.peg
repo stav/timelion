@@ -13,7 +13,7 @@ Date_line = _"|"_ type:("birth_date"/"death_date")_"="_ line:Line _
 }
 
 Line = Day_first / Bracketed
-Day_first = day:$Int _ month:Month _ C _ year:$Int { return ''+day+' '+month+' '+year}
+Day_first = day:$Int _ month:Month _ C _ year:$Int { return [year, month, day] }
 Bracketed = Bo data:Barred Bx { return data }
 Barred = 'death date and age' bars:Bars $(!Bx .)* { return bars }
 Bars = Bar Bar Bar
