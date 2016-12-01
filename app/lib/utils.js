@@ -7,10 +7,14 @@
 
 // http://www.ecma-international.org/ecma-262/5.1/#sec-8.6.2
 
+    function _is ( o, type ){
+        return Boolean( Object.prototype.toString.call( o ) === type )
+    }
+
     return {
 
         /**
-         * Return the first elemenet in an array
+         * Return the first element in an array
          */
         first: function ( array ){
             if ( u.isFilled( array ))
@@ -18,20 +22,21 @@
         },
 
         /**
-         * Determine the type of objecct provided: Date, Array, String, etc.
+         * Determine the type of object provided: Date, Array, String, etc.
          */
         type: function ( o ){
             var
                 type = Object.prototype.toString.call( o ),
                 matches = new RegExp("\\[object (\\w+)\\]").exec(type);
+
             return matches && matches.length === 2 ? matches[1] : 'Unknown'
         },
 
         /**
-         * Check if the given array is non-empty
+         * Check if the given thing is non-empty
          */
-        isFilled: function ( array ) {
-            return u.isArray( array ) && array.length
+        isFilled: function ( o ) {
+            return Boolean( o && Object.keys( o ).length )
         },
 
         /**
@@ -45,7 +50,7 @@
          *
          */
         isArray: function ( o ){
-            return Object.prototype.toString.call( o ) === '[object Array]'
+            return _is( o, '[object Array]')
         },
 
         /**
@@ -59,14 +64,21 @@
          *
          */
         isDate: function ( o ){
-            return Object.prototype.toString.call( o ) === '[object Date]'
+            return _is( o, '[object Date]')
         },
 
         /**
          *
          */
         isString: function ( o ){
-            return Object.prototype.toString.call( o ) === '[object String]'
+            return _is( o, '[object String]')
+        },
+
+        /**
+         *
+         */
+        isObject: function ( o ){
+            return _is( o, '[object Object]')
         },
 
         /**
@@ -74,7 +86,7 @@
          */
         isNumber: function ( o ) {
             if ( !isNaN( o ) )
-                return Object.prototype.toString.call( o ) === '[object Number]'
+                return _is( o, '[object Number]')
         }
     }
 })

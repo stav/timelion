@@ -1,17 +1,17 @@
 // http://pegjs.org/online
 // https://medium.com/@daffl/beyond-regex-writing-a-parser-in-javascript-8c9ed10576a6#.za1eaq5yj
 
-START = Text d1:Date_line* Text d2:Date_line* Text { return [ d1[0], d2[0] ] }
+START = Text name:Name_line* Text d1:Date_line* Text d2:Date_line* Text { return [ name[0], d1[0], d2[0] ] }
 
-Text = $(!Date_line .)* {}
-
-Date_line = _"|"_ type:("birth_date"/"death_date")_"="_ line:Line _
+Text = $(!Name_line! Date_line .)* {}
+Name_line =  _"|"_"full name"_"="_ name:$Name { return {name: name} }
+Name = [^\n\r]+
+Date_line = _"|"_ type:("birth_date"/"death_date")_"="_ line:Line
 {
   var o = {};
   o[type] = line;
   return o
 }
-
 Line = Day_first / Bracketed
 Day_first = day:$Int _ month:Month _ C _ year:$Int { return [year, month, day] }
 Bracketed = Bo data:Barred Bx { return data }
@@ -46,29 +46,35 @@ _ "whitespace" = [ \t\n\r]*
 *[[Lutheran Church]]
 *[[Oriental Orthodox Church]]
 *[[Roman Catholicism]]}}
-
 | birth_date   = 27 February {{c.}} 272<ref name=birthdate />
-
 | birth_place  = [[Niš|Naissus]], [[Moesia Superior]], Roman Empire (present-day [[Niš|Niš, Serbia]]) <!-- The place as it was known then. The present-day city should be mentioned in the main text -->
-
 | death_date   = {{death date and age|337|5|22|272|2|27|df=yes}}
-
 | death_place  = [[Nicomedia]], [[Bithynia]], Roman Empire
-
 | place of burial = [[Church of the Holy Apostles]], [[Constantinople]]
 |}}
-
-'''Constantine the Great''' ({{lang-la|Flavius Valerius Aurelius Constantinus Augustus}};<ref>In [[Classical Latin]], Constantine's official imperial title was IMPERATOR CAESAR FLAVIVS CONSTANTINVS PIVS FELIX INVICTVS AVGVSTVS, ''Imperator Caesar Flavius Constantine Augustus, the pious, the fortunate, the undefeated''. After 312, he added MAXIMVS ("the greatest"), and after 325 replaced ("undefeated") with VICTOR, as ''invictus'' reminded many of [[Sol Invictus]], the Sun God.</ref> {{lang-el|Κωνσταντῖνος ὁ Μέγας}}; 27 February {{circa}} 272&nbsp;AD<ref name=birthdate>Birth dates vary but most modern historians use {{c.}} 272". Lenski, "Reign of Constantine" (CC), 59.</ref> – 22 May 337&nbsp;AD), also known as '''Constantine I''' or '''Saint Constantine''' (in the [[Orthodox Church]] as '''Saint Constantine the Great, [[Equal-to-the-Apostles]]'''),<ref>Among [[Eastern Orthodox Church|Eastern Orthodox]], [[Oriental Orthodox Church|Oriental Orthodox]] and [[Byzantine Catholic]] Christians. The [[Byzantine Rite|Byzantine]] liturgical calendar, observed by the [[Eastern Orthodox Church]] and [[Eastern Catholic Churches]] of Byzantine rite, lists bo...
+'''Constantine the Great''' ({{lang-la|Flavius Valerius Aurelius Constantinus Augustus}};<ref>In ...
+ [[Eastern Catholic Churches]] of Byzantine rite, lists bo...
 */
 
 // OUTPUT
 /*
 [
    {
-      "birth_date": "27 February 272"
+      "name": "Flavius Valerius Aurelius Constantinus Augustus"
    },
    {
-      "death_date": "22 5 337"
+      "birth_date": [
+         "272",
+         "February",
+         "27"
+      ]
+   },
+   {
+      "death_date": [
+         "337",
+         "5",
+         "22"
+      ]
    }
 ]
 */
