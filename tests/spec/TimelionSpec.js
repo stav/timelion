@@ -58,8 +58,8 @@ describe("timelion", function() {
                 expect( u.isNumber( etrip[1] )).toBe(true);
                 expect( u.isNumber( etrip[2] )).toBe(true);
 
-                expect( u.isNumber( event.offset )).toBe(true);
-                expect( u.isNumber( event.width )).toBe(true);
+                expect( u.isNumber( event.offset )).toBe(true, 'Offset: '+event.offset);
+                expect( u.isNumber( event.width )).toBe(true, 'Width: '+event.width);
                 expect(typeof event.title).toEqual('string');
             });
         });
