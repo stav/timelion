@@ -14,7 +14,7 @@ C "circa" = "{{c.}}"
 Int = [0-9]+
 
 Bracketed = Bo data:Barred Bx { return data }
-Barred = ('birth'/'death')_'date and age' bars:Bars $(!Bx .)* { return bars }
+Barred = (!Bar .)* bars:Bars $(!Bx .)* { return bars }
 Bars = Bar Bar Bar
 Bar = '|'  d:$[0-9]+ { return d }
 Bo = "{{"
