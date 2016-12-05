@@ -116,7 +116,7 @@
     // | field       = {{hlist|Astronomy |[[Canon law]] |Economics |Mathematics |Medicine |Politics}}
     function extend_event_raw ( event, text ){
         var
-            x = peg.parse( text ),
+            results = peg.parse( text ),
             pdata = {},
             date = [],
             months = {
@@ -135,15 +135,16 @@
             return [ int(t[0]), int(month(t[1])), int(t[2]) ]
         }
 
-        console.log(x)
-        x.forEach(function( o ){
-            if ( u.isFilled( o ))
-                Object.assign( pdata, o );
-        })
+        // console.log('Text:', text)
+        console.log('Peg results:', results)
+        u.extend( pdata, results )
         console.log(pdata)
 
         if ( u.isFilled( pdata )){
-            if ( 'name' in pdata ){
+            if ( 'full name' in pdata ){
+                event.title = pdata['full name'];
+            }
+            else if ( 'name' in pdata ){
                 event.title = pdata.name;
             }
             if ( 'birth_date' in pdata ){
