@@ -6,7 +6,7 @@
  * - timeland: dom manipulations
  */
 (function( root, factory ){
-    var self = factory()
+    var self = factory();
     root.timelist = {
         // Export public API
         handleClick:    self.handleClick,

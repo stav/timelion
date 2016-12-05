@@ -2,7 +2,7 @@
  * Timelion scaling - screen display library
  */
 (function( root, factory ){
-    var self = factory()
+    var self = factory();
     root.timelast = {
         // Export public API
         keep_right: self.keep_right,

@@ -5,7 +5,7 @@
  * - utils
  */
 (function( root, factory ){
-    var self = factory()
+    var self = factory();
     root.timelies = {
         // Export public API
         extend_event_api: self.extend_event_api,
