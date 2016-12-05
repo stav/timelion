@@ -58,6 +58,15 @@
     /**
      * Load an event
      *
+     * Notes on event.date:
+     *
+     *   If event.date has only one entry then that is the beginning date of
+     *   the format Array( year, month, day ) as all integers.  This is how to
+     *   represent an event point.
+     *
+     *   If event.date has two entries then the first is the beginning date and
+     *   the second is ending date.
+     *
      * Mogrifies event argument:
      *
      * - offset

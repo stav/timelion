@@ -130,9 +130,21 @@
             return ( string in months ) ? months[string] : string
         }
 
+        /**
+         * Format a date tuple with all integers and if we dont have a valid
+         * parameter then return the tuple for today.
+         *
+         * Returns something like: [ 2016, 12, 4 ]
+         */
         function get_tuple( t ){
-            var int = parseInt;
-            return [ int(t[0]), int(month(t[1])), int(t[2]) ]
+            if ( t ){
+                var int = parseInt;
+                return [ int(t[0]), int(month(t[1])), int(t[2]) ]
+            }
+            else{
+                const today = new Date();
+                return [ today.getFullYear(), today.getMonth()+1, today.getDate() ]
+            }
         }
 
         // console.log('Text:', text)
@@ -141,24 +153,22 @@
         console.log(pdata)
 
         if ( u.isFilled( pdata )){
+
             if ( 'full name' in pdata ){
                 event.title = pdata['full name'];
             }
             else if ( 'name' in pdata ){
                 event.title = pdata.name;
             }
+
             if ( 'birth_date' in pdata ){
                 date.push( get_tuple( pdata.birth_date ));
-
-                if ( 'death_date' in pdata )
-                    date.push( get_tuple( pdata.death_date ));
-
+                date.push( get_tuple( pdata.death_date ));
                 event.date = date;
             }
         }
-        if ( !event.date ){
-            console.log('Event:', event, 'parsed:', pdata, 'from:', text)
-        }
+        if ( !event.date )
+            console.log('Event:', event, 'parsed:', pdata, 'from:', text);
     }
 
     return {
