@@ -5,7 +5,7 @@
  * - utils
  */
 (function( root, factory ){
-    var self = factory()
+    var self = factory();
     root.timelies = {
         // Export public API
         extend_event_api: self.extend_event_api,
@@ -116,134 +116,59 @@
     // | field       = {{hlist|Astronomy |[[Canon law]] |Economics |Mathematics |Medicine |Politics}}
     function extend_event_raw ( event, text ){
         var
-            re, matches, d,
-            birth_date = [],
-            death_date = [],
+            results = peg.parse( text ),
+            pdata = {},
+            date = [],
+            months = {
+                January:  1,
+                February: 2,
+                _: undefined
+            },
             _;
 
-        // RegExp objects exec as-is, strings get find/replace
-        function re_exec ( res ){
-            // Arrayify scalars
-            if ( !u.isArray( res ))
-                res = [ res ];
+        function month( string ){
+            return ( string in months ) ? months[string] : string
+        }
 
-            // Loop thru regexs
-            for (var i = 0; i < res.length; i++) {
-                var re = res[i];
-                if ( !re ) continue; // Ignore if not truthy to allow trailing commas
-                if ( u.type( re ) !== 'RegExp' ){
-                    re = re.replace(/___/g, '\\s+'    )
-                    re = re.replace( /__/g, '\\s*'    )
-                    re = re.replace( /#4/g, '\\d{4}'  )
-                    re = re.replace( /#2/g, '\\d{1,2}')
-                    re = re.replace(  /!/g, '\\|'     )
-                    re = re.replace(  / /g, ''        )
-                    re = new RegExp( re, "m" )
-                }
-                var matches = re.exec( text );
-                if ( matches )
-                    return matches;
+        /**
+         * Format a date tuple with all integers and if we dont have a valid
+         * parameter then return the tuple for today.
+         *
+         * Returns something like: [ 2016, 12, 4 ]
+         */
+        function get_tuple( t ){
+            if ( t ){
+                var int = parseInt;
+                return [ int(t[0]), int(month(t[1])), int(t[2]) ]
+            }
+            else{
+                const today = new Date();
+                return [ today.getFullYear(), today.getMonth()+1, today.getDate() ]
             }
         }
 
-        // Name
+        // console.log('Text:', text)
+        console.log('Peg results:', results)
+        u.extend( pdata, results )
+        console.log(pdata)
 
-        if ( !event.title ){
-            matches = re_exec("^__!__name__=__  (.+)  $")  // /^\s*\|\s*name\s*=\s*(.+)$/m
-            if ( matches )
-                event.title = matches[1];
-        }
+        if ( u.isFilled( pdata )){
 
-        // Birth
+            if ( 'full name' in pdata ){
+                event.title = pdata['full name'];
+            }
+            else if ( 'name' in pdata ){
+                event.title = pdata.name;
+            }
 
-        var rexs = [ // these regexs are custom as defined in re_exec()
-            "^__!__birth_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
-            "^__!__birth_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
-            "^__!__birth_date__=__c\\.__(\\d+)__(BC)",
-            "^__!__birth_date__=__c\\.__AD__(\\d+)",
-            null
-        ];
-        matches = re_exec( rexs )
-        if ( matches ){
-            // Normal date
-            if ( matches.length === 4 )
-                birth_date = [ parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]) ];
-            else
-            // BC
-            if ( matches.length === 3 )
-                birth_date = [ parseInt(matches[1]) * -1 ];
-            // AD
-            else
-                birth_date = [ parseInt(matches[1]) ];
-        }
-        else {
-            matches = re_exec("^\\|\\s*birth_date\\s*=\\s*(.+)$");
-            if ( matches ){
-                d = new Date( matches[1] );
-                if ( d.isValid() ){
-                    birth_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
-                }
-                else {
-                    console.log('No beginning date for', text)
-                }
+            if ( 'birth_date' in pdata ){
+                date.push( get_tuple( pdata.birth_date ));
+                date.push( get_tuple( pdata.death_date ));
+                event.date = date;
             }
         }
-
-        // Death
-
-        var rexs = [ // these regexs are custom as defined in re_exec()
-            "^__!__death_date__=.*? {{ .+? ! (#4) !(#2) !(#2)",
-            "^__!__death_date__=.*? {{ .+? ! (#4) (?:!(#2))? (?:!(#2))?",
-            "^__!__death_date__=__c\\.__(\\d+)__(BC)",
-            "^__!__death_date__=__c\\.__AD__(\\d+)",
-            null
-        ];
-        matches = re_exec( rexs )
-        if ( matches ){
-            // Normal date
-            if ( matches.length === 4 )
-                death_date = [ parseInt(matches[1]), parseInt(matches[2]), parseInt(matches[3]) ];
-            else
-            // BC
-            if ( matches.length === 3 )
-                death_date = [ parseInt(matches[1]) * -1 ];
-            // AD
-            else
-                death_date = [ parseInt(matches[1]) ];
-        }
-        else {
-            matches = re_exec("^!__death_date__=__([\\w,\\d\\s]+?)__(?:,?__age__\\d+)");
-            // matches = re_exec("^!__death_date__=__([\\w\\d ]+) (?:age__\\d+)");
-            // matches = re_exec("^\\|\\s*death_date\\s*=\\s*([\\w\\d ]+)");
-            if ( matches ){
-                d = new Date( matches[1] );
-                if ( d.isValid() ){
-                    death_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
-                }
-                else {
-                    console.log('No ending date for', text)
-                }
-            }
-        }
-
-        if ( birth_date.length === 0 && death_date.length === 0 ){
-            matches = re_exec(/^'''(.+?)''' \((.+)&ndash;(.+)\)/);
-            if ( matches ){
-                if ( !event.title )
-                    event.title = matches[1];
-                d = new Date( matches[2] );
-                if ( d.isValid() )
-                    birth_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
-                d = new Date( matches[3] );
-                if ( d.isValid() )
-                    death_date = [ d.getFullYear(), d.getMonth()+1, d.getDate() ];
-            }
-        }
-
-        if ( !event.title )
-            event.title = event.search;
-
-        event.date = [ birth_date, death_date ];
+        if ( !event.date )
+            console.log('Event:', event, 'parsed:', pdata, 'from:', text);
     }
 
     return {

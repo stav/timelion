@@ -2,7 +2,7 @@
  * Timelion landing - DOM manipulation
  */
 (function( root, factory ){
-    var self = factory()
+    var self = factory();
     root.timeland = {
         // Export public API
         select:   self.select,
