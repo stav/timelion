@@ -81,3 +81,41 @@ timetigr-gcLPL2t4 | timetigr $ node -v
 
 v10.11.0
 ```
+
+## Jasmine
+
+``` bash
+$ node node_modules/jasmine/bin/jasmine -v
+
+jasmine v3.2.0
+jasmine-core v3.2.1
+```
+
+``` bash
+$ node node_modules/jasmine/bin/jasmine help
+
+Usage: jasmine [command] [options] [files]
+
+Commands:
+      init  initialize jasmine
+  examples  install examples
+   help,-h  show help
+version,-v  show jasmine and jasmine-core versions
+
+If no command is given, jasmine specs will be run
+
+
+Options:
+        --no-color  turn off color in spec output
+           --color  force turn on color in spec output
+         --filter=  filter specs to run only those that match the given string
+         --helper=  load helper files that match the given string
+        --require=  load module that match the given string
+--stop-on-failure=  [true|false] stop spec execution on expectation failure
+      --fail-fast=  [true|false] stop Jasmine execution on spec failure
+         --config=  path to your optional jasmine.json
+       --reporter=  path to reporter to use instead of the default Jasmine reporter
+
+The given arguments take precedence over options in your jasmine.json
+The path to your optional jasmine.json can also be configured by setting the JASMINE_CONFIG_PATH environment variable
+```
