@@ -1,0 +1,24 @@
+<!doctype html>
+<html class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="description" content="Timeline with a roar">
+        <title> Timelion </title>
+        <script>
+            window.addEventListener("load", init, {once: true})
+
+            function init () {
+                console.log(Timelion)
+                let timelion = new Timelion();
+                console.log(timelion)
+                console.log(timelion.loaded())
+            }
+        </script>
+    </head>
+    <body>
+        <section id="timelion"></section>
+        <footer id="footer"></footer>
+        <script src="src/Timelion.js"></script>
+    </body>
+</html>
