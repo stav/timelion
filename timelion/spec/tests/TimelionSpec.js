@@ -1,5 +1,7 @@
+const SRC = '../../app/src';
+
 describe("Timelion", function() {
-  var Timelion = require('../../app/src/Timelion');
+  var Timelion = require(`${SRC}/Timelion`);
 
   it("should be a function", function() {
       expect(typeof Timelion).toEqual('function');
