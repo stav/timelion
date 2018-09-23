@@ -1,4 +1,4 @@
-const SRC = '../../app/src';
+const SRC = '../app/src';
 
 describe("Timelion", function() {
   var Timelion = require(`${SRC}/Timelion`);

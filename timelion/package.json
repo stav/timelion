@@ -1,14 +1,14 @@
 {
   "name": "timelion",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Time line",
   "main": "index.js",
   "scripts": {
-    "test": "jasmine"
+    "test": "jest"
   },
   "author": "sroth77@gmail.com",
   "license": "ISC",
   "devDependencies": {
-    "jasmine": "^3.2.0"
+    "jest": "^23.6.0"
   }
 }
