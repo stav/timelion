@@ -17,9 +17,9 @@ class Timelion
 
   async load ( filename )
   {
-    console.log(filename)
     const data = await http.get_json_data( filename );
-    if ( 'events' in data ){
+    if ( data && data.events ){
+      console.log(data)
       this._loaded = true;
     }
   }
