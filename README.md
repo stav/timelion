@@ -82,7 +82,7 @@ timetigr-gcLPL2t4 | timetigr $ node -v
 v10.11.0
 ```
 
-## Versions
+## Components
 
 ### Jest
 
@@ -94,6 +94,14 @@ $ npm test -- -v
 
 23.6.0
 ```
+
+#### Debug
+
+``` bash
+timetigr/timelion$ node --inspect-brk node_modules/.bin/jest --runInBand
+```
+
+Then go to Chrome to attach to session
 
 ### V8
 
