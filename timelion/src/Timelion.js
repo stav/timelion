@@ -20,10 +20,13 @@ class Timelion
     handleKeypress( document.getElementsByTagName('body')[0] )
   }
 
-  load ( filename )
+  async load ( filename )
   {
     console.log(filename)
-    this._loaded = true;
+    const data = await http.get_json_data( filename );
+    if ( 'events' in data ){
+      this._loaded = true;
+    }
   }
 
 }

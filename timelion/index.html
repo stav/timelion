@@ -8,11 +8,11 @@
         <script>
             window.addEventListener("load", init, {once: true})
 
-            function init () {
+            async function init () {
                 let timelion = new Timelion();
                 console.log(timelion.loaded())
                 timelion.init()
-                timelion.load('example.json')
+                await timelion.load('example.json')
                 console.log(timelion.loaded())
 
             }
@@ -21,6 +21,7 @@
     <body>
         <section id="timelion"></section>
         <footer id="footer"></footer>
+        <script src="src/http.js"></script>
         <script src="src/Timelion.js"></script>
     </body>
 </html>
