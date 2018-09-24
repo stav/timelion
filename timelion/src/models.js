@@ -1,5 +1,5 @@
 /*
- * Timelion
+ * Models
  */
 "use strict"
 
@@ -15,11 +15,6 @@ class Timelion
     return this._loaded
   }
 
-  init ()
-  {
-    handleKeypress( document.getElementsByTagName('body')[0] )
-  }
-
   async load ( filename )
   {
     console.log(filename)
@@ -32,20 +27,12 @@ class Timelion
 }
 
 /**
- * Add keypress event handler
- */
-function handleKeypress ( body )
-{
-    body.addEventListener('keypress', function (e) {
-      console.log(e)
-    }, false);
-}
-
-/**
  * The browser doesn't understand exports
  */
 try {
-  module.exports = exports = Timelion;
+  module.exports = exports = {
+    Timelion,
+  };
   // Probably running in node
 } catch (e) {
   // Probably running in a browser
