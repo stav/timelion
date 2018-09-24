@@ -9,9 +9,10 @@
             window.addEventListener("load", init, {once: true})
 
             async function init () {
+                const body = document.getElementsByTagName('body')[0];
+                ui.handleKeypress( body )
                 let timelion = new Timelion();
                 console.log(timelion.loaded())
-                timelion.init()
                 await timelion.load('example.json')
                 console.log(timelion.loaded())
 
@@ -21,7 +22,8 @@
     <body>
         <section id="timelion"></section>
         <footer id="footer"></footer>
+        <script src="src/ui.js"></script>
         <script src="src/http.js"></script>
-        <script src="src/Timelion.js"></script>
+        <script src="src/models.js"></script>
     </body>
 </html>
