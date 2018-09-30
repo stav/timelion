@@ -1,0 +1,7 @@
+{
+  "generator-h5package": {
+    "projectName": "timelion",
+    "projectDesc": "time line",
+    "projectLicense": "GPL-3.0"
+  }
+}
