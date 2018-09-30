@@ -13,12 +13,9 @@
 import css from '../css/css.css';
 import scss from '../css/sass.scss';
 
-
 // import Js Plugins/Entities
-
 //ES6 Module
 import Bar1 from './entities/Bar1';
-
 //CommonJS
 var Bar2 = require('./entities/Bar2');
 
