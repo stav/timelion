@@ -89,7 +89,7 @@ v10.11.0
 ``` bash
 $ npm test -- -v
 
-> timelion@0.1.0 test /home/stav/Work/stav/Timelion/timetigr/timelion
+> timelion@0.1.0 test /home/stav/Work/stav/Timelion/timetigr/timetony
 > jest "-v"
 
 23.6.0
@@ -98,20 +98,20 @@ $ npm test -- -v
 #### Debug
 
 ``` bash
-timetigr/timelion$ node --inspect-brk node_modules/.bin/jest --runInBand
+timetigr/timetony$ node --inspect-brk node_modules/.bin/jest --runInBand
 ```
 
 or
 
 ``` bash
-timetigr/timelion$ node --inspect-brk /home/stav/Work/stav/Timelion/timetigr/timelion/node_modules/webpack-dev-server/bin/webpack-dev-server --open --progress --config webpack.dev.js --runInBand
+timetigr/timetony$ node --inspect-brk /home/stav/Work/stav/Timelion/timetigr/timetony/node_modules/webpack-dev-server/bin/webpack-dev-server --open --progress --config webpack.dev.js --runInBand
 ```
 
 Then go to Chrome to attach to session: chrome://inspect/#devices
 
 ```
 Remote Target #LOCALHOST Target (v10.11.0)
-/home/stav/Work/stav/Timelion/timetigr/timelion/node_modules/webpack-dev-server/bin/webpack-dev-serv…
+/home/stav/Work/stav/Timelion/timetigr/timetony/node_modules/webpack-dev-server/bin/webpack-dev-serv…
 ```
 
 Click on `inspect` and then Resume (F8) to get by the initial setu pbreakpoint
