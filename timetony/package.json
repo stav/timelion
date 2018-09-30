@@ -1,9 +1,12 @@
 {
     "name": "timelion",
     "version": "0.0.1",
-    "description": "time line",
+    "description": "Time line",
     "license": "GPL-3.0",
-    "keywords": [],
+    "keywords": [
+        "timeline",
+        "time"
+    ],
     "repository": "",
     "devDependencies": {
         "babel-core": "^6.26.0",
@@ -16,6 +19,7 @@
         "cssnano": "^3.10.0",
         "html-loader": "^0.5.1",
         "html-webpack-plugin": "^3.2.0",
+        "jest": "^23.6.0",
         "mini-css-extract-plugin": "^0.4.0",
         "node-sass": "^4.5.3",
         "optimize-css-assets-webpack-plugin": "^4.0.0",
@@ -34,7 +38,7 @@
         "stats.js": "^0.17.0"
     },
     "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
+        "test": "jest",
         "start": "webpack-dev-server --open --progress --config webpack.dev.js",
         "build": "webpack --config webpack.prod.js"
     }
