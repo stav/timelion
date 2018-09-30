@@ -101,7 +101,20 @@ $ npm test -- -v
 timetigr/timelion$ node --inspect-brk node_modules/.bin/jest --runInBand
 ```
 
-Then go to Chrome to attach to session
+or
+
+``` bash
+timetigr/timelion$ node --inspect-brk /home/stav/Work/stav/Timelion/timetigr/timelion/node_modules/webpack-dev-server/bin/webpack-dev-server --open --progress --config webpack.dev.js --runInBand
+```
+
+Then go to Chrome to attach to session: chrome://inspect/#devices
+
+```
+Remote Target #LOCALHOST Target (v10.11.0)
+/home/stav/Work/stav/Timelion/timetigr/timelion/node_modules/webpack-dev-server/bin/webpack-dev-serv…
+```
+
+Click on `inspect` and then Resume (F8) to get by the initial setu pbreakpoint
 
 ### V8
 
