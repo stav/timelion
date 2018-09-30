@@ -1,5 +1,5 @@
 /**
- * Created by sanchez 
+ * Created by sanchez
  */
 'use strict';
 
@@ -18,7 +18,7 @@ import scss from '../css/sass.scss';
 
 //ES6 Module
 import Bar1 from './entities/Bar1';
-import Howler from 'howler';
+
 //CommonJS
 var Bar2 = require('./entities/Bar2');
 
@@ -34,7 +34,7 @@ window.h5 = {
         return flag;
     },
     rootResize: function() {
-        //orientation portrait width=750px height=1334px / WeChat width=750px height=1206px 
+        //orientation portrait width=750px height=1334px / WeChat width=750px height=1206px
         var wFsize;
         //screen.width screen.height  bug !!!
         // var wWidth = (screen.width > 0) ? (window.innerWidth >= screen.width || window.innerWidth == 0) ? screen.width :
