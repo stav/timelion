@@ -8,6 +8,10 @@ body {
   overflow: hidden;
   font-family: "Helvetica Neue", Helvetica, Arial, "Microsoft Yahei", "Hiragino Sans GB", "Heiti SC", "WenQuanYi Micro Hei";
 }
+#hero {
+  text-align: center;
+  width: 100%;
+}
 
 /*canvas {
   display: block;
