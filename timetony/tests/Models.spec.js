@@ -1,15 +1,14 @@
-const SRC = '../src';
-const models = require(`${SRC}/models`);
+import Timelion from '../src/assets/js/entities/models';
 
 describe("Timelion class", function() {
 
     it("should be a function", function() {
-        expect(typeof models.Timelion).toEqual('function');
+        expect(typeof Timelion).toEqual('function');
     });
 
     describe("Timelion instance", function() {
 
-        const timelion = new models.Timelion();
+        const timelion = new Timelion();
 
         it("should be an object", function() {
             expect(typeof timelion).toEqual('object');

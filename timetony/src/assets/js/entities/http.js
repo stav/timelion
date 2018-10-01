@@ -1,8 +1,4 @@
-http
-/**
- * HTTP
- */
-=(function(){"use strict";
+"use strict";
 
 /**
  * Request url and return the JSON result as an Object
@@ -47,11 +43,8 @@ function get ( url, accept ){
   })
 }
 
-/////////////////////////////////////////////////////////////////////////////
-// Declare Public interface
+export default {
 
-return {
     get_json_data,
-}
 
-}())
+}
