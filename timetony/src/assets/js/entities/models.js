@@ -1,6 +1,3 @@
-/*
- * Models
- */
 "use strict"
 
 class Timelion
@@ -15,7 +12,7 @@ class Timelion
     return this._loaded
   }
 
-  async load ( filename )
+  async load_file ( filename )
   {
     const data = await http.get_json_data( filename );
     if ( data && data.events ){
@@ -24,16 +21,14 @@ class Timelion
     }
   }
 
+  async load_data ( data )
+  {
+    if ( data && data.events ){
+      console.log(data)
+      this._loaded = true;
+    }
+  }
+
 }
 
-/**
- * The browser doesn't understand exports
- */
-try {
-  module.exports = exports = {
-    Timelion,
-  };
-  // Probably running in node
-} catch (e) {
-  // Probably running in a browser
-}
+export default Timelion

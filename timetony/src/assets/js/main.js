@@ -15,10 +15,24 @@ import scss from '../css/sass.scss';
 
 // import Js Plugins/Entities
 //ES6 Module
-import Bar1 from './entities/Bar1';
+import data from '../data/example.json';
+import http from './entities/http';
+import Timelion from './entities/models';
 //CommonJS
 var Bar2 = require('./entities/Bar2');
 
+window.data = data;
+window.http = http;
+window.timelion = new Timelion();
+
+window.Tiger = {
+    init: async function() {
+        let timelion = new Timelion();
+        console.log(timelion.loaded())
+        await timelion.load_data(data)
+        console.log(timelion.loaded())
+    }
+};
 
 window.h5 = {
     isPc: function() {
@@ -102,7 +116,8 @@ window.h5 = {
     }
 };
 window.onload = function() {
-    window.h5.init();
+    // window.h5.init();
+    window.Tiger.init();
 };
 
 //Stats JavaScript Performance Monitor

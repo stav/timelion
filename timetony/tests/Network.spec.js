@@ -1,4 +1,5 @@
-const SRC = '../src';
+import http from '../src/assets/js/entities/http';
+
 const SENTINEL = 0xff;
 
 describe("Testing async functions", () => {
@@ -11,11 +12,10 @@ describe("Testing async functions", () => {
 
 describe("Testing http module", () => {
 
-  const http = require(`${SRC}/http`);
   const filename = 'data/example.json';
 
   it("Should exist", () => {
-    expect(http).toEqual(Object())
+    expect(typeof http).toEqual('object')
   })
 
   // it("Should get JSON", async () => {

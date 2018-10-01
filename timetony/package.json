@@ -1,13 +1,13 @@
 {
     "name": "timelion",
     "version": "0.0.1",
+    "repository": "",
     "description": "Time line",
     "license": "GPL-3.0",
     "keywords": [
         "timeline",
         "time"
     ],
-    "repository": "",
     "devDependencies": {
         "babel-core": "^6.26.0",
         "babel-loader": "^7.1.2",
