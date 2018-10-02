@@ -27,10 +27,10 @@ window.timelion = new Timelion();
 
 window.Tiger = {
     init: async function() {
-        let timelion = new Timelion();
-        console.log(timelion.loaded())
+        console.log('loaded?', timelion.loaded())
         await timelion.load_data(data)
-        console.log(timelion.loaded())
+        console.log('loaded?', timelion.loaded())
+        console.log('events', timelion.events)
     }
 };
 
