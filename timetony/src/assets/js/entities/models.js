@@ -75,25 +75,20 @@ class Timelion
 {
   constructor ()
   {
-    this.unload()
+    this.reset()
   }
 
-  unload ()
+  reset ()
   {
-    this._loaded = false;
     this.events = [];
-  }
-
-  loaded ()
-  {
-    return this._loaded
+    this.loaded = false;
   }
 
   async load_file ( filename )
   {
     const data = await http.get_json_data( filename );
     if ( data && data.events ){
-      this._loaded = true;
+      this.loaded = true;
     }
   }
 
@@ -103,7 +98,7 @@ class Timelion
       if ( !utils.isEmpty( event ))
         this.events.push( new Event( event ))
     }
-    this._loaded = true;
+    this.loaded = true;
   }
 
 }

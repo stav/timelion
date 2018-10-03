@@ -12,7 +12,7 @@ describe("Timelion instance", function() {
     }
 
     beforeEach(() => {
-        timelion.unload();
+        timelion.reset();
     });
 
     it("should be an object", function() {
@@ -20,12 +20,12 @@ describe("Timelion instance", function() {
     });
 
     it("should not be loaded", function() {
-        expect(timelion.loaded()).toEqual(false);
+        expect(timelion.loaded).toEqual(false);
     });
 
     it("should load some data", async function() {
         await timelion.load_data(data)
-        expect(timelion.loaded()).toEqual(true);
+        expect(timelion.loaded).toEqual(true);
     });
 
     it("should parse some data", async function() {
