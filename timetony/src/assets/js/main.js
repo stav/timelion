@@ -31,6 +31,7 @@ window.Tiger = {
         await timelion.load_data(data)
         console.log('loaded?', timelion.loaded)
         console.log('events', timelion.events)
+        await timelion.render()
     }
 };
 

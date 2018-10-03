@@ -82,6 +82,9 @@ class Timelion
   {
     this.events = [];
     this.loaded = false;
+    this.rendered = false;
+    this.years = new Map();
+    // document.getElementById('timelion').innerHTML = '';
   }
 
   async load_file ( filename )
@@ -99,6 +102,43 @@ class Timelion
         this.events.push( new Event( event ))
     }
     this.loaded = true;
+  }
+
+  async render ()
+  {
+    let
+      $canvas = document.getElementById('TimeL10N'),
+      $years = document.createElement('div'),
+      show_age = true,
+      _;
+
+    $years.id = 'timelion-years';
+
+    const start_dates = this.events.map( event => event.sdate );
+    const finis_dates = this.events.map( event => event.edate );
+    const first_year = new Date(Math.min(...start_dates, ...finis_dates)).getFullYear();
+    const final_year = new Date(Math.max(...start_dates, ...finis_dates)).getFullYear();
+    console.log(first_year, final_year)
+
+    for (
+      let year = first_year, age = 0;
+      year <= final_year + 1;
+      year++, age++
+    ){
+      let
+        $year = document.createElement('div'),
+        $text = document.createElement('span'),
+        _;
+
+      $year.classList.add('year');
+      $year.style.width = '55px';
+      $text.innerHTML = year + (show_age ? (' <i>(' + age + ')</i>') : '');
+      $year.innerHTML = $text.outerHTML;
+      $year.setAttribute('data-year', year)
+      $years.appendChild( $year )
+    }
+    $canvas.appendChild( $years )
+    this.rendered = true;
   }
 
 }
