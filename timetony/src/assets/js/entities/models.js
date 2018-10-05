@@ -5,6 +5,7 @@
 
 import calen from './calendar';
 import utils from './utils';
+import domui from './domui';
 
 const TODAY = new Date();
 
@@ -18,6 +19,8 @@ class Event
    */
   constructor ( event )
   {
+    this.offset = 100;
+    this.width = 100;
     this.sdate = new Date(...this._getStarTriplet( event.date ));
     this.edate = new Date(...this._getEndrTriplet( event.date ));
     this.title = event.title;
@@ -106,18 +109,22 @@ class Timelion
 
   async render ()
   {
-    let
-      $canvas = document.getElementById('TimeL10N'),
-      $years = document.createElement('div'),
-      show_age = true,
-      _;
+    this.render_years()
+    this.render_events()
+    this.rendered = true;
+  }
+
+  render_years ()
+  {
+    const show_age = true;
+    let $years = domui.ele('div');
 
     $years.id = 'timelion-years';
 
     const start_dates = this.events.map( event => event.sdate );
     const finis_dates = this.events.map( event => event.edate );
-    const first_year = new Date(Math.min(...start_dates, ...finis_dates)).getFullYear();
-    const final_year = new Date(Math.max(...start_dates, ...finis_dates)).getFullYear();
+    const first_year = new Date(Math.min(...start_dates)).getFullYear();
+    const final_year = new Date(Math.max(...finis_dates)).getFullYear();
     console.log(first_year, final_year)
 
     for (
@@ -125,10 +132,8 @@ class Timelion
       year <= final_year + 1;
       year++, age++
     ){
-      let
-        $year = document.createElement('div'),
-        $text = document.createElement('span'),
-        _;
+      let $year = domui.ele('div');
+      let $text = domui.ele('span');
 
       $year.classList.add('year');
       $year.style.width = '55px';
@@ -137,8 +142,38 @@ class Timelion
       $year.setAttribute('data-year', year)
       $years.appendChild( $year )
     }
-    $canvas.appendChild( $years )
-    this.rendered = true;
+    domui.add( $years )
+  }
+
+  render_events ()
+  {
+    let i = 0;
+    let $events = domui.ele('div');
+
+    $events.id = 'timelion-events';
+
+    for ( const event of this.events )
+    {
+      console.log(event)
+      let $event = domui.ele('div');
+      let $line = domui.ele('div');
+      let $data = domui.ele('b');
+      let $text = domui.txt( event.title );
+
+      $data.innerHTML = event.sdate;
+      $line.classList.add('line');
+      $line.style.width = event.width.toFixed(2) + 'px';
+
+      $event.title = event.title;
+      $event.style.marginLeft = event.offset.toFixed(2) + 'px';
+      $event.classList.add('event');
+      $event.setAttribute('data-index', i++)
+      $event.appendChild( $line )
+      $event.appendChild( $data )
+      $event.appendChild( $text )
+      $events.appendChild( $event )
+    }
+    domui.add( $events )
   }
 
 }
