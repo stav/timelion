@@ -19,12 +19,32 @@ class Event
    */
   constructor ( event )
   {
-    this.offset = 100;
-    this.width = 100;
+    this._input = event;
+    this.title = event.title;
     this.sdate = new Date(...this._getStarTriplet( event.date ));
     this.edate = new Date(...this._getEndrTriplet( event.date ));
-    this.title = event.title;
-    this._input = event;
+    this.offset = 0;
+    this.width = 0;
+  }
+
+  /**
+   * Calculate the offset from the beginning of the timeline
+   */
+  _offset( tl )
+  {
+    const daily_ms = 24 * 60 * 60 * 1000;
+    const days_in_month = 30;
+    const months_in_year = 12;
+    const month_length = tl.year_width / months_in_year;
+    const day_length = month_length / days_in_month;
+
+    const day = this.sdate.getDate();
+    const year = this.sdate.getFullYear();
+    const month = this.sdate.getMonth();
+    const diff_ms = calen.GregorianDiffWithoutEpoch( year, month, day, tl.first_year, 1, 1 );
+    const diff_days = parseInt( diff_ms / daily_ms );
+
+    return diff_days * day_length
   }
 
   /**
@@ -87,23 +107,32 @@ class Timelion
     this.loaded = false;
     this.rendered = false;
     this.years = new Map();
+    this.year_width = 55;
     // document.getElementById('timelion').innerHTML = '';
   }
 
-  async load_file ( filename )
+  async load ( data )
   {
-    const data = await http.get_json_data( filename );
-    if ( data && data.events ){
-      this.loaded = true;
-    }
-  }
-
-  async load_data ( data )
-  {
-    for ( const event of data.events ){
+    // Load the data into the events
+    for ( const event of data.events )
+    {
       if ( !utils.isEmpty( event ))
         this.events.push( new Event( event ))
     }
+
+    // Process the event data
+    const start_dates = this.events.map( event => event.sdate );
+    const finis_dates = this.events.map( event => event.edate );
+    this.first_year = new Date(Math.min(...start_dates)).getFullYear();
+    this.final_year = new Date(Math.max(...finis_dates)).getFullYear();
+
+    // Load the events with processed info
+    for ( const event of this.events )
+    {
+      event.offset = event._offset( this );
+      event.width = 100;
+    }
+
     this.loaded = true;
   }
 
@@ -121,22 +150,16 @@ class Timelion
 
     $years.id = 'timelion-years';
 
-    const start_dates = this.events.map( event => event.sdate );
-    const finis_dates = this.events.map( event => event.edate );
-    const first_year = new Date(Math.min(...start_dates)).getFullYear();
-    const final_year = new Date(Math.max(...finis_dates)).getFullYear();
-    console.log(first_year, final_year)
-
     for (
-      let year = first_year, age = 0;
-      year <= final_year + 1;
+      let year = this.first_year, age = 0;
+      year <= this.final_year + 1;
       year++, age++
     ){
       let $year = domui.ele('div');
       let $text = domui.ele('span');
 
       $year.classList.add('year');
-      $year.style.width = '55px';
+      $year.style.width = this.year_width + 'px';
       $text.innerHTML = year + (show_age ? (' <i>(' + age + ')</i>') : '');
       $year.innerHTML = $text.outerHTML;
       $year.setAttribute('data-year', year)
