@@ -79,7 +79,7 @@ module.exports = {
             use: {
                 loader: 'html-loader',
                 options: {
-                    minimize: true,
+                    minimize: false,
                     removeComments: false,
                     collapseWhitespace: false
                 }
@@ -111,8 +111,8 @@ module.exports = {
             inject: 'body',
             hash: false,
             minify: {
-                removeComments: true,
-                collapseWhitespace: true
+                removeComments: false,
+                collapseWhitespace: false
             }
         })
 
