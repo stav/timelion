@@ -101,8 +101,7 @@ footer{
   float: left;
   clear: left;
 }
-#timelion .event b{
-  font-weight: normal;
+#timelion .event i{
   color: rgba(255,255,255,.5);
   margin-right: 3px;
 }
