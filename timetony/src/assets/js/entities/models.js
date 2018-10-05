@@ -200,22 +200,29 @@ class Timelion
     for ( const event of this.events )
     {
       console.log(event)
+      const w = event.width.toFixed(2);
+
       let $event = domui.ele('div');
       let $line = domui.ele('div');
-      let $data = domui.ele('b');
+      let $mark = domui.ele('span');
+      let $data = domui.ele('i');
       let $text = domui.txt( event.title );
 
-      $data.innerHTML = event.sdate;
       $line.classList.add('line');
-      $line.style.width = event.width.toFixed(2) + 'px';
+      $line.style.width = w + 'px';
+      $data.innerHTML = event._input.date;
+      $mark.appendChild( $data )
+      $mark.appendChild( $text )
+      $mark.style.position = 'relative';
+      $mark.style.left = `-${w}px`;
+      $mark.style.top = '-4px';
 
       $event.title = event.title;
       $event.style.marginLeft = event.offset.toFixed(2) + 'px';
       $event.classList.add('event');
       $event.setAttribute('data-index', i++)
       $event.appendChild( $line )
-      $event.appendChild( $data )
-      $event.appendChild( $text )
+      $event.appendChild( $mark )
       $events.appendChild( $event )
     }
     domui.add( $events )
