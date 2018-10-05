@@ -15,6 +15,10 @@ function GregorianDiffWithoutEpoch( yr1, mo1, dy1,  yr2, mo2, dy2 ) {
     return dt1 - dt2;
 }
 
+function dateDiff( ...args ) {
+    return GregorianDiffWithoutEpoch( ...args );
+}
+
 
 export default {
 
@@ -31,6 +35,5 @@ export default {
     NOV: 11,
     DEC: 12,
 
-    GregorianToDTime,
-    GregorianDiffWithoutEpoch,
+    dateDiff,
 }

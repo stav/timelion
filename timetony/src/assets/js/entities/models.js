@@ -28,23 +28,45 @@ class Event
   }
 
   /**
-   * Calculate the offset from the beginning of the timeline
+   * Set the offset from the beginning of the timeline
    */
-  _offset( tl )
+  set_offset( tl )
   {
     const daily_ms = 24 * 60 * 60 * 1000;
     const days_in_month = 30;
     const months_in_year = 12;
     const month_length = tl.year_width / months_in_year;
     const day_length = month_length / days_in_month;
-
     const day = this.sdate.getDate();
     const year = this.sdate.getFullYear();
     const month = this.sdate.getMonth();
-    const diff_ms = calen.GregorianDiffWithoutEpoch( year, month, day, tl.first_year, 1, 1 );
+    const diff_ms = calen.dateDiff( year, month, day, tl.first_year, 1, 1 );
     const diff_days = parseInt( diff_ms / daily_ms );
 
-    return diff_days * day_length
+    this.offset = diff_days * day_length;
+  }
+
+  /**
+   * Set the width based on the timeline factors
+   */
+  set_width( tl )
+  {
+
+    const daily_ms = 24 * 60 * 60 * 1000;
+    const days_in_month = 30;
+    const months_in_year = 12;
+    const month_length = tl.year_width / months_in_year;
+    const day_length = month_length / days_in_month;
+    const sday = this.sdate.getDate();
+    const syear = this.sdate.getFullYear();
+    const smonth = this.sdate.getMonth();
+    const eday = this.edate.getDate();
+    const eyear = this.edate.getFullYear();
+    const emonth = this.edate.getMonth();
+    const diff_ms = calen.dateDiff( eyear, emonth, eday, syear, smonth, sday );
+    const diff_days = parseInt( diff_ms / daily_ms );
+
+    this.width = diff_days * day_length;
   }
 
   /**
@@ -129,8 +151,8 @@ class Timelion
     // Load the events with processed info
     for ( const event of this.events )
     {
-      event.offset = event._offset( this );
-      event.width = 100;
+      event.set_offset( this );
+      event.set_width( this );
     }
 
     this.loaded = true;
