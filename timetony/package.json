@@ -35,6 +35,7 @@
     "dependencies": {
         "animate.css": "^3.5.2",
         "gsap": "^1.20.3",
+        "normalize.css": "^8.0.0",
         "stats.js": "^0.17.0"
     },
     "scripts": {

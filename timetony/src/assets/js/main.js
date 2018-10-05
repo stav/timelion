@@ -10,6 +10,7 @@
 
 // import CSS
 // import animate_css from 'animate.css/animate.min.css';
+import 'normalize.css';
 import css from '../css/css.css';
 import scss from '../css/sass.scss';
 
