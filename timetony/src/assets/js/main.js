@@ -17,13 +17,11 @@ import scss from '../css/sass.scss';
 // import Js Plugins/Entities
 //ES6 Module
 import data from '../data/example.json';
-import http from './entities/http';
 import Timelion from './entities/models';
 //CommonJS
 var Bar2 = require('./entities/Bar2');
 
 window.data = data;
-window.http = http;
 window.timelion = new Timelion();
 
 window.Tiger = {
