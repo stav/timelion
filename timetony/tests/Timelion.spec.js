@@ -24,12 +24,12 @@ describe("Timelion instance", function() {
     });
 
     it("should load some data", async function() {
-        await timelion.load_data(data)
+        await timelion.load(data)
         expect(timelion.loaded).toEqual(true);
     });
 
     it("should parse some data", async function() {
-        await timelion.load_data(data)
+        await timelion.load(data)
         expect(timelion.events.length).toEqual(1);
 
         const event = timelion.events[0];
