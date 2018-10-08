@@ -20,6 +20,9 @@ class Event
   constructor ( event )
   {
     this._input = event;
+    this.sinput = event.date[0];
+    this.einput = event.date[1];
+    this._input = event;
     this.title = event.title;
     this.sdate = new Date(...this._getStarTriplet( event.date ));
     this.edate = new Date(...this._getEndrTriplet( event.date ));
@@ -210,12 +213,13 @@ class Timelion
 
       $line.classList.add('line');
       $line.style.width = w + 'px';
-      $data.innerHTML = event._input.date;
+
+      $data.innerHTML = event.sinput + (event.einput ? ` - ${event.einput}` : '');
+
+      $mark.classList.add('mark');
       $mark.appendChild( $data )
       $mark.appendChild( $text )
-      $mark.style.position = 'relative';
       $mark.style.left = `-${w}px`;
-      $mark.style.top = '-4px';
 
       $event.title = event.title;
       $event.style.marginLeft = event.offset.toFixed(2) + 'px';
@@ -223,6 +227,7 @@ class Timelion
       $event.setAttribute('data-index', i++)
       $event.appendChild( $line )
       $event.appendChild( $mark )
+
       $events.appendChild( $event )
     }
     domui.add( $events )
