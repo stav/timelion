@@ -104,6 +104,7 @@ footer{
 #timelion .event i{
   color: rgba(255,255,255,.5);
   margin-right: 3px;
+  padding-right: 7px;
 }
 #timelion .event .line{
   display: inline-block;
@@ -117,4 +118,9 @@ footer{
 }
 #timelion .event:hover .line{
   opacity: .5;
+}
+#timelion .event .mark{
+  border-bottom: #aaa solid 1px;
+  position: relative;
+  top: -8px;
 }
