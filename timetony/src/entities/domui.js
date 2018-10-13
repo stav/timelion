@@ -48,12 +48,21 @@ function zoom ( timelion, factor )
   const w = timelion.year_width += factor;
   let rule = getSelectorRule('#timelion-years .year');
   rule.style.width = `${w}px`;
+
   // Update the events
   timelion.setup_events()
-  const $events = document.getElementById('timelion-events');
-  for ( let $event of $events.getElementsByClassName('event') )
+  let $events = document.getElementById('timelion-events').getElementsByClassName('event');
+  for ( let i = 0; i < timelion.events.length; i++ )
   {
-    console.log($event)
+    const event = timelion.events[ i ];
+    const width = event.width.toFixed(2);
+    const offset = event.offset.toFixed(2);
+    let $event = $events[ i ];
+    let $line = $event.querySelector('.line');
+    let $mark = $event.querySelector('.mark');
+    $event.style.marginLeft = offset + 'px';
+    $line.style.width = width + 'px';
+    $mark.style.left = `-${width}px`;
   }
 }
 
@@ -63,10 +72,10 @@ function zoom ( timelion, factor )
 function keyPress ( event )
 {
   if (event.key === '1') {
-      zoom( event.view.timelion, 1 )
+      zoom( event.view.timelion, -1 )  // zoom out
   }
   else if (event.key === '2') {
-      zoom( event.view.timelion, -1 )
+      zoom( event.view.timelion, 1 )  // zoom in
   }
 }
 
