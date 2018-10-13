@@ -28,15 +28,26 @@ function add ( element )
 /**
  * Zoom the years
  */
+function zoom ( timelion, factor )
+{
+  const w = timelion.year_width += factor;
+  let sheet = document.styleSheets[0];
+  let rule = sheet.cssRules[36];
+  rule.style.width = `${w}px`;
+
+  timelion.setup_events()
+  const $events = document.getElementById('timelion-events');
+  for ( let $event of $events.getElementsByClassName('event') )
+  {
+    console.log($event)
+  }
+}
+
+/**
+ * Handle keyboard events
+ */
 function keyPress ( event )
 {
-  function zoom ( timelion, factor )
-  {
-    const w = timelion.year_width += factor;
-    let sheet = document.styleSheets[0];
-    let rule = sheet.cssRules[36];
-    rule.style.width = `${w}px`;
-  }
   if (event.key === '1') {
       zoom( event.view.timelion, 1 )
   }

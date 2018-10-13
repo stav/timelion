@@ -150,15 +150,19 @@ class Timelion
     const finis_dates = this.events.map( event => event.edate );
     this.first_year = new Date(Math.min(...start_dates)).getFullYear();
     this.final_year = new Date(Math.max(...finis_dates)).getFullYear();
+    this.setup_events()
 
-    // Load the events with processed info
+    // Finish up
+    this.loaded = true;
+  }
+
+  setup_events ()
+  {
     for ( const event of this.events )
     {
       event.set_offset( this );
       event.set_width( this );
     }
-
-    this.loaded = true;
   }
 
   async render ()
