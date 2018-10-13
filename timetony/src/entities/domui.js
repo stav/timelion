@@ -26,15 +26,29 @@ function add ( element )
 }
 
 /**
- * Zoom the years
+ * Find the correct stylesheet rule
+ */
+function getSelectorRule ( text )
+{
+  let sheet = document.styleSheets[0];  // Assume we only have one stylesheet
+
+  for ( let rule of sheet.cssRules )
+  {
+    if ( rule.selectorText === text )
+      return rule
+  }
+}
+
+/**
+ * Zoom in or out based on the positive or negative factor
  */
 function zoom ( timelion, factor )
 {
+  // Update the years
   const w = timelion.year_width += factor;
-  let sheet = document.styleSheets[0];
-  let rule = sheet.cssRules[36];
+  let rule = getSelectorRule('#timelion-years .year');
   rule.style.width = `${w}px`;
-
+  // Update the events
   timelion.setup_events()
   const $events = document.getElementById('timelion-events');
   for ( let $event of $events.getElementsByClassName('event') )
