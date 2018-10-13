@@ -167,74 +167,9 @@ class Timelion
 
   async render ()
   {
-    this.render_years()
-    this.render_events()
+    domui.renderYears( this.first_year, this.final_year )
+    domui.renderEvents( this.events )
     this.rendered = true;
-  }
-
-  render_years ()
-  {
-    const show_age = true;
-    let $years = domui.ele('div');
-
-    $years.id = 'timelion-years';
-
-    for (
-      let year = this.first_year, age = 0;
-      year <= this.final_year + 1;
-      year++, age++
-    ){
-      let $year = domui.ele('div');
-      let $text = domui.ele('span');
-
-      $year.classList.add('year');
-      // $year.style.width = this.year_width + 'px';
-      $text.innerHTML = year + (show_age ? (' <i>(' + age + ')</i>') : '');
-      $year.innerHTML = $text.outerHTML;
-      $year.setAttribute('data-year', year)
-      $years.appendChild( $year )
-    }
-    domui.add( $years )
-  }
-
-  render_events ()
-  {
-    let i = 0;
-    let $events = domui.ele('div');
-
-    $events.id = 'timelion-events';
-
-    for ( const event of this.events )
-    {
-      console.log(event)
-      const w = event.width.toFixed(2);
-
-      let $event = domui.ele('div');
-      let $line = domui.ele('div');
-      let $mark = domui.ele('span');
-      let $data = domui.ele('i');
-      let $text = domui.txt( event.title );
-
-      $line.classList.add('line');
-      $line.style.width = w + 'px';
-
-      $data.innerHTML = event.sinput + (event.einput ? ` - ${event.einput}` : '');
-
-      $mark.classList.add('mark');
-      $mark.appendChild( $data )
-      $mark.appendChild( $text )
-      $mark.style.left = `-${w}px`;
-
-      $event.title = event.title;
-      $event.style.marginLeft = event.offset.toFixed(2) + 'px';
-      $event.classList.add('event');
-      $event.setAttribute('data-index', i++)
-      $event.appendChild( $line )
-      $event.appendChild( $mark )
-
-      $events.appendChild( $event )
-    }
-    domui.add( $events )
   }
 
 }
