@@ -114,13 +114,18 @@ footer{
   border-radius: 4px;
   opacity: .3;
   position: relative;
-  left: -2px;
 }
 #timelion .event:hover .line{
   opacity: .5;
 }
+#timelion .event:focus .line{
+  opacity: 1;
+}
+#timelion .event:focus .mark{
+  top: -9px;
+}
 #timelion .event .mark{
-  border-bottom: #aaa solid 1px;
+  border-bottom: #777 solid 1px;
   position: relative;
   top: -8px;
 }

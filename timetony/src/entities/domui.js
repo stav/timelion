@@ -135,7 +135,7 @@ function renderEvents ( events )
     $event.title = event.title;
     $event.style.marginLeft = event.offset.toFixed(2) + 'px';
     $event.classList.add('event');
-    $event.setAttribute('data-index', i++)
+    $event.setAttribute('tabindex', ++i)
     $event.appendChild( $line )
     $event.appendChild( $mark )
 
