@@ -8,13 +8,13 @@ const { HashedModuleIdsPlugin } = require('webpack');
 
 module.exports = {
     entry: {
-        main: path.resolve(__dirname, "src/assets/js/main.js")
+        main: path.resolve(__dirname, "src/main.js")
     },
     output: {
         path: path.resolve(__dirname, 'dist'),
         publicPath: "/",
-        filename: 'assets/js/[name].[chunkhash].js',
-        chunkFilename: 'assets/js/[name].[chunkhash].js'
+        filename: '[name].[chunkhash].js',
+        chunkFilename: '[name].[chunkhash].js'
     },
     optimization: {
         runtimeChunk: {
@@ -60,7 +60,7 @@ module.exports = {
                     limit: 1024,
                     name: '[name].[ext]',
                     publicPath: '../../',
-                    outputPath: 'assets/css/'
+                    outputPath: 'css/'
                 }
             }
         }, {
@@ -71,7 +71,7 @@ module.exports = {
                     limit: 1024,
                     name: '[name].[ext]',
                     publicPath: '../../',
-                    outputPath: 'assets/css/'
+                    outputPath: 'css/'
                 }
             }
         }, {
@@ -95,12 +95,12 @@ module.exports = {
             dry: false
         }),
         new CopyWebpackPlugin([{
-            from: path.resolve(__dirname, "src/assets/img"),
-            to: path.resolve(__dirname, "dist/assets/img")
+            from: path.resolve(__dirname, "src/img"),
+            to: path.resolve(__dirname, "dist/img")
         }]),
         new MiniCssExtractPlugin({
-            filename: 'assets/css/[name].[chunkhash].min.css',
-            chunkFilename: 'assets/css/[name].[chunkhash].css'
+            filename: 'css/[name].[chunkhash].min.css',
+            chunkFilename: 'css/[name].[chunkhash].css'
         }),
         new HtmlWebpackPlugin({
             template: './src/index.html',

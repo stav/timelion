@@ -11,12 +11,12 @@
 // import CSS
 // import animate_css from 'animate.css/animate.min.css';
 import 'normalize.css';
-import css from '../css/css.css';
-import scss from '../css/sass.scss';
+import css from './css/css.css';
+import scss from './css/sass.scss';
 
 // import Js Plugins/Entities
 //ES6 Module
-import data from '../data/example.json';
+import data from './data/example.json';
 import Timelion from './entities/models';
 //CommonJS
 var Bar2 = require('./entities/Bar2');

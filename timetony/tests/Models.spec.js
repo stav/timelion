@@ -1,4 +1,4 @@
-import Timelion from '../src/assets/js/entities/models';
+import Timelion from '../src/entities/models';
 
 describe("Timelion model", function() {
 

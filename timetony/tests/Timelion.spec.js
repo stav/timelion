@@ -1,5 +1,5 @@
-import Timelion from '../src/assets/js/entities/models';
-import utils    from '../src/assets/js/entities/utils';
+import Timelion from '../src/entities/models';
+import utils    from '../src/entities/utils';
 
 describe("Timelion instance", function() {
 
