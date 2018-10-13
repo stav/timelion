@@ -184,7 +184,7 @@ class Timelion
       let $text = domui.ele('span');
 
       $year.classList.add('year');
-      $year.style.width = this.year_width + 'px';
+      // $year.style.width = this.year_width + 'px';
       $text.innerHTML = year + (show_age ? (' <i>(' + age + ')</i>') : '');
       $year.innerHTML = $text.outerHTML;
       $year.setAttribute('data-year', year)

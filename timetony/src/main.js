@@ -17,7 +17,9 @@ import scss from './css/sass.scss';
 // import Js Plugins/Entities
 //ES6 Module
 import data from './data/example.json';
+import domui from './entities/domui';
 import Timelion from './entities/models';
+
 //CommonJS
 var Bar2 = require('./entities/Bar2');
 
@@ -29,7 +31,9 @@ window.Tiger = {
         console.log('loaded?', timelion.loaded)
         await timelion.load( data )
         console.log('loaded?', timelion.loaded)
+        console.log(timelion)
         await timelion.render()
+        document.addEventListener('keypress', domui.keyPress, false)
     }
 };
 
