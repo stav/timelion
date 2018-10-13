@@ -1,4 +1,4 @@
-import data from '../src/assets/data/example.json';
+import data from '../src/data/example.json';
 
 describe("Data", function() {
 
