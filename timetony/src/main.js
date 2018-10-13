@@ -28,9 +28,8 @@ window.timelion = new Timelion();
 
 window.Tiger = {
     init: async function() {
-        console.log('loaded?', timelion.loaded)
+        console.log(timelion)
         await timelion.load( data )
-        console.log('loaded?', timelion.loaded)
         console.log(timelion)
         await timelion.render()
         document.addEventListener('keypress', domui.keyPress, false)
