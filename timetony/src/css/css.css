@@ -64,7 +64,7 @@ footer{
   font-weight: 300;
   white-space: nowrap;
   box-sizing: border-box;
-  height: 100%;
+  width: 55px; height: 100%;
   border-left: 1px dashed rgba(255,255,255,.2);
 }
 #timelion-years .year:first-child{
