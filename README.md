@@ -82,6 +82,27 @@ timetigr-gcLPL2t4 | timetigr $ node -v
 v10.11.0
 ```
 
+## Development
+
+### Start the dev server
+
+``` bash
+npm run start
+```
+
+### Run tests
+
+``` bash
+npm test
+```
+
+## Deployment
+
+``` bash
+npm run build
+make deploy
+```
+
 ## Components
 
 ### Jest
