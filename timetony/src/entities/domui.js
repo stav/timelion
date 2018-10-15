@@ -95,6 +95,8 @@ function renderYears ( first_year, final_year )
     let $text = ele('span');
 
     $year.classList.add('year');
+    if ( year % 10 === 0 )
+      $year.classList.add('decade');
     // $year.style.width = this.year_width + 'px';
     $text.innerHTML = year + (show_age ? (' <i>(' + age + ')</i>') : '');
     $year.innerHTML = $text.outerHTML;
