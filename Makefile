@@ -1,7 +1,7 @@
 .PHONY: init test clean deploy
 
-REMOTE      := linode
-REPO_URI    := stav@cowboy:/srv/git/timetigr.git/
+REMOTE      := origin
+REPO_URI    := git@github.com:stav/timelion.git
 REPO_REMOTE := $(shell git remote)
 RENDER_DIR  := cowboy:/srv/default/htdocs/timetigr
 
