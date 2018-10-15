@@ -2,6 +2,8 @@
 
 *This is my timeline, timelion.*
 
+![timelion rendered in a browser](http://104.237.140.142/timeimg/timelion.png)
+
 ## Environment
 
 ### Setup Python
