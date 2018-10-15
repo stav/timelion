@@ -14,7 +14,7 @@ module.exports = merge(common, {
     devtool: 'source-map',
     devServer: {
         contentBase: path.resolve(__dirname, 'dist'),
-        compress: true,
+        compress: false,
         port: 9000,
         disableHostCheck: true,
         host: '0.0.0.0',
@@ -26,15 +26,15 @@ module.exports = merge(common, {
                 uglifyOptions: {
                     compress: {
                         warnings: false,
-                        drop_console: true,
+                        drop_console: false,
                         booleans: false,
-                        collapse_vars: true,
-                        reduce_vars: true,
-                        loops: true
+                        collapse_vars: false,
+                        reduce_vars: false,
+                        loops: false
                     },
                     output: {
-                        comments: false,
-                        beautify: false
+                        comments: true,
+                        beautify: true
                     }
                 }
             }),
@@ -42,9 +42,9 @@ module.exports = merge(common, {
                 assetNameRegExp: /\.css$/,
                 cssProcessor: require('cssnano')({ zindex: false }),
                 cssProcessorOptions: {
-                    discardComments: { removeAll: true }
+                    discardComments: { removeAll: false }
                 },
-                canPrint: false
+                canPrint: true
             }, {
                 copyUnmodified: true
             })
