@@ -1,13 +1,13 @@
 <template>
-  <HelloWorld />
+  <TimeScape />
 </template>
 
 <script>
-  import HelloWorld from '../components/HelloWorld'
+  import TimeScape from '@/components/TimeScape'
 
   export default {
     components: {
-      HelloWorld
+      TimeScape
     }
   }
 </script>
