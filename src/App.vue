@@ -5,7 +5,7 @@
       v-model="drawer"
       fixed
       app
-    >
+      >
       <v-list dense>
         <template v-for="item in items">
           <v-layout
@@ -13,7 +13,7 @@
             :key="item.heading"
             row
             align-center
-          >
+            >
             <v-flex xs6>
               <v-subheader v-if="item.heading">
                 {{ item.heading }}
@@ -29,7 +29,7 @@
             :key="item.text"
             :prepend-icon="item.model ? item.icon : item['icon-alt']"
             append-icon=""
-          >
+            >
             <v-list-tile slot="activator">
               <v-list-tile-content>
                 <v-list-tile-title>
@@ -37,11 +37,7 @@
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile
-              v-for="(child, i) in item.children"
-              :key="i"
-              @click=""
-            >
+            <v-list-tile v-for="(child, i) in item.children" :key="i" @click="">
               <v-list-tile-action v-if="child.icon">
                 <v-icon>{{ child.icon }}</v-icon>
               </v-list-tile-action>
@@ -71,10 +67,10 @@
       dark
       app
       fixed
-    >
+      >
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down">Google Contacts</span>
+        <span class="hidden-sm-and-down"> TmL1on </span>
       </v-toolbar-title>
       <v-text-field
         flat
@@ -102,7 +98,7 @@
     </v-toolbar>
     <v-content>
 
-      <TimeScape/>
+      <router-view></router-view>
 
     </v-content>
     <v-btn
@@ -113,7 +109,7 @@
       dark
       fixed
       @click="dialog = !dialog"
-    >
+      >
       <v-icon>add</v-icon>
     </v-btn>
     <v-dialog v-model="dialog" width="800px">
@@ -183,50 +179,25 @@
 </template>
 
 <script>
-  import TimeScape from '@/components/TimeScape'
+  import * as timelines from '/home/stav/Work/stav/Timelion/timelines'
 
   export default {
 
     data: () => ({
+      timelines,
       dialog: false,
       drawer: null,
       items: [
-        { icon: 'contacts', text: 'Contacts' },
-        { icon: 'history', text: 'Frequently contacted' },
-        { icon: 'content_copy', text: 'Duplicates' },
         {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'Labels',
           model: true,
-          children: [
-            { icon: 'add', text: 'Create label' }
-          ]
-        },
-        {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
-          text: 'More',
-          model: false,
-          children: [
-            { text: 'Import' },
-            { text: 'Export' },
-            { text: 'Print' },
-            { text: 'Undo changes' },
-            { text: 'Other contacts' }
-          ]
+          text: 'Timelines',
+          icon: 'keyboard_arrow_up', 'icon-alt': 'keyboard_arrow_down',
+          children: timelines.list,
         },
         { icon: 'settings', text: 'Settings' },
-        { icon: 'chat_bubble', text: 'Send feedback' },
         { icon: 'help', text: 'Help' },
-        { icon: 'phonelink', text: 'App downloads' },
-        { icon: 'keyboard', text: 'Go to the old version' }
       ]
     }),
-
-    components: {
-      TimeScape
-    },
 
     props: {
       source: String
