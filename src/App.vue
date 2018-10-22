@@ -1,5 +1,7 @@
 <template>
   <v-app id="inspire" dark>
+
+
     <v-navigation-drawer
       :clipped="$vuetify.breakpoint.lgAndUp"
       v-model="drawer"
@@ -8,21 +10,22 @@
       >
       <v-list dense>
         <template v-for="item in items">
+
+          <!-- Heading -->
           <v-layout
             v-if="item.heading"
             :key="item.heading"
             row
             align-center
             >
-            <v-flex xs6>
-              <v-subheader v-if="item.heading">
+            <v-flex xs12>
+              <v-subheader>
                 {{ item.heading }}
               </v-subheader>
             </v-flex>
-            <v-flex xs6 class="text-xs-center">
-              <a href="#!" class="body-2 black--text">EDIT</a>
-            </v-flex>
           </v-layout>
+
+          <!-- Group -->
           <v-list-group
             v-else-if="item.children"
             v-model="item.model"
@@ -32,22 +35,30 @@
             >
             <v-list-tile slot="activator">
               <v-list-tile-content>
-                <v-list-tile-title>
+                <v-list-tile-title class="list-group">
                   {{ item.text }}
                 </v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
-            <v-list-tile v-for="(child, i) in item.children" :key="i" @click="">
-              <v-list-tile-action v-if="child.icon">
-                <v-icon>{{ child.icon }}</v-icon>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ child.text }}
-                </v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+            <!-- Children -->
+            <router-link v-for="(child, i) in item.children" :key="i"
+              :to="{name: 'timeline'}"
+              class="router-link"
+              >
+              <v-list-tile>
+                <v-list-tile-action v-if="child.icon">
+                  <v-icon>{{ child.icon }}</v-icon>
+                </v-list-tile-action>
+                <v-list-tile-content>
+                  <v-list-tile-title>
+                    {{ child.text }}
+                  </v-list-tile-title>
+                </v-list-tile-content>
+              </v-list-tile>
+            </router-link>
           </v-list-group>
+
+          <!-- Other -->
           <v-list-tile v-else :key="item.text" @click="">
             <v-list-tile-action>
               <v-icon>{{ item.icon }}</v-icon>
@@ -58,19 +69,22 @@
               </v-list-tile-title>
             </v-list-tile-content>
           </v-list-tile>
+
         </template>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar
+
+    <!-- Toolbar -->
+
+    <v-toolbar dark app fixed color="blue darken-3"
       :clipped-left="$vuetify.breakpoint.lgAndUp"
-      color="blue darken-3"
-      dark
-      app
-      fixed
       >
       <v-toolbar-title style="width: 300px" class="ml-0 pl-3">
         <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-        <span class="hidden-sm-and-down"> TmL1on </span>
+        <router-link to="/" title="Home">
+          <v-icon>linear_scale</v-icon>
+          <span class="home hidden-xs-and-down">TmL1on</span>
+        </router-link>
       </v-toolbar-title>
       <v-text-field
         flat
@@ -194,6 +208,7 @@
           icon: 'keyboard_arrow_up', 'icon-alt': 'keyboard_arrow_down',
           children: timelines.list,
         },
+        { heading: 'Meta' },
         { icon: 'settings', text: 'Settings' },
         { icon: 'help', text: 'Help' },
       ]
@@ -205,3 +220,15 @@
 
   }
 </script>
+
+<style scoped="true">
+  a {
+    color: white;
+    text-decoration: none;
+  }
+  .list-group {
+    color: darkgrey;
+    font-size: larger;
+    text-decoration: none;
+  }
+</style>
