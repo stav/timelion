@@ -42,7 +42,7 @@
             </v-list-tile>
             <!-- Children -->
             <router-link v-for="(child, i) in item.children" :key="i"
-              :to="{name: 'timeline'}"
+              :to="{ name: 'timeline', params: { tid: child.id }}"
               class="router-link"
               >
               <v-list-tile>
@@ -51,7 +51,7 @@
                 </v-list-tile-action>
                 <v-list-tile-content>
                   <v-list-tile-title>
-                    {{ child.text }}
+                    {{ child.name }}
                   </v-list-tile-title>
                 </v-list-tile-content>
               </v-list-tile>
@@ -213,10 +213,6 @@
         { icon: 'help', text: 'Help' },
       ]
     }),
-
-    props: {
-      source: String
-    }
 
   }
 </script>

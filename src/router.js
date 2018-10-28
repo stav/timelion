@@ -13,8 +13,9 @@ export default new Router({
       component: Home
     },
     {
-      path: '/timeline',
+      path: '/timeline/:tid',
       name: 'timeline',
+      props: true,
       component: Timeline
     },
     {

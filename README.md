@@ -4,11 +4,11 @@
 
 https://github.com/creationix/nvm/blob/master/README.md#installation
 
-$ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
+	$ wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash
 
-$ nvm --version
+	$ nvm --version
 
-	0.33.11
+		0.33.11
 
 ## Update Node
 
