@@ -5,10 +5,11 @@
         v-for="year in years"
         :ref="`year_${year}`"
         :data-year="year"
+        :style="`width: ${timelion.year_width.toFixed(2)}px`"
         v-text="year"
       ></div>
     </div>
-  	<div id="timelion-events" ref="timelionEvents">
+    <div id="timelion-events" ref="timelionEvents">
       <div class="event"
         v-for="(event, i) in events"
         :ref="`event_${event}`"
@@ -42,14 +43,10 @@
     // props: ['tid'],
 
     data: () => ({
-
-      // tid,
       timelines,
       timelion: new Timelion(),
       events: [],
       years: [],
-      // edata: timelines[ tid ],
-
     }),
 
     computed: {
@@ -59,24 +56,50 @@
     },
 
     methods: {
-      render () {
-
+      /**
+       * Clear the old data and load in the new
+       */
+      render ()
+      {
         // Reset data
         this.timelion.reset()
         this.timelion.load( this.edata )
         this.$refs.timelionYears.innerHTML = '';
         this.$refs.timelionEvents.innerHTML = '';
-
         // Render years
         const size = this.timelion.final_year - this.timelion.first_year;
         const years = [...Array(size).keys()].map(i => i + this.timelion.first_year);
         this.years.push(...years)
-
         // Render events
         this.events.push(...this.timelion.events)
-
-        console.log( this.tid, years, this.timelion.events.length, this.edata )
       },
+      /**
+       * Handle keyboard events
+       */
+      handleKeypress ( kevent )
+      {
+        if (kevent.key === '1') {
+            this.zoom( -1 )  // zoom out
+        }
+        else if (kevent.key === '2') {
+            this.zoom( 1 )  // zoom in
+        }
+      },
+      /**
+       * Zoom in or out based on the positive or negative factor
+       */
+      zoom ( factor )
+      {
+        this.timelion.year_width += factor;
+        // TODO duplicattion below
+        this.timelion.setup_events()
+        for ( const event of this.events )
+        {
+          event.set_offset( this.timelion );
+          event.set_width( this.timelion );
+        }
+      },
+
     },
 
     // components: {
@@ -85,14 +108,12 @@
 
     mounted () {
       // this.$nextTick(function () {})
-      // this.timelion.render()
-      // document.addEventListener('keypress', domui.keyPress, false)
       this.render()
+      window.addEventListener( 'keypress', this.handleKeypress )
     },
 
     watch: {
       $route ( to, from ) {
-        // console.log( 'route', from.params.tid, to.params.tid )
         this.render()
       }
     },

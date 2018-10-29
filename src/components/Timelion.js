@@ -132,7 +132,6 @@ class Timelion
     this.rendered = false;
     this.years = new Map();
     this.year_width = 55;
-    // document.getElementById('timelion').innerHTML = '';
   }
 
   load ( data )
