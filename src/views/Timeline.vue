@@ -5,9 +5,8 @@
         v-for="year in years"
         :ref="`year_${year}`"
         :data-year="year"
-        :style="`width: ${timelion.year_width.toFixed(2)}px`"
-        v-text="year"
-      ></div>
+        :style="year_style(year)"
+      ><span v-text="year"></span></div>
     </div>
     <div id="timelion-events" ref="timelionEvents">
       <div class="event"
@@ -98,6 +97,45 @@
           event.set_offset( this.timelion );
           event.set_width( this.timelion );
         }
+      },
+      /**
+       * Determine the style for the year
+       */
+      year_style ( year ) {
+        return {
+          opacity: this.year_opacity(year),
+          width: `${this.timelion.year_width.toFixed(2)}px`,
+        }
+      },
+      /**
+       * Determine if we should be displaying the given year's text & divider
+       */
+      year_opacity ( year ) {
+        if ( this.timelion.year_width > 40 )
+          return 1;
+
+        if ( this.timelion.year_width > 20 )
+        {
+          if ( year % 2 === 0 )
+            return 1;
+          else
+            return 0;
+        }
+        else
+        {
+          if ( year === this.timelion.first_year )
+            return 1;
+          if ( year % 10 === 0 )
+            return 1;
+
+          if ( this.timelion.year_width > 10 )
+          {
+            if ( year % 5 === 0 )
+              return 0.5;
+          }
+        }
+
+        return 0;
       },
 
     },
