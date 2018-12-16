@@ -1,13 +1,14 @@
 <template>
   <section id="timelion">
+
     <div id="timelion-years" ref="timelionYears">
       <div class="year"
         v-for="year in years"
-        :ref="`year_${year}`"
         :data-year="year"
         :style="year_style(year)"
       ><span v-text="year"></span></div>
     </div>
+
     <div id="timelion-events" ref="timelionEvents">
       <div class="event"
         v-for="(event, i) in events"
@@ -25,6 +26,7 @@
         ></span>
       </div>
     </div>
+
 	</section>
 </template>
 
