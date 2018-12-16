@@ -12,10 +12,11 @@
     <div id="timelion-events" ref="timelionEvents">
       <div class="event"
         v-for="(event, i) in events"
-        :ref="`event_${event}`"
+        :data-index="i"
         :title="event.title"
         :tabindex="i+1"
         :style="`marginLeft: ${event.offset.toFixed(2)}px`"
+        @click.capture.stop="inspect"
         >
         <div class="line"
           :style="`width: ${event.width.toFixed(2)}px`"
@@ -46,8 +47,9 @@
     data: () => ({
       timelines,
       timelion: new Timelion(),
-      events: [],
       years: [],
+      events: [],
+      cevent: null,
     }),
 
     computed: {
@@ -62,17 +64,11 @@
        */
       render ()
       {
-        // Reset data
         this.timelion.reset()
         this.timelion.load( this.edata )
-        this.$refs.timelionYears.innerHTML = '';
-        this.$refs.timelionEvents.innerHTML = '';
-        // Render years
+        this.events = this.timelion.events;
         const size = this.timelion.final_year - this.timelion.first_year;
-        const years = [...Array(size).keys()].map(i => i + this.timelion.first_year);
-        this.years.push(...years)
-        // Render events
-        this.events.push(...this.timelion.events)
+        this.years = [...Array(size).keys()].map(i => i + this.timelion.first_year);
       },
       /**
        * Handle keyboard events
@@ -138,6 +134,12 @@
         }
 
         return 0;
+      },
+
+      inspect: function ( e ) {
+        const isEventElement = Object.values(e.target.classList).includes('event');
+        this.cevent = isEventElement ? e.target : e.target.parentElement;
+        this.$store.commit( 'setEvent', this.cevent )
       },
 
     },

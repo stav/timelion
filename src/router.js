@@ -2,21 +2,26 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from './views/Home.vue'
 import Timeline from './views/Timeline.vue'
+import store from './store'
 
 Vue.use(Router)
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/',
       name: 'home',
-      component: Home
+      component: Home,
+      // beforeEnter: (to, from, next) => {
+      //   store.state.cevent = '';
+      //   next()
+      // },
     },
     {
       path: '/timeline/:tid',
       name: 'timeline',
       props: true,
-      component: Timeline
+      component: Timeline,
     },
     {
       path: '/about',
@@ -28,3 +33,10 @@ export default new Router({
     }
   ]
 })
+
+router.beforeEach((to, from, next) => {
+  store.state.cevent = '';
+  next()
+})
+
+export default router

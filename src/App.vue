@@ -120,6 +120,23 @@
     <v-content>
       <router-view></router-view>
     </v-content>
+
+    <!-- Bottom -->
+
+    <v-bottom-sheet inset persistent hide-overlay :value="inspect">
+      <v-card tile>
+        <v-progress-linear class="my-0" height="3" :value="100"></v-progress-linear>
+        <v-list>
+          <v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title v-text="eventTitle"></v-list-tile-title>
+              <v-list-tile-sub-title v-text="eventDate"></v-list-tile-sub-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </v-list>
+      </v-card>
+    </v-bottom-sheet>
+
   </v-app>
 </template>
 
@@ -144,6 +161,23 @@
         { icon: 'help', text: 'Help' },
       ]
     }),
+
+    computed: {
+      edata () {
+        return this.timelines[ this.$route.params.tid ]
+      },
+      eventTitle () {
+        return this.inspect ? this.$store.state.cevent.title : ''
+      },
+      inspect () {
+        return Boolean(this.$store.state.cevent)
+      },
+      eventDate () {
+        const cevent = this.$store.state.cevent;
+        const eindex  = cevent ? cevent.dataset.index : undefined;
+        return eindex === undefined ? 'nope' : this.edata.events[ eindex ].date
+      },
+    },
 
   }
 </script>
